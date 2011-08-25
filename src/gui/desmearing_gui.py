@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..'
 
 import lake.toolbox
 import lake.desmear
-import time
+import lake.info
 
 #from traits.etsconfig.api import ETSConfig
 #ETSConfig.toolkit = 'qt4'
@@ -63,14 +63,14 @@ class Gui(HasTraits):
 
     console_text = String
 
-    status_msg = String
     status_label = String('status:')
+    status_msg = String
 
     Qvec = []
     smr = []
     smr_esd = []
-    dsm = []
-    dsm_esd = []
+    dsmI = []
+    dsmI_esd = []
     z = []
 
     def _infile_default(self): return os.path.join('..', '..', 'data', 'test1.smr')
@@ -132,53 +132,43 @@ class Gui(HasTraits):
         if self.qFinal > self.Qvec[-2]:
             self.post_message("cannot desmear now, fit range beyond data range")
             return
-        params_dict = self.to_dict()
-        self.dsm, self.dsm_esd = lake.desmear.Desmear(
-            self.Qvec, 
-            self.smr, 
-            self.smr_esd, 
-            info=params_dict, 
-            callback=self.my_callback, 
-            quiet=True
-        )
+
+ 	params = lake.info.Info()
+ 	if params == None:
+            self.post_message("serious: could not get an Info() object")
+ 	    return	    # no input file so bail out
+
+        params.infile = self.infile
+        params.outfile =  self.outfile
+        params.slitlength =  self.l_o
+        params.sFinal =  self.qFinal
+        params.NumItr =  self.NumItr
+        params.extrapname = self.extrapolation
+        params.LakeWeighting = self.LakeWeighting
+	params.callback = self.my_callback
+
+        dsm = lake.desmear.Desmearing( self.Qvec, self.smr, self.smr_esd, params )
+	dsm.traditional()
         # TODO: need to plot final result
         # TODO: offer to save final result
     
-    def my_callback (self, q, I, dI, C, S, iteration, ChiSqr, info, extrap):
+    def my_callback (self, dsm):
         '''
         this function is called after every desmearing iteration
-        from :func:`lake.desmear.Desmear()`
+        from :func:`lake.desmear.Desmearing.traditional()`
     
-        :param array q: array (list)
-        :param array I: array (list) of SAS data I(q) +/- dI(q)
-        :param array dI: array (list)
-        :param array S: array (list) of smeared intensity
-        :param array C: array (list) of corrected intensity
-        :param int iteration: iteration number
-        :param float ChiSqr: Chi-Squared value
-        :param dict info: dictionary of input parameters
-        :param obj extrap: extrapolation function structure
+        :param obj dsm: desmearing parameters object
         :return: should desmearing stop?
         :rtype: bool
         '''
-        self.post_message( "#%d  ChiSqr=%g  %s" % (iteration+1, ChiSqr, str(extrap)) )
+	fmt = "#%d  ChiSqr=%g  %s"
+	msg = fmt % (dsm.iteration_count, dsm.ChiSqr[-1], str(dsm.params.extrap) )
+        self.post_message( msg )
         # TODO: How to update the residuals chart?
-        for i in range(len(q)):
-            self.z[i] = (self.smr[i] - S[i]) / self.smr_esd[i]
+        self.z = list( dsm.z )
         #self._residuals_plot.window.control.Update()
-	time.sleep(0.01)
-        return iteration+1 == info["NumItr"]
-        
-    def to_dict(self):
-        return  {
-            "infile": self.infile, 
-            "outfile": self.outfile,
-            "slitlength": self.l_o,
-            "sFinal": self.qFinal,
-            "NumItr": self.NumItr,
-            "extrapname": self.extrapolation,
-            "LakeWeighting": self.LakeWeighting,
-        }
+	more_steps_ok = dsm.params.moreIterationsOk(dsm.iteration_count)
+        return not more_steps_ok
     
     def post_message(self, msg):
         self.status_msg = msg
