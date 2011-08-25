@@ -95,31 +95,18 @@
 </div>
 <dl class="method">
 <dt id="gui.desmearing_gui.Gui.my_callback">
-<tt class="descname">my_callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/gui/desmearing_gui.html#Gui.my_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearing_gui.Gui.my_callback" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">my_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/gui/desmearing_gui.html#Gui.my_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearing_gui.Gui.my_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
-from <tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></p>
+from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desmearing.traditional" title="lake.desmear.Desmearing.traditional"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmearing.traditional()</span></tt></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>q</strong> (<em>array</em>) &#8211; array (list)</li>
-<li><strong>I</strong> (<em>array</em>) &#8211; array (list) of SAS data I(q) +/- dI(q)</li>
-<li><strong>dI</strong> (<em>array</em>) &#8211; array (list)</li>
-<li><strong>S</strong> (<em>array</em>) &#8211; array (list) of smeared intensity</li>
-<li><strong>C</strong> (<em>array</em>) &#8211; array (list) of corrected intensity</li>
-<li><strong>iteration</strong> (<em>int</em>) &#8211; iteration number</li>
-<li><strong>ChiSqr</strong> (<em>float</em>) &#8211; Chi-Squared value</li>
-<li><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input parameters</li>
-<li><strong>extrap</strong> (<em>obj</em>) &#8211; extrapolation function structure</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dsm</strong> (<em>obj</em>) &#8211; desmearing parameters object</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">should desmearing stop?</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">should desmearing stop?</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>

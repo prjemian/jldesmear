@@ -1,4 +1,4 @@
-.. $Id: linear.rst 1566 2011-04-15 23:58:03Z jemian $
+.. $Id: linear.rst 1687 2011-08-25 15:24:33Z jemian $
 
 Extrapolation: Linear
 ------------------------------------

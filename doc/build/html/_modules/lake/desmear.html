@@ -66,7 +66,7 @@
 <span class="c">#!/usr/bin/env python</span>
 
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">$Id: desmear.py 1689 2011-08-25 19:38:55Z jemian $</span>
+<span class="sd">$Id: desmear.py 1690 2011-08-25 21:53:32Z jemian $</span>
 
 <span class="sd">To desmear, apply the method of Jemian/Lake to 1-D SAS data *(q, I, dI)*.</span>
 
@@ -76,11 +76,11 @@
 
 
 <span class="c">########### SVN repository information ###################</span>
-<span class="c"># $Date: 2011-08-25 14:38:55 -0500 (Thu, 25 Aug 2011) $</span>
+<span class="c"># $Date: 2011-08-25 16:53:32 -0500 (Thu, 25 Aug 2011) $</span>
 <span class="c"># $Author: jemian $</span>
-<span class="c"># $Revision: 1689 $</span>
+<span class="c"># $Revision: 1690 $</span>
 <span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/lake/desmear.py $</span>
-<span class="c"># $Id: desmear.py 1689 2011-08-25 19:38:55Z jemian $</span>
+<span class="c"># $Id: desmear.py 1690 2011-08-25 21:53:32Z jemian $</span>
 <span class="c">########### SVN repository information ###################</span>
 
 
@@ -136,6 +136,12 @@
 <div class="viewcode-block" id="Desmearing.traditional"><a class="viewcode-back" href="../../lake/desmear.html#lake.desmear.Desmearing.traditional">[docs]</a>    <span class="k">def</span> <span class="nf">traditional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        the traditional LAKE code algorithm</span>
+<span class="sd">        </span>
+<span class="sd">        This method is called from the class constructor.  </span>
+<span class="sd">        If this method is called directly, it has the effect </span>
+<span class="sd">        of clearing any desmearing progress and resetting </span>
+<span class="sd">        back to start.  This technique is used here if</span>
+<span class="sd">        the list of ChiSqr results is not empty.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c"># clear it out and start again</span>
@@ -154,14 +160,13 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        compute one iteration of the Lake algorithm</span>
 <span class="sd">        </span>
-<span class="sd">        :return: tuple (C, dI) of desmeared data array and uncertainties</span>
-<span class="sd">        :rtype: ([float], [float])</span>
+<span class="sd">        no need to call the callback routine, </span>
+<span class="sd">        the caller can take care of that directly</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refine_desmeared</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_smear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ChiSqr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_ChiSqr</span><span class="p">()</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dC</span>
 </div>
     <span class="k">def</span> <span class="nf">_smear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -276,7 +281,7 @@
 
 <span class="k">def</span> <span class="nf">__demo</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;show the various routines&#39;&#39;&#39;</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Testing $Id: desmear.py 1689 2011-08-25 19:38:55Z jemian $&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Testing $Id: desmear.py 1690 2011-08-25 21:53:32Z jemian $&quot;</span><span class="p">)</span>
 
     <span class="n">params</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Info</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>

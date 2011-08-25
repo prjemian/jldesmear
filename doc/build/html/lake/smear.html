@@ -140,7 +140,7 @@ Note that only positive values of <em>u</em> will be searched!</p>
 <dt id="lake.smear.Plengt">
 <tt class="descclassname">lake.smear.</tt><tt class="descname">Plengt</tt><big>(</big><em>l</em>, <em>slitlength</em><big>)</big><a class="reference internal" href="../_modules/lake/smear.html#Plengt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.smear.Plengt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Slit-length weighting function, <em>P_l(l)</em></p>
-<img src="../_images\mathmpl/math-12d3fb473a.png" class="center" /><p>It is defined for a rectangular slit of length <tt class="docutils literal"><span class="pre">2*slitlength</span></tt>
+<img src="../_images/mathmpl/math-12d3fb473a.png" class="center" /><p>It is defined for a rectangular slit of length <tt class="docutils literal"><span class="pre">2*slitlength</span></tt>
 and probability <tt class="docutils literal"><span class="pre">1/(2*slitlength)</span></tt>.  It is zero elsewhere.:</p>
 <div class="highlight-python"><pre>                    P(l)
 /--------------------|--------------------\
@@ -191,7 +191,7 @@ of the data to avoid truncation errors.  Assume that
 <a class="reference internal" href="#lake.smear.Plengt" title="lake.smear.Plengt"><tt class="xref py py-func docutils literal"><span class="pre">lake.smear.Plengt()</span></tt></a> goes to zero for <tt class="docutils literal"><span class="pre">l</span> <span class="pre">&gt;</span> <span class="pre">l_o</span></tt> (the slit length).</p>
 <p>Also assume that the slit length function is symmetrical
 about <tt class="docutils literal"><span class="pre">l</span> <span class="pre">=</span> <span class="pre">zero</span></tt>.</p>
-<img src="../_images\mathmpl/math-3d039386e7.png" class="center" /><p>This routine is written so that if <a class="reference internal" href="#lake.smear.Plengt" title="lake.smear.Plengt"><tt class="xref py py-func docutils literal"><span class="pre">lake.smear.Plengt()</span></tt></a> is changed
+<img src="../_images/mathmpl/math-3d039386e7.png" class="center" /><p>This routine is written so that if <a class="reference internal" href="#lake.smear.Plengt" title="lake.smear.Plengt"><tt class="xref py py-func docutils literal"><span class="pre">lake.smear.Plengt()</span></tt></a> is changed
 (for example) to a Gaussian, that no further modification
 is necessary to the integration procedure.  That is,
 this routine will integrate the data out to &#8220;slitlength&#8221; (<tt class="docutils literal"><span class="pre">l_o</span></tt>).</p>
@@ -254,7 +254,7 @@ this routine will integrate the data out to &#8220;slitlength&#8221; (<tt class=
 <dt id="lake.smear.trapezoid_integration">
 <tt class="descclassname">lake.smear.</tt><tt class="descname">trapezoid_integration</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="../_modules/lake/smear.html#trapezoid_integration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.smear.trapezoid_integration" title="Permalink to this definition">¶</a></dt>
 <dd><p>integrate the area under the curve using trapezoid rule</p>
-<img src="../_images\mathmpl/math-3070af013c.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<img src="../_images/mathmpl/math-3070af013c.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">

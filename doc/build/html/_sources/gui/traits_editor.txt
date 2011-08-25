@@ -1,4 +1,4 @@
-.. $Id: traits_editor.rst 1661 2011-08-16 12:28:07Z jemian $
+.. $Id: traits_editor.rst 1687 2011-08-25 15:24:33Z jemian $
 
 Example code: traits_editor
 ------------------------------------

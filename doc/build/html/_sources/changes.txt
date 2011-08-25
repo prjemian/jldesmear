@@ -1,4 +1,4 @@
-.. $Id: changes.rst 1689 2011-08-25 19:38:55Z jemian $
+.. $Id: changes.rst 1690 2011-08-25 21:53:32Z jemian $
 
 Change History
 ==================
