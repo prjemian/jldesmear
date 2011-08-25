@@ -39,10 +39,11 @@ class Info():
     extrapname = "constant"         # model final data as a constant
     LakeWeighting = "fast"          # shows the fastest convergence most times
     extrap = None                   # extrapolation function object
-    quiet = False                   # suppress output from desmearing operations
+    quiet = True                    # suppress progress indicator (spinner) output during smearing
     callback = None                 # function object to call after each desmearing iteration
-        
+    
     def __str__(self):
+        ''' canonical string representation '''
         s = [repr(self)]
         s.append( 'infile: %s' % self.infile )
         s.append( 'outfile: %s' % self.outfile )
@@ -55,3 +56,11 @@ class Info():
         s.append( 'quiet: %s' % self.quiet )
         s.append( 'callback: %s' % str(self.callback) )
         return "\n".join(s)
+
+    def moreIterationsOk(self, iteration_count):
+        '''
+        :return: is it OK to take more iterations?
+        :rtype: bool
+        '''
+        infinite = self.NumItr == INFINITE_ITERATIONS
+        return infinite or iteration_count < abs(self.NumItr)

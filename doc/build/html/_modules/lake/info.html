@@ -66,20 +66,27 @@
 <span class="c">#!/usr/bin/env python</span>
 
 <span class="sd">&#39;&#39;&#39; </span>
-<span class="sd">desmearing parameters </span>
+<span class="sd">desmearing parameters::</span>
 
-<span class="sd">:var NumItr: number of iterations</span>
-<span class="sd">:type NumItr: int or None (for determined by callback function)</span>
-<span class="sd">:var object callback: function to call after each iteration</span>
+<span class="sd">    infile = &quot;&quot;                     # input data file</span>
+<span class="sd">    outfile = &quot;&quot;                    # output data file</span>
+<span class="sd">    slitlength = 1.0                # slit length (l_o) as defined by Lake</span>
+<span class="sd">    sFinal = 1.0                    # fit extrapolation constants for q&gt;=sFinal</span>
+<span class="sd">    NumItr = INFINITE_ITERATIONS    # number of desmearing iterations</span>
+<span class="sd">    extrapname = &quot;constant&quot;         # model final data as a constant</span>
+<span class="sd">    LakeWeighting = &quot;fast&quot;          # shows the fastest convergence most times</span>
+<span class="sd">    extrap = None                   # extrapolation function object</span>
+<span class="sd">    quiet = False                   # suppress output from desmearing operations</span>
+<span class="sd">    callback = None                 # function object to call after each desmearing iteration</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 
 <span class="c">########### SVN repository information ###################</span>
-<span class="c"># $Date: 2011-08-25 00:19:03 -0500 (Thu, 25 Aug 2011) $</span>
+<span class="c"># $Date: 2011-08-25 14:38:55 -0500 (Thu, 25 Aug 2011) $</span>
 <span class="c"># $Author: jemian $</span>
-<span class="c"># $Revision: 1684 $</span>
-<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/lake/lake.py $</span>
-<span class="c"># $Id: lake.py 1684 2011-08-25 05:19:03Z jemian $</span>
+<span class="c"># $Revision: 1689 $</span>
+<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/lake/info.py $</span>
+<span class="c"># $Id: info.py 1689 2011-08-25 19:38:55Z jemian $</span>
 <span class="c">########### SVN repository information ###################</span>
 
 
@@ -97,10 +104,11 @@
     <span class="n">extrapname</span> <span class="o">=</span> <span class="s">&quot;constant&quot;</span>         <span class="c"># model final data as a constant</span>
     <span class="n">LakeWeighting</span> <span class="o">=</span> <span class="s">&quot;fast&quot;</span>          <span class="c"># shows the fastest convergence most times</span>
     <span class="n">extrap</span> <span class="o">=</span> <span class="bp">None</span>                   <span class="c"># extrapolation function object</span>
-    <span class="n">quiet</span> <span class="o">=</span> <span class="bp">False</span>                   <span class="c"># suppress output from desmearing operations</span>
+    <span class="n">quiet</span> <span class="o">=</span> <span class="bp">True</span>                    <span class="c"># suppress progress indicator (spinner) output during smearing</span>
     <span class="n">callback</span> <span class="o">=</span> <span class="bp">None</span>                 <span class="c"># function object to call after each desmearing iteration</span>
         
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; canonical string representation &#39;&#39;&#39;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span>
         <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39;infile: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span> <span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39;outfile: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="p">)</span>
@@ -112,7 +120,15 @@
         <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39;extrap: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extrap</span><span class="p">)</span> <span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39;quiet: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">quiet</span> <span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39;callback: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Info.moreIterationsOk"><a class="viewcode-back" href="../../lake/info.html#lake.info.Info.moreIterationsOk">[docs]</a>    <span class="k">def</span> <span class="nf">moreIterationsOk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration_count</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :return: is it OK to take more iterations?</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">infinite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">==</span> <span class="n">INFINITE_ITERATIONS</span>
+        <span class="k">return</span> <span class="n">infinite</span> <span class="ow">or</span> <span class="n">iteration_count</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

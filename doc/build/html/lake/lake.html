@@ -214,7 +214,7 @@ Ed. P.A. Jansson.  (see above)</li>
 <h3>Source Code Documentation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="lake.lake.GetInf">
-<tt class="descclassname">lake.lake.</tt><tt class="descname">GetInf</tt><big>(</big><em>info</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#GetInf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.GetInf" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">lake.lake.</tt><tt class="descname">GetInf</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#GetInf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.GetInf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get information about the desmearing parameters.
 This is designed to be independent of wavelength
 or radiation-type (i.e. neutrons, X rays, etc.)</p>
@@ -222,9 +222,9 @@ or radiation-type (i.e. neutrons, X rays, etc.)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input terms by keyword</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>obj</em>) &#8211; Desmearing parameters object</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">info dictionary or None</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">params or None</td>
 </tr>
 </tbody>
 </table>
@@ -232,50 +232,18 @@ or radiation-type (i.e. neutrons, X rays, etc.)</p>
 
 <dl class="function">
 <dt id="lake.lake.callback">
-<tt class="descclassname">lake.lake.</tt><tt class="descname">callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.callback" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">lake.lake.</tt><tt class="descname">callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
-from <tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></p>
+from <a class="reference internal" href="desmear.html#lake.desmear.Desmearing.traditional" title="lake.desmear.Desmearing.traditional"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmearing.traditional()</span></tt></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
-<li><strong>I</strong> (<em>[float]</em>) &#8211; SAS data I(q) +/- dI(q)</li>
-<li><strong>dI</strong> (<em>[float]</em>) &#8211; estimated uncertainties of I(q)</li>
-<li><strong>S</strong> (<em>[float]</em>) &#8211; array (list) of smeared intensity</li>
-<li><strong>C</strong> (<em>[float]</em>) &#8211; array (list) of corrected intensity</li>
-<li><strong>iteration</strong> (<em>int</em>) &#8211; iteration number</li>
-<li><strong>ChiSqr</strong> (<em>float</em>) &#8211; Chi-Squared value</li>
-<li><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input parameters</li>
-<li><strong>extrap</strong> (<em>object</em>) &#8211; extrapolation function structure</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dsm</strong> (<em>obj</em>) &#8211; Desmearing object</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">should desmearing stop?</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">should desmearing stop?</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lake.lake.developmental_commandline_interface">
-<tt class="descclassname">lake.lake.</tt><tt class="descname">developmental_commandline_interface</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#developmental_commandline_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.developmental_commandline_interface" title="Permalink to this definition">¶</a></dt>
-<dd><p>SAS data desmearing, by Pete R. Jemian
-Based on the iterative technique of JA Lake and PR Jemian.
-P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
-J.A. Lake; ACTA CRYST 23 (1967) 191-194.</p>
-<p>$Id: lake.py 1684 2011-08-25 05:19:03Z jemian $
-desmear using the interface from the developmental Java version</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Note :</th><td class="field-body">This interface is not ready for production yet.</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>
@@ -283,31 +251,18 @@ desmear using the interface from the developmental Java version</p>
 
 <dl class="function">
 <dt id="lake.lake.no_plotting_callback">
-<tt class="descclassname">lake.lake.</tt><tt class="descname">no_plotting_callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#no_plotting_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.no_plotting_callback" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">lake.lake.</tt><tt class="descname">no_plotting_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#no_plotting_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.no_plotting_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
-from <tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></p>
+from <a class="reference internal" href="desmear.html#lake.desmear.Desmearing.traditional" title="lake.desmear.Desmearing.traditional"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmearing.traditional()</span></tt></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
-<li><strong>I</strong> (<em>[float]</em>) &#8211; SAS data I(q) +/- dI(q)</li>
-<li><strong>dI</strong> (<em>[float]</em>) &#8211; estimated uncertainties of I(q)</li>
-<li><strong>S</strong> (<em>[float]</em>) &#8211; array (list) of smeared intensity</li>
-<li><strong>C</strong> (<em>[float]</em>) &#8211; array (list) of corrected intensity</li>
-<li><strong>iteration</strong> (<em>int</em>) &#8211; iteration number</li>
-<li><strong>ChiSqr</strong> (<em>float</em>) &#8211; Chi-Squared value</li>
-<li><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input parameters</li>
-<li><strong>extrap</strong> (<em>object</em>) &#8211; extrapolation function structure</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dsm</strong> (<em>obj</em>) &#8211; Desmearing object</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">should desmearing stop?</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">should desmearing stop?</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>
@@ -325,27 +280,6 @@ from <tt class="xref py py-func docutils literal"><span class="pre">lake.desmear
 <li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
 <li><strong>E</strong> (<em>[float]</em>) &#8211; experimental (smeared) data</li>
 <li><strong>C</strong> (<em>[float]</em>) &#8211; corrected (desmeared) data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lake.lake.print_results">
-<tt class="descclassname">lake.lake.</tt><tt class="descname">print_results</tt><big>(</big><em>q</em>, <em>E</em>, <em>dE</em>, <em>C</em>, <em>dC</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.print_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>print the results of the desmearing</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
-<li><strong>E</strong> (<em>[float]</em>) &#8211; experimental (smeared) data</li>
-<li><strong>dE</strong> (<em>[float]</em>) &#8211; estimated uncertainties of <em>E</em></li>
-<li><strong>C</strong> (<em>[float]</em>) &#8211; corrected (desmeared) data</li>
-<li><strong>dC</strong> (<em>[float]</em>) &#8211; estimated uncertainties of <em>C</em></li>
 </ul>
 </td>
 </tr>

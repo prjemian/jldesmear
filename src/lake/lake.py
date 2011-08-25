@@ -83,34 +83,32 @@ Source Code Documentation
 
 import math
 import toolbox
-import pprint
+import info
 import desmear
 import textplots
 import os
 
 
-INFINITE_ITERATIONS = 10000
+INFINITE_ITERATIONS = 0
 
 
-def GetInf(info):
+def GetInf(params):
     '''
     Get information about the desmearing parameters.
     This is designed to be independent of wavelength
     or radiation-type (i.e. neutrons, X rays, etc.)
 
-    :param dict info: dictionary of input terms by keyword
-    :return: info dictionary or None
+    :param obj params: Desmearing parameters object
+    :return: params or None
     '''
-    info["infile"] = toolbox.AskString (
-                            "What is the input data file name? <''=Quit>", "")
-    if len(info["infile"]) == 0:
-        return None
-    info["outfile"] = toolbox.AskString (
+    params.infile = toolbox.AskString (
+                            "What is the input data file name? <''=Quit>", params.infile)
+    params.outfile = toolbox.AskString (
                             "What is the output data file name?", 
-                            info["outfile"])
-    info["slitlength"] = toolbox.AskDouble (
+                            params.outfile)
+    params.slitlength = toolbox.AskDouble (
                             "What is the slit length (x-axis units)?", 
-                            info["slitlength"])
+                            params.slitlength)
     print (
           "Extrapolation forms to avoid truncation-error.\n"
         + "   constant = flat background, I(q) = B\n"
@@ -118,12 +116,12 @@ def GetInf(info):
         + "   powerlaw = power law, I(q) = b * q^m\n"
         + "   Porod = Porod law, I(q) = Cp + Bkg / q^4\n"
     )
-    info["extrapname"] = toolbox.AskString ("Which form?", info["extrapname"])
-    info["sFinal"] = toolbox.AskDouble (
+    params.extrapname = toolbox.AskString ("Which form?", params.extrapname)
+    params.sFinal = toolbox.AskDouble (
                         "What X to begin evaluating extrapolation (x-axis units)?", 
-                        info["sFinal"]);
-    info["NumItr"] = toolbox.AskInt ("How many iteration(s)? (10000 = infinite)", 
-                        info["NumItr"])
+                        params.sFinal);
+    params.NumItr = abs(toolbox.AskInt ("How many iteration(s)? (0 = infinite)", 
+                        params.NumItr))
     print (
           " Weighting methods for iterative corrections:\n"
         + " Correction = weight * (MeasuredI - SmearedI)\n"
@@ -131,59 +129,45 @@ def GetInf(info):
         + "   fast: weight = CorrectedI / SmearedI\n"
         + "   ChiSqr: weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))\n"
     )
-    info["LakeWeighting"] = toolbox.AskString ("Which method?", info["LakeWeighting"])
-    return info
+    params.LakeWeighting = toolbox.AskString ("Which method?", params.LakeWeighting)
+    return params
 
 
-def callback (q, I, dI, C, S, iteration, ChiSqr, info, extrap):
+def callback (dsm):
     '''
     this function is called after every desmearing iteration
-    from :func:`lake.desmear.Desmear()`
+    from :func:`lake.desmear.Desmearing.traditional()`
 
-    :param [float] q: magnitude of scattering vector
-    :param [float] I: SAS data I(q) +/- dI(q)
-    :param [float] dI: estimated uncertainties of I(q)
-    :param [float] S: array (list) of smeared intensity
-    :param [float] C: array (list) of corrected intensity
-    :param int iteration: iteration number
-    :param float ChiSqr: Chi-Squared value
-    :param dict info: dictionary of input parameters
-    :param object extrap: extrapolation function structure
+    :param obj dsm: Desmearing object
     :return: should desmearing stop?
     :rtype: bool
     '''
-    n = len(q)
-    z = [0]*n
-    for i in range(n):
-        z[i] = (S[i] - I[i]) / dI[i]
-    title = "\nstandardized residuals, ChiSqr = %g, iteration=%d" % (ChiSqr, iteration)
-    textplots.Screen().residualsplot(z, title)
+    title = "\nstandardized residuals, ChiSqr = %g, iteration=%d" % (dsm.ChiSqr[-1], dsm.iteration_count)
+    textplots.Screen().residualsplot(dsm.z, title)
     reply = "y"
-    if info["NumItr"] < 0:
+    if dsm.params.NumItr == info.INFINITE_ITERATIONS:
         reply = toolbox.AskYesOrNo ("Continue?", reply)
         print("reply: <%s>" % reply)
     return reply == 'n'
 
 
-def no_plotting_callback (q, I, dI, C, S, iteration, ChiSqr, info, extrap):
+def no_plotting_callback (dsm):
     '''
     this function is called after every desmearing iteration
-    from :func:`lake.desmear.Desmear()`
+    from :func:`lake.desmear.Desmearing.traditional()`
 
-    :param [float] q: magnitude of scattering vector
-    :param [float] I: SAS data I(q) +/- dI(q)
-    :param [float] dI: estimated uncertainties of I(q)
-    :param [float] S: array (list) of smeared intensity
-    :param [float] C: array (list) of corrected intensity
-    :param int iteration: iteration number
-    :param float ChiSqr: Chi-Squared value
-    :param dict info: dictionary of input parameters
-    :param object extrap: extrapolation function structure
+    :param obj dsm: Desmearing object
     :return: should desmearing stop?
     :rtype: bool
     '''
-    print "#%d  ChiSqr=%g  %s" % (iteration+1, ChiSqr, str(extrap))
-    return iteration+1 == info["NumItr"]
+    print "#%d  ChiSqr=%g  %s" % (dsm.iteration_count, dsm.ChiSqr[-1], str(dsm.params.extrap))
+    quit_requested = False
+    if dsm.params.NumItr == info.INFINITE_ITERATIONS:
+        reply = toolbox.AskYesOrNo ("Continue?", "y")
+        print("reply: <%s>" % reply)
+        quit_requested = reply.lower() == 'n'
+    more_steps = dsm.params.moreIterationsOk(dsm.iteration_count)
+    return quit_requested or not more_steps
 
 
 def plot_results (q, E, C):
@@ -207,33 +191,6 @@ def plot_results (q, E, C):
     plot.printplot()
 
 
-def print_results (q, E, dE, C, dC):
-    '''
-    print the results of the desmearing
-    
-    :param [float] q: magnitude of scattering vector
-    :param [float] E: experimental (smeared) data
-    :param [float] dE: estimated uncertainties of *E*
-    :param [float] C: corrected (desmeared) data
-    :param [float] dC: estimated uncertainties of *C*
-    '''
-    print "%s\t%s\t%s\t%s\t%s" % ( 
-            "Qsas",
-            "Isas",
-            "Idev",
-            "Idsm",
-            "IdsmDev"
-    )
-    for i in range(len(q)):
-        print "%g\t%g\t%g\t%g\t%g" % (
-                q[i],
-                C[i],
-                dC[i],
-                E[i],
-                dE[i]
-        )
-
-
 def traditional_command_line_interface ():
     '''
     SAS data desmearing, by Pete R. Jemian
@@ -249,89 +206,45 @@ def traditional_command_line_interface ():
     # log output to "Lake.log"
     print(traditional_command_line_interface.__doc__)
 
-    info = {                # set the defaults
-        "infile": "", 
-        "outfile": "",
-        "slitlength": 1.0,              # s: slit length, as defined by Lake
-        "sFinal": 1.0,                  # fit extrapolation constants for q>=sFinal
-        "NumItr": INFINITE_ITERATIONS,  # number of desmearing iterations
-        "extrapname": "constant",       # model final data as a constant
-        "LakeWeighting": "fast",        # shows the fastest convergence most times
-    }
-
-    info = GetInf(info)
-
-    if info == None:
+    params = info.Info()
+    if params == None:
         return          # no input file so quit the program
-    if (info["NumItr"] == 0):
-        info["NumItr"] = INFINITE_ITERATIONS;
-    print("Input file: %s" % info["infile"])
-    q, E, dE = toolbox.GetDat(info["infile"])
+
+    params.infile = os.path.join('..', '..', 'data', 'test1.smr')
+    params.outfile = "test.dsm"
+    params.slitlength = 0.08
+    params.sFinal = 0.08
+    params.NumItr = 10
+    params.extrapname = "linear"
+
+    params = GetInf(params)
+    if params == None:
+        return          # no input file so quit the program
+
+    if (params.NumItr == 0):
+        params.NumItr = info.INFINITE_ITERATIONS;
+    print("Input file: %s" % params.infile)
+    q, E, dE = toolbox.GetDat(params.infile)
     if (len(q) == 0):
         raise Exception, "no data points!"
-    if (info["sFinal"] > q[-1]):
+    if (params.sFinal > q[-1]):
         raise Exception, "Fit range out of data range"
-    C, dC = desmear.Desmear(q, E, dE, info, callback, False)
-    toolbox.SavDat(info["outfile"], q, C, dC)
-    plot_results(q, E, C)
 
+    reply = toolbox.AskYesOrNo ("Plot intermediate residuals?", "y")
+    choices = {True: callback, False: no_plotting_callback}
+    params.callback = choices[ reply.lower() == "y" ]
 
-def developmental_commandline_interface ():
-    '''
-    SAS data desmearing, by Pete R. Jemian
-    Based on the iterative technique of JA Lake and PR Jemian.
-    P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
-    J.A. Lake; ACTA CRYST 23 (1967) 191-194.
+    dsm = desmear.Desmearing(q, E, dE, params)
     
-    $Id$
-    desmear using the interface from the developmental Java version
-    
-    :note: This interface is not ready for production yet.
-    '''
-    # log output to "Lake.log"
-    print(developmental_commandline_interface.__doc__)
-
-    # TODO: must pass this info to this method.
-    info = {                # set the defaults
-        "infile": os.path.join('..', '..', 'data', 'test1.smr'), 
-        "outfile": "test1.dsm",
-        "slitlength": 0.08,             # s: slit length, as defined by Lake
-        "sFinal": 0.08,                 # fit extrapolation constants for q>=sFinal
-        "NumItr": 10,                   # number of desmearing iterations
-        "extrapname": "constant",       # model final data as a constant
-        "LakeWeighting": "fast",        # shows the fastest convergence most times
-    }
-
-    # TODO: implement GetInf() method and remove info = {...} definition above
-    #info = GetInf(info)
-
-    if info == None:
-        return          # no input file so quit the program
-    if (info["NumItr"] == 0):
-        info["NumItr"] = INFINITE_ITERATIONS;
-    print("Input file: %s" % info["infile"])
-    q, E, dE = toolbox.GetDat(info["infile"])
-    if (len(q) == 0):
-        raise Exception, "no data points!"
-    if (info["sFinal"] > q[-1]):
-        raise Exception, "Fit range out of data range"
-    print "Input data accepted.  Parameters are:"
-    pprint.pprint( info )
-    print "Desmearing..."
-    # no_plotting_callback | callback
-    C, dC = desmear.Desmear(q, E, dE, info, no_plotting_callback, True)
-    print "Desmearing complete"
-    print "Saving desmeared data to: %s" % info["outfile"]
-    toolbox.SavDat(info["outfile"], q, C, dC)
-    print "Plotting results..."
-    plot_results(q, E, C)
-    print "Printing results..."
-    print_results (q, E, dE, C, dC)
-    print "the end."
+    if params.NumItr == info.INFINITE_ITERATIONS:
+        dsm.traditional()
+    else:
+        for i in range(params.NumItr):
+            dsm.iteration()
+            params.callback(dsm)
+    toolbox.SavDat(params.outfile, q, dsm.C, dsm.dC)
+    plot_results(q, E, dsm.C)
 
 
 if __name__ == '__main__':
     traditional_command_line_interface()
-    #developmental_commandline_interface()
-    # gnuplot command
-    #  plot "test.dsm" using 1:2, "../../data/test1.dsm" using 1:2, "../../data/test1.smr" using 1:2

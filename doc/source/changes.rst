@@ -6,14 +6,18 @@ Change History
 development: lake-python (trunk)
 ------------------------------------------------
 
-Items on the TODO list:
+Changes:
 
-* learn how to number this list
-* switch code from [float] to numpy.ndarray or Traits Array()
-* refactor lake.desmear to be a class
+* refactor :mod:`lake.desmear` as a class
 
   * allows iterating one at a time
 
+* added single iteration method to :mod:`lake.desmear`
+
+TODO:
+
+* learn how to number this list
+* switch code from [float] to numpy.ndarray or Traits Array()
 * refactor others in lake to be classes as well?
 * update plots in the GUI
 * provide ChiSqr v iteration plot (log-lin)

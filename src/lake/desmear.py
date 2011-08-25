@@ -48,49 +48,60 @@ class Desmearing():
     '''
     
     def __init__(self, q, I, dI, params):
-        self.ChiSqr = []
         self.params = params
         self.q = q
         self.I = I
         self.dI = dI
-        self.iteration_count = len(self.ChiSqr)
-        self.C = list(self.I)       # placeholder, desmeared intensity after current iteration
-        self.dC = list(self.dI)     # placeholder, estimated uncertainty of C
-        self.S = [1.0]*len(self.I)  # placeholder, smeared intensity from most recent C +/- dC
-        self.z = [0.0]*len(self.I)  # placeholder, standardized residuals
-        # TODO: Why not compute S, z, and ChiSqr now?
+        self.first_step()
+
+    def first_step(self):
+        '''
+        the first step
+        '''
+        self.C = list(self.I)       # desmeared intensity after current iteration
+        self.dC = list(self.dI)     # estimated uncertainty of C
+
+        self.S = [1.0]*len(self.I)  # smeared intensity from most recent C +/- dC
+        self.z = [0.0]*len(self.I)  # standardized residuals
         self._smear()
+        self.ChiSqr = []
         self.ChiSqr.append( self._calc_ChiSqr() )
         self.iteration_count = len(self.ChiSqr)-1
 
     def traditional(self):
         '''
-        do the desmearing algorithm the traditional way of the LAKE code
+        the traditional LAKE code algorithm
+        
+        This method is called from the class constructor.  
+        If this method is called directly, it has the effect 
+        of clearing any desmearing progress and resetting 
+        back to start.  This technique is used here if
+        the list of ChiSqr results is not empty.
         '''
-        # TODO: what about reset of everything?  Assumes not necessary now.
+        if len(self.ChiSqr) > 0:
+            # clear it out and start again
+            self.first_step()
         done = False
+
         while not done:
             self.iteration()
             quit_requested = False
             if self.params.callback != None:
                 quit_requested = self.params.callback(self)
-            done = quit_requested \
-                or (self.params.NumItr != info.INFINITE_ITERATIONS \
-                    and self.iteration_count >= abs(self.params.NumItr)
-                    )
+            more_steps = self.params.moreIterationsOk(self.iteration_count)
+            done = quit_requested or not more_steps
 
     def iteration(self):
         '''
         compute one iteration of the Lake algorithm
         
-        :return: tuple (C, dI) of desmeared data array and uncertainties
-        :rtype: ([float], [float])
+        no need to call the callback routine, 
+        the caller can take care of that directly
         '''
         self._refine_desmeared()
         self._smear()
         self.ChiSqr.append( self._calc_ChiSqr() )
         self.iteration_count = len(self.ChiSqr)-1
-        return self.C, self.dC
 
     def _smear(self):
         '''
@@ -206,6 +217,7 @@ def __callback (dsm):
 def __demo():
     '''show the various routines'''
     print("Testing $Id$")
+
     params = info.Info()
     if params == None:
         return          # no input file so quit the program

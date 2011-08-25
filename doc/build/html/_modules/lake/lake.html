@@ -148,34 +148,32 @@
 
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">toolbox</span>
-<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">info</span>
 <span class="kn">import</span> <span class="nn">desmear</span>
 <span class="kn">import</span> <span class="nn">textplots</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 
-<span class="n">INFINITE_ITERATIONS</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">INFINITE_ITERATIONS</span> <span class="o">=</span> <span class="mi">0</span>
 
 
-<div class="viewcode-block" id="GetInf"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.GetInf">[docs]</a><span class="k">def</span> <span class="nf">GetInf</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+<div class="viewcode-block" id="GetInf"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.GetInf">[docs]</a><span class="k">def</span> <span class="nf">GetInf</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Get information about the desmearing parameters.</span>
 <span class="sd">    This is designed to be independent of wavelength</span>
 <span class="sd">    or radiation-type (i.e. neutrons, X rays, etc.)</span>
 
-<span class="sd">    :param dict info: dictionary of input terms by keyword</span>
-<span class="sd">    :return: info dictionary or None</span>
+<span class="sd">    :param obj params: Desmearing parameters object</span>
+<span class="sd">    :return: params or None</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span>
-                            <span class="s">&quot;What is the input data file name? &lt;&#39;&#39;=Quit&gt;&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="n">info</span><span class="p">[</span><span class="s">&quot;outfile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">infile</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span>
+                            <span class="s">&quot;What is the input data file name? &lt;&#39;&#39;=Quit&gt;&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span>
                             <span class="s">&quot;What is the output data file name?&quot;</span><span class="p">,</span> 
-                            <span class="n">info</span><span class="p">[</span><span class="s">&quot;outfile&quot;</span><span class="p">])</span>
-    <span class="n">info</span><span class="p">[</span><span class="s">&quot;slitlength&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskDouble</span> <span class="p">(</span>
+                            <span class="n">params</span><span class="o">.</span><span class="n">outfile</span><span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">slitlength</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskDouble</span> <span class="p">(</span>
                             <span class="s">&quot;What is the slit length (x-axis units)?&quot;</span><span class="p">,</span> 
-                            <span class="n">info</span><span class="p">[</span><span class="s">&quot;slitlength&quot;</span><span class="p">])</span>
+                            <span class="n">params</span><span class="o">.</span><span class="n">slitlength</span><span class="p">)</span>
     <span class="k">print</span> <span class="p">(</span>
           <span class="s">&quot;Extrapolation forms to avoid truncation-error.</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="o">+</span> <span class="s">&quot;   constant = flat background, I(q) = B</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -183,12 +181,12 @@
         <span class="o">+</span> <span class="s">&quot;   powerlaw = power law, I(q) = b * q^m</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="o">+</span> <span class="s">&quot;   Porod = Porod law, I(q) = Cp + Bkg / q^4</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="p">)</span>
-    <span class="n">info</span><span class="p">[</span><span class="s">&quot;extrapname&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span><span class="s">&quot;Which form?&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;extrapname&quot;</span><span class="p">])</span>
-    <span class="n">info</span><span class="p">[</span><span class="s">&quot;sFinal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskDouble</span> <span class="p">(</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">extrapname</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span><span class="s">&quot;Which form?&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">extrapname</span><span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">sFinal</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskDouble</span> <span class="p">(</span>
                         <span class="s">&quot;What X to begin evaluating extrapolation (x-axis units)?&quot;</span><span class="p">,</span> 
-                        <span class="n">info</span><span class="p">[</span><span class="s">&quot;sFinal&quot;</span><span class="p">]);</span>
-    <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskInt</span> <span class="p">(</span><span class="s">&quot;How many iteration(s)? (10000 = infinite)&quot;</span><span class="p">,</span> 
-                        <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">])</span>
+                        <span class="n">params</span><span class="o">.</span><span class="n">sFinal</span><span class="p">);</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">toolbox</span><span class="o">.</span><span class="n">AskInt</span> <span class="p">(</span><span class="s">&quot;How many iteration(s)? (0 = infinite)&quot;</span><span class="p">,</span> 
+                        <span class="n">params</span><span class="o">.</span><span class="n">NumItr</span><span class="p">))</span>
     <span class="k">print</span> <span class="p">(</span>
           <span class="s">&quot; Weighting methods for iterative corrections:</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="o">+</span> <span class="s">&quot; Correction = weight * (MeasuredI - SmearedI)</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -196,59 +194,45 @@
         <span class="o">+</span> <span class="s">&quot;   fast: weight = CorrectedI / SmearedI</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="o">+</span> <span class="s">&quot;   ChiSqr: weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))</span><span class="se">\n</span><span class="s">&quot;</span>
     <span class="p">)</span>
-    <span class="n">info</span><span class="p">[</span><span class="s">&quot;LakeWeighting&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span><span class="s">&quot;Which method?&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;LakeWeighting&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">info</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">LakeWeighting</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskString</span> <span class="p">(</span><span class="s">&quot;Which method?&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">LakeWeighting</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">params</span>
 
 </div>
-<div class="viewcode-block" id="callback"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.callback">[docs]</a><span class="k">def</span> <span class="nf">callback</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">dI</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">ChiSqr</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">extrap</span><span class="p">):</span>
+<div class="viewcode-block" id="callback"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.callback">[docs]</a><span class="k">def</span> <span class="nf">callback</span> <span class="p">(</span><span class="n">dsm</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    this function is called after every desmearing iteration</span>
-<span class="sd">    from :func:`lake.desmear.Desmear()`</span>
+<span class="sd">    from :func:`lake.desmear.Desmearing.traditional()`</span>
 
-<span class="sd">    :param [float] q: magnitude of scattering vector</span>
-<span class="sd">    :param [float] I: SAS data I(q) +/- dI(q)</span>
-<span class="sd">    :param [float] dI: estimated uncertainties of I(q)</span>
-<span class="sd">    :param [float] S: array (list) of smeared intensity</span>
-<span class="sd">    :param [float] C: array (list) of corrected intensity</span>
-<span class="sd">    :param int iteration: iteration number</span>
-<span class="sd">    :param float ChiSqr: Chi-Squared value</span>
-<span class="sd">    :param dict info: dictionary of input parameters</span>
-<span class="sd">    :param object extrap: extrapolation function structure</span>
+<span class="sd">    :param obj dsm: Desmearing object</span>
 <span class="sd">    :return: should desmearing stop?</span>
 <span class="sd">    :rtype: bool</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">dI</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">standardized residuals, ChiSqr = </span><span class="si">%g</span><span class="s">, iteration=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ChiSqr</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)</span>
-    <span class="n">textplots</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span><span class="o">.</span><span class="n">residualsplot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">standardized residuals, ChiSqr = </span><span class="si">%g</span><span class="s">, iteration=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dsm</span><span class="o">.</span><span class="n">iteration_count</span><span class="p">)</span>
+    <span class="n">textplots</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span><span class="o">.</span><span class="n">residualsplot</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
     <span class="n">reply</span> <span class="o">=</span> <span class="s">&quot;y&quot;</span>
-    <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">==</span> <span class="n">info</span><span class="o">.</span><span class="n">INFINITE_ITERATIONS</span><span class="p">:</span>
         <span class="n">reply</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskYesOrNo</span> <span class="p">(</span><span class="s">&quot;Continue?&quot;</span><span class="p">,</span> <span class="n">reply</span><span class="p">)</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;reply: &lt;</span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="n">reply</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">reply</span> <span class="o">==</span> <span class="s">&#39;n&#39;</span>
 
 </div>
-<div class="viewcode-block" id="no_plotting_callback"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.no_plotting_callback">[docs]</a><span class="k">def</span> <span class="nf">no_plotting_callback</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">dI</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">ChiSqr</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">extrap</span><span class="p">):</span>
+<div class="viewcode-block" id="no_plotting_callback"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.no_plotting_callback">[docs]</a><span class="k">def</span> <span class="nf">no_plotting_callback</span> <span class="p">(</span><span class="n">dsm</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    this function is called after every desmearing iteration</span>
-<span class="sd">    from :func:`lake.desmear.Desmear()`</span>
+<span class="sd">    from :func:`lake.desmear.Desmearing.traditional()`</span>
 
-<span class="sd">    :param [float] q: magnitude of scattering vector</span>
-<span class="sd">    :param [float] I: SAS data I(q) +/- dI(q)</span>
-<span class="sd">    :param [float] dI: estimated uncertainties of I(q)</span>
-<span class="sd">    :param [float] S: array (list) of smeared intensity</span>
-<span class="sd">    :param [float] C: array (list) of corrected intensity</span>
-<span class="sd">    :param int iteration: iteration number</span>
-<span class="sd">    :param float ChiSqr: Chi-Squared value</span>
-<span class="sd">    :param dict info: dictionary of input parameters</span>
-<span class="sd">    :param object extrap: extrapolation function structure</span>
+<span class="sd">    :param obj dsm: Desmearing object</span>
 <span class="sd">    :return: should desmearing stop?</span>
 <span class="sd">    :rtype: bool</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">print</span> <span class="s">&quot;#</span><span class="si">%d</span><span class="s">  ChiSqr=</span><span class="si">%g</span><span class="s">  </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">iteration</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ChiSqr</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">extrap</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">iteration</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span>
+    <span class="k">print</span> <span class="s">&quot;#</span><span class="si">%d</span><span class="s">  ChiSqr=</span><span class="si">%g</span><span class="s">  </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">iteration_count</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">extrap</span><span class="p">))</span>
+    <span class="n">quit_requested</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">==</span> <span class="n">info</span><span class="o">.</span><span class="n">INFINITE_ITERATIONS</span><span class="p">:</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskYesOrNo</span> <span class="p">(</span><span class="s">&quot;Continue?&quot;</span><span class="p">,</span> <span class="s">&quot;y&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;reply: &lt;</span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="n">reply</span><span class="p">)</span>
+        <span class="n">quit_requested</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;n&#39;</span>
+    <span class="n">more_steps</span> <span class="o">=</span> <span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">moreIterationsOk</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">iteration_count</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">quit_requested</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">more_steps</span>
 
 </div>
 <div class="viewcode-block" id="plot_results"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.plot_results">[docs]</a><span class="k">def</span> <span class="nf">plot_results</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
@@ -272,33 +256,6 @@
     <span class="n">plot</span><span class="o">.</span><span class="n">printplot</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="print_results"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.print_results">[docs]</a><span class="k">def</span> <span class="nf">print_results</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    print the results of the desmearing</span>
-<span class="sd">    </span>
-<span class="sd">    :param [float] q: magnitude of scattering vector</span>
-<span class="sd">    :param [float] E: experimental (smeared) data</span>
-<span class="sd">    :param [float] dE: estimated uncertainties of *E*</span>
-<span class="sd">    :param [float] C: corrected (desmeared) data</span>
-<span class="sd">    :param [float] dC: estimated uncertainties of *C*</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span> 
-            <span class="s">&quot;Qsas&quot;</span><span class="p">,</span>
-            <span class="s">&quot;Isas&quot;</span><span class="p">,</span>
-            <span class="s">&quot;Idev&quot;</span><span class="p">,</span>
-            <span class="s">&quot;Idsm&quot;</span><span class="p">,</span>
-            <span class="s">&quot;IdsmDev&quot;</span>
-    <span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)):</span>
-        <span class="k">print</span> <span class="s">&quot;</span><span class="si">%g</span><span class="se">\t</span><span class="si">%g</span><span class="se">\t</span><span class="si">%g</span><span class="se">\t</span><span class="si">%g</span><span class="se">\t</span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
-                <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">dC</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">dE</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="p">)</span>
-
-</div>
 <div class="viewcode-block" id="traditional_command_line_interface"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.traditional_command_line_interface">[docs]</a><span class="k">def</span> <span class="nf">traditional_command_line_interface</span> <span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    SAS data desmearing, by Pete R. Jemian</span>
@@ -314,92 +271,43 @@
     <span class="c"># log output to &quot;Lake.log&quot;</span>
     <span class="k">print</span><span class="p">(</span><span class="n">traditional_command_line_interface</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
 
-    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>                <span class="c"># set the defaults</span>
-        <span class="s">&quot;infile&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span> 
-        <span class="s">&quot;outfile&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-        <span class="s">&quot;slitlength&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>              <span class="c"># s: slit length, as defined by Lake</span>
-        <span class="s">&quot;sFinal&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                  <span class="c"># fit extrapolation constants for q&gt;=sFinal</span>
-        <span class="s">&quot;NumItr&quot;</span><span class="p">:</span> <span class="n">INFINITE_ITERATIONS</span><span class="p">,</span>  <span class="c"># number of desmearing iterations</span>
-        <span class="s">&quot;extrapname&quot;</span><span class="p">:</span> <span class="s">&quot;constant&quot;</span><span class="p">,</span>       <span class="c"># model final data as a constant</span>
-        <span class="s">&quot;LakeWeighting&quot;</span><span class="p">:</span> <span class="s">&quot;fast&quot;</span><span class="p">,</span>        <span class="c"># shows the fastest convergence most times</span>
-    <span class="p">}</span>
-
-    <span class="n">info</span> <span class="o">=</span> <span class="n">GetInf</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">Info</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span>          <span class="c"># no input file so quit the program</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">INFINITE_ITERATIONS</span><span class="p">;</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Input file: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">])</span>
-    <span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">])</span>
+
+    <span class="n">params</span><span class="o">.</span><span class="n">infile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1.smr&#39;</span><span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="s">&quot;test.dsm&quot;</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">slitlength</span> <span class="o">=</span> <span class="mf">0.08</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">sFinal</span> <span class="o">=</span> <span class="mf">0.08</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">extrapname</span> <span class="o">=</span> <span class="s">&quot;linear&quot;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="n">GetInf</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span>          <span class="c"># no input file so quit the program</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">INFINITE_ITERATIONS</span><span class="p">;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Input file: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">params</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
+    <span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;no data points!&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;sFinal&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">q</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">sFinal</span> <span class="o">&gt;</span> <span class="n">q</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;Fit range out of data range&quot;</span>
-    <span class="n">C</span><span class="p">,</span> <span class="n">dC</span> <span class="o">=</span> <span class="n">desmear</span><span class="o">.</span><span class="n">Desmear</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
-    <span class="n">toolbox</span><span class="o">.</span><span class="n">SavDat</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;outfile&quot;</span><span class="p">],</span> <span class="n">q</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span><span class="p">)</span>
-    <span class="n">plot_results</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
 
-</div>
-<div class="viewcode-block" id="developmental_commandline_interface"><a class="viewcode-back" href="../../lake/lake.html#lake.lake.developmental_commandline_interface">[docs]</a><span class="k">def</span> <span class="nf">developmental_commandline_interface</span> <span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    SAS data desmearing, by Pete R. Jemian</span>
-<span class="sd">    Based on the iterative technique of JA Lake and PR Jemian.</span>
-<span class="sd">    P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).</span>
-<span class="sd">    J.A. Lake; ACTA CRYST 23 (1967) 191-194.</span>
-<span class="sd">    </span>
-<span class="sd">    $Id: lake.py 1684 2011-08-25 05:19:03Z jemian $</span>
-<span class="sd">    desmear using the interface from the developmental Java version</span>
-<span class="sd">    </span>
-<span class="sd">    :note: This interface is not ready for production yet.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c"># log output to &quot;Lake.log&quot;</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">developmental_commandline_interface</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
+    <span class="n">reply</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskYesOrNo</span> <span class="p">(</span><span class="s">&quot;Plot intermediate residuals?&quot;</span><span class="p">,</span> <span class="s">&quot;y&quot;</span><span class="p">)</span>
+    <span class="n">choices</span> <span class="o">=</span> <span class="p">{</span><span class="bp">True</span><span class="p">:</span> <span class="n">callback</span><span class="p">,</span> <span class="bp">False</span><span class="p">:</span> <span class="n">no_plotting_callback</span><span class="p">}</span>
+    <span class="n">params</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">choices</span><span class="p">[</span> <span class="n">reply</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;y&quot;</span> <span class="p">]</span>
 
-    <span class="c"># TODO: must pass this info to this method.</span>
-    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>                <span class="c"># set the defaults</span>
-        <span class="s">&quot;infile&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1.smr&#39;</span><span class="p">),</span> 
-        <span class="s">&quot;outfile&quot;</span><span class="p">:</span> <span class="s">&quot;test1.dsm&quot;</span><span class="p">,</span>
-        <span class="s">&quot;slitlength&quot;</span><span class="p">:</span> <span class="mf">0.08</span><span class="p">,</span>             <span class="c"># s: slit length, as defined by Lake</span>
-        <span class="s">&quot;sFinal&quot;</span><span class="p">:</span> <span class="mf">0.08</span><span class="p">,</span>                 <span class="c"># fit extrapolation constants for q&gt;=sFinal</span>
-        <span class="s">&quot;NumItr&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>                   <span class="c"># number of desmearing iterations</span>
-        <span class="s">&quot;extrapname&quot;</span><span class="p">:</span> <span class="s">&quot;constant&quot;</span><span class="p">,</span>       <span class="c"># model final data as a constant</span>
-        <span class="s">&quot;LakeWeighting&quot;</span><span class="p">:</span> <span class="s">&quot;fast&quot;</span><span class="p">,</span>        <span class="c"># shows the fastest convergence most times</span>
-    <span class="p">}</span>
-
-    <span class="c"># TODO: implement GetInf() method and remove info = {...} definition above</span>
-    <span class="c">#info = GetInf(info)</span>
-
-    <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">return</span>          <span class="c"># no input file so quit the program</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">INFINITE_ITERATIONS</span><span class="p">;</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Input file: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">])</span>
-    <span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;no data points!&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;sFinal&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">q</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;Fit range out of data range&quot;</span>
-    <span class="k">print</span> <span class="s">&quot;Input data accepted.  Parameters are:&quot;</span>
-    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span> <span class="n">info</span> <span class="p">)</span>
-    <span class="k">print</span> <span class="s">&quot;Desmearing...&quot;</span>
-    <span class="c"># no_plotting_callback | callback</span>
-    <span class="n">C</span><span class="p">,</span> <span class="n">dC</span> <span class="o">=</span> <span class="n">desmear</span><span class="o">.</span><span class="n">Desmear</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">no_plotting_callback</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">&quot;Desmearing complete&quot;</span>
-    <span class="k">print</span> <span class="s">&quot;Saving desmeared data to: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;outfile&quot;</span><span class="p">]</span>
-    <span class="n">toolbox</span><span class="o">.</span><span class="n">SavDat</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;outfile&quot;</span><span class="p">],</span> <span class="n">q</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">&quot;Plotting results...&quot;</span>
-    <span class="n">plot_results</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">&quot;Printing results...&quot;</span>
-    <span class="n">print_results</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">&quot;the end.&quot;</span>
+    <span class="n">dsm</span> <span class="o">=</span> <span class="n">desmear</span><span class="o">.</span><span class="n">Desmearing</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    
+    <span class="n">dsm</span><span class="o">.</span><span class="n">traditional</span><span class="p">()</span>
+    <span class="n">toolbox</span><span class="o">.</span><span class="n">SavDat</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">dC</span><span class="p">)</span>
+    <span class="n">plot_results</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">C</span><span class="p">)</span>
 
 </div>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">traditional_command_line_interface</span><span class="p">()</span>
-    <span class="c">#developmental_commandline_interface()</span>
-    <span class="c"># gnuplot command</span>
-    <span class="c">#  plot &quot;test.dsm&quot; using 1:2, &quot;../../data/test1.dsm&quot; using 1:2, &quot;../../data/test1.smr&quot; using 1:2</span>
 </pre></div>
 
           </div>
