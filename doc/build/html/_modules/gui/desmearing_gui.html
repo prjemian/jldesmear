@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>gui.desmearing_gui &mdash; lake-python v2011.08 documentation</title>
+    <title>gui.desmearing_gui &mdash; lake-python v2011.09.dev documentation</title>
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2011.08',
+        VERSION:     '2011.09.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="lake-python v2011.08 documentation" href="../../index.html" />
+    <link rel="top" title="lake-python v2011.09.dev documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -71,32 +71,36 @@
 
 
 <span class="c">########### SVN repository information ###################</span>
-<span class="c"># $Date: 2011-08-24 14:45:57 -0500 (Wed, 24 Aug 2011) $</span>
+<span class="c"># $Date: 2011-08-25 00:33:16 -0500 (Thu, 25 Aug 2011) $</span>
 <span class="c"># $Author: jemian $</span>
-<span class="c"># $Revision: 1681 $</span>
-<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/src/gui/desmearing_gui.py $</span>
-<span class="c"># $Id: desmearing_gui.py 1681 2011-08-24 19:45:57Z jemian $</span>
+<span class="c"># $Revision: 1685 $</span>
+<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/gui/desmearing_gui.py $</span>
+<span class="c"># $Id: desmearing_gui.py 1685 2011-08-25 05:33:16Z jemian $</span>
 <span class="c">########### SVN repository information ###################</span>
 
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="c"># make sure lake is on the path, as well</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;..&#39;</span><span class="p">)</span> <span class="p">))</span>
+
+<span class="kn">import</span> <span class="nn">lake.toolbox</span>
+<span class="kn">import</span> <span class="nn">lake.desmear</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
 <span class="c">#from traits.etsconfig.api import ETSConfig</span>
 <span class="c">#ETSConfig.toolkit = &#39;qt4&#39;</span>
 
 
 <span class="c">#from enthought.chaco.shell import plot, show</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> \
-    <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> \
+    <span class="kn">import</span> <span class="o">*</span>
 
-<span class="kn">from</span> <span class="nn">traitsui.api</span> <span class="kn">import</span> \
-    <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">traitsui.api</span> \
+    <span class="kn">import</span> <span class="o">*</span>
 
 <span class="kn">from</span> <span class="nn">enthought.chaco.chaco_plot_editor</span> \
     <span class="kn">import</span> <span class="n">ChacoPlotItem</span>
 
-<span class="kn">import</span> <span class="nn">lake.toolbox</span>
-<span class="kn">import</span> <span class="nn">lake.desmear</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">time</span>
 
 <div class="viewcode-block" id="Gui"><a class="viewcode-back" href="../../gui/desmearing-gui.html#gui.desmearing_gui.Gui">[docs]</a><span class="k">class</span> <span class="nc">Gui</span><span class="p">(</span><span class="n">HasTraits</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Provide interactive access to all the parameters used in desmearing</span>
@@ -134,7 +138,7 @@
     <span class="n">dsm_esd</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">z</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">_infile_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;lake&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1.smr&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_infile_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1.smr&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_l_o_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="mf">0.08</span>
     <span class="k">def</span> <span class="nf">_qFinal_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="mf">0.08</span>
     <span class="k">def</span> <span class="nf">_NumItr_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="mi">10</span>
@@ -348,7 +352,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

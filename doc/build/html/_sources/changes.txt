@@ -1,0 +1,48 @@
+.. $Id: contents.rst 1675 2011-08-23 15:15:47Z jemian $
+
+Change History
+==================
+
+development: lake-python (trunk)
+------------------------------------------------
+
+Items on the TODO list:
+
+* learn how to number this list
+* switch code from [float] to numpy.ndarray or Traits Array()
+* refactor lake.desmear to be a class
+
+  * allows iterating one at a time
+
+* refactor others in lake to be classes as well?
+* update plots in the GUI
+* provide ChiSqr v iteration plot (log-lin)
+* add single and N iteration controls to GUI
+* add write desmeared data file handling to GUI
+* resolve the Traits invisible MenuBar problems seen on Ubuntu
+
+2011-08-25: lake-python-2011-08
+------------------------------------------------
+
+Initial release:
+
+* python code fully operable
+* command line interface
+
+  * uses same paradigm as original FORTRAN code
+  * Q&A in a console session, then desmear
+  * tested on Windows, Macintosh, and Linux
+  * only uses standard Python libraries, no NumPy or SciPy
+
+* All test data copied from legacy C and FORTRAN projects
+
+* Documentation 
+
+  * as good or better than FORTRAN manual
+  * could improve still with content from thesis
+
+* graphical user interface
+
+  * provisional, demo only
+  * uses Enthought's Traits and Chaco
+  * does not write desmeared data to a file

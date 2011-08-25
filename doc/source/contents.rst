@@ -11,6 +11,7 @@ Contents
    lake/example
    lake/lake
    gui/*
+   changes
 
 Indices and tables
 ==================

@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>lake.lake &mdash; lake-python v2011.08 documentation</title>
+    <title>lake.lake &mdash; lake-python v2011.09.dev documentation</title>
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2011.08',
+        VERSION:     '2011.09.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,9 +22,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="lake-python v2011.08 documentation" href="../index.html" />
+    <link rel="top" title="lake-python v2011.09.dev documentation" href="../index.html" />
     <link rel="up" title="Contents" href="../contents.html" />
-    <link rel="next" title="Desmearing" href="desmear.html" />
+    <link rel="next" title="Desmearing parameters, the Info() object" href="info.html" />
     <link rel="prev" title="Example using test1.smr data set" href="example.html" /> 
   </head>
   <body>
@@ -38,12 +38,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="desmear.html" title="Desmearing"
+          <a href="info.html" title="Desmearing parameters, the Info() object"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="example.html" title="Example using test1.smr data set"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+        <li><a href="../index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
           <li><a href="../contents.html" accesskey="U">Contents</a> &raquo;</li> 
       </ul>
     </div>
@@ -68,10 +68,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="example.html"
-                        title="previous chapter">Example using <tt class="docutils literal docutils literal docutils literal"><span class="pre">test1.smr</span></tt> data set</a></p>
+                        title="previous chapter">Example using <tt class="docutils literal docutils literal"><span class="pre">test1.smr</span></tt> data set</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="desmear.html"
-                        title="next chapter">Desmearing</a></p>
+  <p class="topless"><a href="info.html"
+                        title="next chapter">Desmearing parameters, the <tt class="docutils literal"><span class="pre">Info()</span></tt> object</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/lake/lake.txt"
@@ -106,6 +106,7 @@ It provides the same command-line interface as its FORTRAN and C predecessors.</
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="info.html">Desmearing parameters, the <tt class="docutils literal"><span class="pre">Info()</span></tt> object</a></li>
 <li class="toctree-l1"><a class="reference internal" href="desmear.html">Desmearing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="desmear.html#source-code-documentation">Source Code Documentation</a></li>
 </ul>
@@ -233,7 +234,7 @@ or radiation-type (i.e. neutrons, X rays, etc.)</p>
 <dt id="lake.lake.callback">
 <tt class="descclassname">lake.lake.</tt><tt class="descname">callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
-from <a class="reference internal" href="desmear.html#lake.desmear.Desmear" title="lake.desmear.Desmear"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></a></p>
+from <tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -284,7 +285,7 @@ desmear using the interface from the developmental Java version</p>
 <dt id="lake.lake.no_plotting_callback">
 <tt class="descclassname">lake.lake.</tt><tt class="descname">no_plotting_callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#no_plotting_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.no_plotting_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
-from <a class="reference internal" href="desmear.html#lake.desmear.Desmear" title="lake.desmear.Desmear"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></a></p>
+from <tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -384,12 +385,12 @@ desmear using the same FORTRAN &amp; C command line interface</pre>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="desmear.html" title="Desmearing"
+          <a href="info.html" title="Desmearing parameters, the Info() object"
              >next</a> |</li>
         <li class="right" >
           <a href="example.html" title="Example using test1.smr data set"
              >previous</a> |</li>
-        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+        <li><a href="../index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li> 
       </ul>
     </div>

@@ -254,7 +254,7 @@ class Screen:
         self.printplot()
 
 
-def __tests():
+def __demo():
     '''show the various routines'''
     print("Testing $Id$")
     x, y, dy = toolbox.GetDat( os.path.join('..', '..', 'data', 'test1.smr') )
@@ -274,4 +274,4 @@ def __tests():
 
 
 if __name__ == "__main__":
-    __tests()
+    __demo()

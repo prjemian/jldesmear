@@ -1,0 +1,161 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Change History &mdash; lake-python v2011.09.dev documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2011.09.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.09.dev documentation" href="index.html" />
+    <link rel="up" title="Contents" href="contents.html" />
+    <link rel="prev" title="Example code: traits_editor" href="gui/traits_editor.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui/traits_editor.html" title="Example code: traits_editor"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
+          <li><a href="contents.html" accesskey="U">Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Change History</a><ul>
+<li><a class="reference internal" href="#development-lake-python-trunk">development: lake-python (trunk)</a></li>
+<li><a class="reference internal" href="#lake-python-2011-08">2011-08-25: lake-python-2011-08</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gui/traits_editor.html"
+                        title="previous chapter">Example code: traits_editor</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/changes.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="change-history">
+<h1>Change History<a class="headerlink" href="#change-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="development-lake-python-trunk">
+<h2>development: lake-python (trunk)<a class="headerlink" href="#development-lake-python-trunk" title="Permalink to this headline">¶</a></h2>
+<p>Items on the TODO list:</p>
+<ul class="simple">
+<li>learn how to number this list</li>
+<li>switch code from [float] to numpy.ndarray or Traits Array()</li>
+<li>refactor lake.desmear to be a class<ul>
+<li>allows iterating one at a time</li>
+</ul>
+</li>
+<li>refactor others in lake to be classes as well?</li>
+<li>update plots in the GUI</li>
+<li>provide ChiSqr v iteration plot (log-lin)</li>
+<li>add single and N iteration controls to GUI</li>
+<li>add write desmeared data file handling to GUI</li>
+<li>resolve the Traits invisible MenuBar problems seen on Ubuntu</li>
+</ul>
+</div>
+<div class="section" id="lake-python-2011-08">
+<h2>2011-08-25: lake-python-2011-08<a class="headerlink" href="#lake-python-2011-08" title="Permalink to this headline">¶</a></h2>
+<p>Initial release:</p>
+<ul class="simple">
+<li>python code fully operable</li>
+<li>command line interface<ul>
+<li>uses same paradigm as original FORTRAN code</li>
+<li>Q&amp;A in a console session, then desmear</li>
+<li>tested on Windows, Macintosh, and Linux</li>
+<li>only uses standard Python libraries, no NumPy or SciPy</li>
+</ul>
+</li>
+<li>All test data copied from legacy C and FORTRAN projects</li>
+<li>Documentation<ul>
+<li>as good or better than FORTRAN manual</li>
+<li>could improve still with content from thesis</li>
+</ul>
+</li>
+<li>graphical user interface<ul>
+<li>provisional, demo only</li>
+<li>uses Enthought&#8217;s Traits and Chaco</li>
+<li>does not write desmeared data to a file</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gui/traits_editor.html" title="Example code: traits_editor"
+             >previous</a> |</li>
+        <li><a href="index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
+          <li><a href="contents.html" >Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

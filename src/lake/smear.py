@@ -366,7 +366,7 @@ def __test_Plengt():
     print("Plengt %s" % Plengt(0.1, 3.))
 
 
-def __tests():
+def __demo():
     '''show the various routines'''
     print("Testing $Id$")
     __test_Plengt()
@@ -376,4 +376,4 @@ def __tests():
 
 
 if __name__ == "__main__":
-    __tests()
+    __demo()

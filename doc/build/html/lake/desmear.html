@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Desmearing &mdash; lake-python v2011.08 documentation</title>
+    <title>Desmearing &mdash; lake-python v2011.09.dev documentation</title>
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2011.08',
+        VERSION:     '2011.09.dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="lake-python v2011.08 documentation" href="../index.html" />
+    <link rel="top" title="lake-python v2011.09.dev documentation" href="../index.html" />
     <link rel="up" title="lake.lake" href="lake.html" />
     <link rel="next" title="Forward Smearing" href="smear.html" />
     <link rel="prev" title="lake.lake" href="lake.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="lake.html" title="lake.lake"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+        <li><a href="../index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="lake.html" accesskey="U">lake.lake</a> &raquo;</li> 
       </ul>
@@ -97,116 +97,80 @@
 <p>To desmear, apply the method of Jemian/Lake to 1-D SAS data <em>(q, I, dI)</em>.</p>
 <div class="section" id="source-code-documentation">
 <h2>Source Code Documentation<a class="headerlink" href="#source-code-documentation" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="lake.desmear.Desmear">
-<tt class="descclassname">lake.desmear.</tt><tt class="descname">Desmear</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>info</em>, <em>callback</em>, <em>quiet=False</em><big>)</big><a class="reference internal" href="../_modules/lake/desmear.html#Desmear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.desmear.Desmear" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="lake.desmear.Desmearing">
+<em class="property">class </em><tt class="descclassname">lake.desmear.</tt><tt class="descname">Desmearing</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>params</em><big>)</big><a class="headerlink" href="#lake.desmear.Desmearing" title="Permalink to this definition">¶</a></dt>
 <dd><p>desmear the 1-D SAS data <em>(q, I, dI)</em> by method of Jemian/Lake</p>
-<img src="../_images\mathmpl/math-0e345ab34b.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<img src="../_images\mathmpl/math-0e345ab34b.png" class="center" /><p>To start Lake&#8217;s method, assume that the 0-th approximation 
+of the corrected intensity is the measured intensity.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
 <li><strong>I</strong> (<em>[float]</em>) &#8211; SAS data I(q) +/- dI(q)</li>
 <li><strong>dI</strong> (<em>[float]</em>) &#8211; estimated uncertainties of I(q)</li>
-<li><strong>info</strong> (<em>dict</em>) &#8211; dictionary of desmearing parameters</li>
-<li><strong>callback</strong> (<em>object</em>) &#8211; function to call after each iteration</li>
-<li><strong>quiet</strong> (<em>bool</em>) &#8211; if True, then no printed output from this routine</li>
+<li><strong>params</strong> (<em>obj</em>) &#8211; Info object with desmearing parameters</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">tuple of corrected/desmeared SAS (C, dC)</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">([float], [float])</p>
-</td>
+</tbody>
+</table>
+<dl class="method">
+<dt id="lake.desmear.Desmearing.SetExtrap">
+<tt class="descname">SetExtrap</tt><big>(</big><em>extrapolation_object=None</em><big>)</big><a class="headerlink" href="#lake.desmear.Desmearing.SetExtrap" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>extrapolation_object</strong> (<em>obj</em>) &#8211; class used for extrapolation function</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="lake.desmear.FixErr">
-<tt class="descclassname">lake.desmear.</tt><tt class="descname">FixErr</tt><big>(</big><em>x</em>, <em>y</em>, <em>dy</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/lake/desmear.html#FixErr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.desmear.FixErr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate the error on Z based on data point scatter and
-previous error values and smooth that estimate.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<dl class="method">
+<dt id="lake.desmear.Desmearing.SetLakeWeighting">
+<tt class="descname">SetLakeWeighting</tt><big>(</big><em>LakeWeighting='fast'</em><big>)</big><a class="headerlink" href="#lake.desmear.Desmearing.SetLakeWeighting" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>[float]</em>) &#8211; independent axis</li>
-<li><strong>y</strong> (<em>[float]</em>) &#8211; dependent axis</li>
-<li><strong>dy</strong> (<em>[float]</em>) &#8211; estimated uncertainties of y</li>
-<li><strong>z</strong> (<em>[float]</em>) &#8211; adjusted dependent axis</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dz, estimated uncertainties of z</p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">[float]</p>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>LakeWeighting</strong> (<em>str</em>) &#8211; one of <tt class="docutils literal"><span class="pre">constant</span></tt>,  <tt class="docutils literal"><span class="pre">ChiSqr</span></tt>, or <tt class="docutils literal"><span class="pre">fast</span></tt></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="lake.desmear.examine_scatter">
-<tt class="descclassname">lake.desmear.</tt><tt class="descname">examine_scatter</tt><big>(</big><em>x</em>, <em>y</em>, <em>dy</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/lake/desmear.html#examine_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.desmear.examine_scatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Error based on scatter of desmeared data points.
-Determine this by fitting a line to the points
-i-1, i, i+1 and take the difference.  Add this to dz.</p>
+<dl class="method">
+<dt id="lake.desmear.Desmearing.SetQuiet">
+<tt class="descname">SetQuiet</tt><big>(</big><em>suppress_output=True</em><big>)</big><a class="headerlink" href="#lake.desmear.Desmearing.SetQuiet" title="Permalink to this definition">¶</a></dt>
+<dd><p>if True, then no printed output from this routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.desmear.Desmearing.iteration">
+<tt class="descname">iteration</tt><big>(</big><big>)</big><a class="headerlink" href="#lake.desmear.Desmearing.iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute one iteration of the Lake algorithm</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>[float]</em>) &#8211; independent axis</li>
-<li><strong>y</strong> (<em>[float]</em>) &#8211; dependent axis</li>
-<li><strong>dy</strong> (<em>[float]</em>) &#8211; estimated uncertainties of <tt class="docutils literal"><span class="pre">y</span></tt></li>
-<li><strong>z</strong> (<em>[float]</em>) &#8211; adjusted dependent axis</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">tuple (C, dI) of desmeared data array and uncertainties</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">estimated uncertainties of <tt class="docutils literal"><span class="pre">z</span></tt></p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">[float]</p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">([float], [float])</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="lake.desmear.moving_average_filter">
-<tt class="descclassname">lake.desmear.</tt><tt class="descname">moving_average_filter</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="../_modules/lake/desmear.html#moving_average_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.desmear.moving_average_filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Smooth <cite>y(x)</cite> by a 3-point moving average filter.
-Do not smooth the end points.</p>
-<p>Weight the data points by distance^2 (as a penalty)
-using the function weight(u,v)= <img src="../_images\mathmpl/math-ae24eef721.png" style="position: relative; bottom: -8px"/></p>
-<p>By its definition, weight(x0,x0) == 1.0.</p>
-<p>I speed computation using this definition.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>[float]</em>) &#8211; independent axis</li>
-<li><strong>y</strong> (<em>[float]</em>) &#8211; dependent axis</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">smoothed version of <tt class="docutils literal"><span class="pre">y(x)</span></tt></p>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">[float]</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="method">
+<dt id="lake.desmear.Desmearing.traditional">
+<tt class="descname">traditional</tt><big>(</big><big>)</big><a class="headerlink" href="#lake.desmear.Desmearing.traditional" title="Permalink to this definition">¶</a></dt>
+<dd><p>do the desmearing algorithm the traditional way of the LAKE code</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -233,7 +197,7 @@ using the function weight(u,v)= <img src="../_images\mathmpl/math-ae24eef721.png
         <li class="right" >
           <a href="lake.html" title="lake.lake"
              >previous</a> |</li>
-        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+        <li><a href="../index.html">lake-python v2011.09.dev documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="lake.html" >lake.lake</a> &raquo;</li> 
       </ul>

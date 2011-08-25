@@ -1,0 +1,9 @@
+.. $Id: lake.rst 1645 2011-07-20 18:49:05Z jemian $
+
+----------------------------------------------------
+Desmearing parameters, the ``Info()`` object
+----------------------------------------------------
+
+.. automodule:: lake.info
+    :members: 
+    :synopsis: parameters used by the desmearing methods

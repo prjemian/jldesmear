@@ -19,230 +19,223 @@ Source Code Documentation
 ########### SVN repository information ###################
 
 
-import lake
 import math
 import pprint
 import smear
-import StatsReg
 import textplots
 import toolbox
+import info
 import os
+import sys
 
 
-def Desmear (q, I, dI, info, callback, quiet = False):
-    '''
+class Desmearing():
+    ''' 
     desmear the 1-D SAS data *(q, I, dI)* by method of Jemian/Lake
     
     .. math::
     
         I_0 \\approx \\lim_{i \\rightarrow \\infty}\\tilde I_{i+1} =  I_i \\times \\left({ \\tilde I_0 \\div \\tilde I_i}\\right)
     
+    
+    To start Lake's method, assume that the 0-th approximation 
+    of the corrected intensity is the measured intensity.
+
     :param [float] q: magnitude of scattering vector
     :param [float] I: SAS data I(q) +/- dI(q)
     :param [float] dI: estimated uncertainties of I(q)
-    :param dict info: dictionary of desmearing parameters
-    :param object callback: function to call after each iteration
-    :param bool quiet: if True, then no printed output from this routine
-    :return: tuple of corrected/desmeared SAS (C, dC)
-    :rtype: ([float], [float])
+    :param obj params: Info object with desmearing parameters
     '''
-    NumPts = len(q)
-    C, dC = [0]*NumPts, [0]*NumPts  # corrected intensity (results)
-    #  To start Lake's method, assume that the 0-th approximation 
-    #    of the corrected intensity is the measured intensity.
-    for i in range(NumPts):
-        C[i] = I[i]
-        dC[i] = dI[i]
-    extrapname = info["extrapname"]
-    sFinal = info["sFinal"]
-    slitlength = info["slitlength"]
-    ChiSqr0 = None
-    weighting = 1.0
-    maximum_iterations = info["NumItr"]
-    fixed_iterations = (maximum_iterations > 0)
-    if maximum_iterations < 0:
-        maximum_iterations = -maximum_iterations
-    for iteration in range(maximum_iterations):
-        # smear this iteration
+    
+    def __init__(self, q, I, dI, params):
+        self.ChiSqr = []
+        self.params = params
+        self.q = q
+        self.I = I
+        self.dI = dI
+        self.iteration_count = len(self.ChiSqr)
+        self.C = list(self.I)       # placeholder, desmeared intensity after current iteration
+        self.dC = list(self.dI)     # placeholder, estimated uncertainty of C
+        self.S = [1.0]*len(self.I)  # placeholder, smeared intensity from most recent C +/- dC
+        self.z = [0.0]*len(self.I)  # placeholder, standardized residuals
+        # TODO: Why not compute S, z, and ChiSqr now?
+        self._smear()
+        self.ChiSqr.append( self._calc_ChiSqr() )
+        self.iteration_count = len(self.ChiSqr)-1
+
+    def traditional(self):
+        '''
+        do the desmearing algorithm the traditional way of the LAKE code
+        '''
+        # TODO: what about reset of everything?  Assumes not necessary now.
+        done = False
+        while not done:
+            self.iteration()
+            quit_requested = False
+            if self.params.callback != None:
+                quit_requested = self.params.callback(self)
+            done = quit_requested \
+                or (self.params.NumItr != info.INFINITE_ITERATIONS \
+                    and self.iteration_count >= abs(self.params.NumItr)
+                    )
+
+    def iteration(self):
+        '''
+        compute one iteration of the Lake algorithm
+        
+        :return: tuple (C, dI) of desmeared data array and uncertainties
+        :rtype: ([float], [float])
+        '''
+        self._refine_desmeared()
+        self._smear()
+        self.ChiSqr.append( self._calc_ChiSqr() )
+        self.iteration_count = len(self.ChiSqr)-1
+        return self.C, self.dC
+
+    def _smear(self):
+        '''
+        Compute the slit-smeared intensity (S) from current 
+        iteration desmeared intensity (C +/- dC)
+        
+        Changes ``self.S``
+        '''
         try:
-            S, extrap = smear.Smear(q, C, dC, 
-                        extrapname, sFinal, slitlength, quiet)
-        except Exception, e:
-            print("")
-            raise Exception, "Smearing failed: " + str(e)
-            #raise Exception, e
-    
-        ChiSqr = 0.0                        # find the ChiSqr
-        for i in range(NumPts):
-            ChiSqr += math.pow((S[i] - I[i])/dI[i], 2)
-        if ChiSqr0 == None:
-            ChiSq0 = ChiSqr                 # remember the first one
+            self.S, extrap = smear.Smear(
+                self.q, self.C, self.dC, 
+                self.params.extrapname, 
+                self.params.sFinal, 
+                self.params.slitlength, 
+                self.params.quiet
+            )
+            # TODO: this interface looks inefficient now, unless extrap could change each iteration (?possible new feature?)
+            self.SetExtrap(extrap)
+        except:
+            raise Exception, "Smearing failed: " + str(sys.exc_info())
 
-        if info["LakeWeighting"] == "constant":
+    def _refine_desmeared(self):
+        '''
+        calculate the next desmeared intensity
+        from the current desmeared and smeared intensities
+        '''
+        if self.params.LakeWeighting == "constant":
             weighting = 1
-        if info["LakeWeighting"] == "ChiSqr":
-            weighting = 2*math.sqrt(ChiSq0/ChiSqr)
-        for i in range(NumPts):
-            if info["LakeWeighting"] == "fast":
-                weighting = C[i] / S[i]
-            C[i] += weighting * (I[i] - S[i])
-        #dC = FixErr (q, I, dI, C);
-        if fixed_iterations:
-            # caller-supplied function
-            if callback(q, I, dI, C, S, iteration, ChiSqr, info, extrap):
-                break
-    return C, dC
+        elif self.params.LakeWeighting == "ChiSqr":
+            weighting = 2*math.sqrt(self.ChiSqr[0]/self.ChiSqr[-1])
+
+        # apply the weight to get the corrected terms
+        for i in range(len(self.I)):
+            if self.params.LakeWeighting == "fast":
+                weighting = self.C[i] / self.S[i]
+            self.C[i] += weighting * (self.I[i] - self.S[i])
+
+    def _calc_ChiSqr(self):
+        '''
+        calculate the chi-squared statistic
+        
+        .. math::
+        
+          \chi^2 = \sum z^2
+        
+        where ``z`` is the [float] of standardized residuals
+        
+        :return: ChiSqr
+        :rtype: float
+        '''
+        self._calc_residuals()
+        result = 0.0
+        for z in self.z:
+            result += z*z
+        return result
+
+    def _calc_residuals(self):
+        '''
+        calculate the standardized residuals ( ``self.z`` )
+        
+        .. math::
+        
+          z = (\hat{y} - y) \sigma
+        
+        where ``y = S``, ``yHat = I``, and ``sigma = dI``
+        
+        calculates a new ``self.z``
+        '''
+        for i in range(len(self.I)):
+            self.z[i] = (self.S[i] - self.I[i]) / self.dI[i]
+
+    def SetExtrap(self, extrapolation_object = None):
+        '''
+        :param obj extrapolation_object: class used for extrapolation function
+        '''
+        self.params.extrap = extrapolation_object
+
+    def SetLakeWeighting(self, LakeWeighting = 'fast'):
+        '''
+        :param str LakeWeighting: one of ``constant``,  ``ChiSqr``, or ``fast``
+        '''
+        choices = ('constant', 'ChiSqr', 'fast')
+        if LakeWeighting not in choices:
+            msg = "LakeWeighting must be one of " + str(choices)
+            msg += ", got "  + LakeWeighting
+            raise( msg )
+        self.params.LakeWeighting = LakeWeighting
+
+    def SetQuiet(self, suppress_output = True):
+        '''
+        if True, then no printed output from this routine
+        '''
+        self.params.quiet = suppress_output
 
 
-def FixErr(x, y, dy, z):
-    '''
-    Estimate the error on Z based on data point scatter and
-    previous error values and smooth that estimate.
-    
-    :param [float] x: independent axis
-    :param [float] y: dependent axis
-    :param [float] dy: estimated uncertainties of y
-    :param [float] z: adjusted dependent axis
-    :return: dz, estimated uncertainties of z
-    :rtype: [float]
-    '''
-    scatter = examine_scatter (x, y, dy, z)  # Add this to dz.
-
-    #/* Error proportional to input error */
-    dz = [0]*len(y)
-    for i in range( len(y) ): 
-        dz[i] = z[i] * dy[i] / y[i] 
-        dz[i] += scatter[i]
-
-    # Smooth the error by a 3-point moving average filter.
-    # Apply the moving average filter 5 times.
-    #
-    # Smoothing is necessary to refine (and likely increase) the error estimate
-    # for some grossly under-estimated errors.
-    for count in range(5):
-        dz = moving_average_filter(x, dz)
-    return dz
-
-
-def moving_average_filter (x, y):
-    '''
-    Smooth `y(x)` by a 3-point moving average filter.
-    Do not smooth the end points.
-
-    Weight the data points by distance^2 (as a penalty)
-    using the function weight(u,v)= :math:`(1 - |1 - u/v|)^2`
-    
-    By its definition, weight(x0,x0) == 1.0.  
-    
-    I speed computation using this definition.
-
-    :param [float] x: independent axis
-    :param [float] y: dependent axis
-    :return: smoothed version of ``y(x)``
-    :rtype: [float]
-    '''
-    r = [0]*len(x)
-    for i in range(1, len(x)-1):
-        w1 = math.pow(1 - math.fabs(1 - x[i-1]/x[i]) ,2)
-        w2 = math.pow(1 - math.fabs(1 - x[i+1]/x[i]) ,2)
-        r[i] = (w1 * y[i-1] + y[i] + w2 * y[i+1]) / (w1 + 1.0 + w2)
-    return r
-
-
-def examine_scatter (x, y, dy, z):
-    '''
-    Error based on scatter of desmeared data points.
-    Determine this by fitting a line to the points
-    i-1, i, i+1 and take the difference.  Add this to dz.
-
-    :param [float] x: independent axis
-    :param [float] y: dependent axis
-    :param [float] dy: estimated uncertainties of ``y``
-    :param [float] z: adjusted dependent axis
-    :return: estimated uncertainties of ``z``
-    :rtype: [float]
-    '''
-    dz = [0]*len(y)
-    sr = StatsReg.StatsRegClass()
-    for i in (0, 1, 2):
-        sr.Add(x[i], z[i])
-    for i in (0, 1):
-        dz[i] = math.fabs( sr.LinearEval(x[i]) - z[i])
-    for i in range(2, len(y)-1):
-        sr.Subtract(x[i-2], z[i-2])
-        sr.Add(x[i+1], z[i+1])
-        zNew = sr.LinearEval(x[i])
-        dz[i] = math.fabs(zNew - z[i])
-    dz[-1] = math.fabs( sr.LinearEval(x[-1]) - z[-1])
-    return dz
-
-
-def __tests_callback (q, I, dI, C, S, iteration, ChiSqr, info=None, extrap=None):
+def __callback (dsm):
     '''
     this function is called after every desmearing iteration
     
-    :param [float] q: array (list)
-    :param [float] I: array (list) of SAS data I(q) +/- dI(q)
-    :param [float] dI: array (list)
-    :param [float] S: array (list) of smeared intensity
-    :param [float] C: array (list) of corrected intensity
-    :param int iteration: iteration number
-    :param float ChiSqr: Chi-Squared value
-    :param dict info: dictionary of input parameters
-    :param object extrap: extrapolation function structure
+    :param obj dsm: Desmearing object
     :return: should desmearing stop?
     :rtype: bool
     '''
-    n = len(q)
-    z = [0]*n
-    for i in range(n):
-        z[i] = (S[i] - I[i]) / dI[i]
-    title = "standardized residuals, ChiSqr = %g, iteration %d" % (ChiSqr, iteration)
-    textplots.Screen().residualsplot(z, title)
-    reply = toolbox.AskYesOrNo ("Continue?", "y")
-    print("reply: <%s>" % reply)
-    return reply == 'n'
+    title = "standardized residuals, ChiSqr = %g, iteration %d" % (dsm.ChiSqr[-1], dsm.iteration_count)
+    textplots.Screen().residualsplot(dsm.z, title)
+    reply = 'y'
+    if dsm.params.NumItr == info.INFINITE_ITERATIONS:
+        reply = toolbox.AskYesOrNo ("Continue?", reply)
+        print("reply: <%s>" % reply)
+    return reply.lower() == 'n'
 
 
-def __tests():
+def __demo():
     '''show the various routines'''
     print("Testing $Id$")
-    info = {                # set the defaults
-        "infile": "", 
-        "outfile": "",
-        "slitlength": 1.0,              # s: slit length, as defined by Lake
-        "sFinal": 1.0,                  # fit extrapolation constants for q>=sFinal
-        "NumItr": 10000,                # number of desmearing iterations
-        "extrapname": "constant",       # model final data as a constant
-        "LakeWeighting": "fast",        # shows the fastest convergence most times
-    }
-    # override default constants for code development
-    info["infile"] = os.path.join('..', '..', 'data', 'test1.smr')
-    info["outfile"] = "test.dsm"
-    info["slitlength"] = 0.08           # s: slit length, as defined by Lake
-    info["sFinal"] = 0.08               # fit extrapolation constants for q>=sFinal
-    info["NumItr"] = 10                 # *only* 20 iterations
-
-    pprint.pprint(info)
-
-    if info == None:
+    params = info.Info()
+    if params == None:
         return          # no input file so quit the program
-    if (info["NumItr"] == 0):
-        info["NumItr"] = lake.INFINITE_ITERATIONS;
-    print("Input file: " + info["infile"])
-    q, E, dE = toolbox.GetDat(info["infile"])
+
+    # override default constants for code development
+    params.infile = os.path.join('..', '..', 'data', 'test1.smr')
+    params.outfile = "test.dsm"
+    params.slitlength = 0.08           # s: slit length, as defined by Lake
+    params.sFinal = 0.08               # fit extrapolation constants for q>=sFinal
+    params.NumItr = 20                 # *only* 20 iterations
+    params.extrapname = "linear"       # better for the test1.smr data set
+    params.callback = __callback       # use our local callback function
+
+    print str(params)
+
+    q, E, dE = toolbox.GetDat(params.infile)
     if (len(q) == 0):
-        raise Exception, "no data points!"
-    if (info["sFinal"] > q[-1]):
-        raise Exception, "Fit range out of data range"
-    C, dC = Desmear(q, E, dE, info, __tests_callback)
-    toolbox.SavDat(info["outfile"], q, C, dC)
+        raise ("no data points!")
+    if (params.sFinal > q[-1]):
+        raise( "Fit range out of data range" )
+    
+    dsm = Desmearing(q, E, dE, params)
+    dsm.traditional()
+    toolbox.SavDat(params.outfile, dsm.q, dsm.C, dsm.dC)
     n = len(q)
     lnq, lnE, lnC = [0]*n, [0]*n, [0]*n
     for i in range(n):
         lnq[i] = math.log(q[i])
         lnE[i] = math.log(E[i])
-        lnC[i] = math.log(C[i])
+        lnC[i] = math.log(dsm.C[i])
     plot = textplots.Screen()
     plot.addtrace(lnq, lnE, "S")
     plot.addtrace(lnq, lnC, "D")
@@ -251,4 +244,4 @@ def __tests():
 
 
 if __name__ == "__main__":
-    __tests()
+    __demo()
