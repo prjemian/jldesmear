@@ -1,0 +1,162 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>GUI for Lake/Jemian desmearing &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../index.html" />
+    <link rel="up" title="Contents" href="../contents.html" />
+    <link rel="next" title="GUI for lake-python using Chaco" href="only_chaco.html" />
+    <link rel="prev" title="Utility Routines" href="../lake/toolbox.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="only_chaco.html" title="GUI for lake-python using Chaco"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../lake/toolbox.html" title="Utility Routines"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" accesskey="U">Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../lake/toolbox.html"
+                        title="previous chapter">Utility Routines</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="only_chaco.html"
+                        title="next chapter">GUI for lake-python using Chaco</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/gui/desmearing-gui.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gui.desmearing_gui">
+<span id="gui-for-lake-jemian-desmearing"></span><h1>GUI for Lake/Jemian desmearing<a class="headerlink" href="#module-gui.desmearing_gui" title="Permalink to this headline">¶</a></h1>
+<p>Lake desmearing GUI using Enthought&#8217;s Chaco and Traits packages.</p>
+<dl class="class">
+<dt id="gui.desmearing_gui.Gui">
+<em class="property">class </em><tt class="descclassname">gui.desmearing_gui.</tt><tt class="descname">Gui</tt><a class="reference internal" href="../_modules/gui/desmearing_gui.html#Gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearing_gui.Gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide interactive access to all the parameters used in desmearing</p>
+<p>This is a main GUI.  It uses Traits.  Call it with code like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">gui</span> <span class="o">=</span> <span class="n">Gui</span><span class="p">()</span>
+<span class="n">gui</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">paramfile</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="gui.desmearing_gui.Gui.my_callback">
+<tt class="descname">my_callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/gui/desmearing_gui.html#Gui.my_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearing_gui.Gui.my_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function is called after every desmearing iteration
+from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desmear" title="lake.desmear.Desmear"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>q</strong> (<em>array</em>) &#8211; array (list)</li>
+<li><strong>I</strong> (<em>array</em>) &#8211; array (list) of SAS data I(q) +/- dI(q)</li>
+<li><strong>dI</strong> (<em>array</em>) &#8211; array (list)</li>
+<li><strong>S</strong> (<em>array</em>) &#8211; array (list) of smeared intensity</li>
+<li><strong>C</strong> (<em>array</em>) &#8211; array (list) of corrected intensity</li>
+<li><strong>iteration</strong> (<em>int</em>) &#8211; iteration number</li>
+<li><strong>ChiSqr</strong> (<em>float</em>) &#8211; Chi-Squared value</li>
+<li><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input parameters</li>
+<li><strong>extrap</strong> (<em>obj</em>) &#8211; extrapolation function structure</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">should desmearing stop?</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="only_chaco.html" title="GUI for lake-python using Chaco"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../lake/toolbox.html" title="Utility Routines"
+             >previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

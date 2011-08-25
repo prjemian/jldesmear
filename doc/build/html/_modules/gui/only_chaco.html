@@ -1,0 +1,151 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gui.only_chaco &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for gui.only_chaco</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Simple plotting of results from lake desmearing.</span>
+<span class="sd">Uses Enthought&#39;s Chaco package.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c">########### SVN repository information ###################</span>
+<span class="c"># $Date: 2011-08-17 18:43:50 -0500 (Wed, 17 Aug 2011) $</span>
+<span class="c"># $Author: jemian $</span>
+<span class="c"># $Revision: 1667 $</span>
+<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/src/gui/only_chaco.py $</span>
+<span class="c"># $Id: only_chaco.py 1667 2011-08-17 23:43:50Z jemian $</span>
+<span class="c">########### SVN repository information ###################</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">enthought.chaco.shell</span> <span class="kn">import</span> <span class="n">loglog</span><span class="p">,</span> <span class="n">hold</span><span class="p">,</span> <span class="n">show</span>
+<span class="kn">import</span> <span class="nn">only_traits</span>
+
+
+<div class="viewcode-block" id="OnlyChacoParameters"><a class="viewcode-back" href="../../gui/only_chaco.html#gui.only_chaco.OnlyChacoParameters">[docs]</a><span class="k">class</span> <span class="nc">OnlyChacoParameters</span><span class="p">(</span><span class="n">only_traits</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Use the same structure</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../gui/only_chaco.html#gui.only_chaco.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39; &#39;&#39;&#39;</span>
+    <span class="c"># locate the parameters file in the same directory as this file</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">paramfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;.pkl&#39;</span><span class="p">)</span>
+    
+    <span class="n">params</span> <span class="o">=</span> <span class="n">OnlyChacoParameters</span><span class="p">(</span>
+        <span class="n">infile</span> <span class="o">=</span> <span class="s">&quot;../lake/data/test1.smr&quot;</span><span class="p">,</span> 
+        <span class="n">outfile</span> <span class="o">=</span> <span class="s">&quot;test1.dsm&quot;</span><span class="p">,</span>
+        <span class="n">slitlength</span> <span class="o">=</span> <span class="mf">0.08</span><span class="p">,</span>
+        <span class="n">sFinal</span> <span class="o">=</span> <span class="mf">0.08</span><span class="p">,</span>
+        <span class="n">NumItr</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">extrapname</span> <span class="o">=</span> <span class="s">&#39;linear&#39;</span><span class="p">,</span>
+        <span class="n">LakeWeighting</span> <span class="o">=</span> <span class="s">&#39;fast&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">params</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">paramfile</span><span class="p">,</span> <span class="n">edit</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    
+    <span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span> <span class="o">=</span> <span class="n">only_traits</span><span class="o">.</span><span class="n">core_desmearing_algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="n">loglog</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="s">&quot;b-&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;smeared data&quot;</span><span class="p">,</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">)</span>
+    <span class="n">hold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">loglog</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="s">&quot;r-&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;desmeared result&quot;</span><span class="p">)</span>
+    <span class="n">show</span><span class="p">()</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span> <span class="n">main</span><span class="p">()</span> <span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

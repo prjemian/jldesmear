@@ -1,0 +1,21 @@
+.. $Id: contents.rst 1675 2011-08-23 15:15:47Z jemian $
+
+
+Contents
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+   
+   lake/example
+   lake/lake
+   gui/*
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

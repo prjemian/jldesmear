@@ -1,0 +1,9 @@
+.. $Id: desmearing-gui.rst 1671 2011-08-20 15:48:50Z jemian $
+
+GUI for Lake/Jemian desmearing
+------------------------------------
+
+.. automodule:: gui.desmearing_gui
+    :members: 
+    :synopsis: Uses Enthought's Traits+Chaco, best effort so far in Python
+

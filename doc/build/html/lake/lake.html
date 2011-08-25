@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>lake.lake &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../index.html" />
+    <link rel="up" title="Contents" href="../contents.html" />
+    <link rel="next" title="Desmearing" href="desmear.html" />
+    <link rel="prev" title="Example using test1.smr data set" href="example.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="desmear.html" title="Desmearing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example.html" title="Example using test1.smr data set"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" accesskey="U">Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lake.lake</a><ul>
+<li><a class="reference internal" href="#contents">Contents</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-lake.lake">Source code documentation</a><ul>
+<li><a class="reference internal" href="#credits">Credits</a></li>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#other-deconvolution-methods">Other deconvolution methods</a></li>
+<li><a class="reference internal" href="#id1">Source Code Documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="example.html"
+                        title="previous chapter">Example using <tt class="docutils literal docutils literal docutils literal"><span class="pre">test1.smr</span></tt> data set</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="desmear.html"
+                        title="next chapter">Desmearing</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/lake/lake.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="lake-lake">
+<h1>lake.lake<a class="headerlink" href="#lake-lake" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="#module-lake.lake" title="lake.lake: command-line program to run desmearing"><tt class="xref py py-mod docutils literal"><span class="pre">lake.lake</span></tt></a> is the main program to run desmearing.
+It provides the same command-line interface as its FORTRAN and C predecessors.</p>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="desmear.html">Desmearing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="desmear.html#source-code-documentation">Source Code Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="smear.html">Forward Smearing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="smear.html#source-code-documentation">Source Code Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extrapolations.html">Extrapolations at highest <em>q</em></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extrapolations/constant.html">Extrapolation: Constant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extrapolations/linear.html">Extrapolation: Linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extrapolations/porod.html">Extrapolation: Porod Law</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extrapolations/power.html">Extrapolation: Power Law</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="StatsReg.html">Statistics Registers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="StatsReg.html#source-code-documentation">Source code documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="textplots.html">Plotting on a console</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="textplots.html#source-code-documentation">Source code documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="toolbox.html">Utility Routines</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-lake.lake">
+<span id="source-code-documentation"></span><h2>Source code documentation<a class="headerlink" href="#module-lake.lake" title="Permalink to this headline">¶</a></h2>
+<p>$Id: lake.py 1684 2011-08-25 05:19:03Z jemian $</p>
+<div class="section" id="credits">
+<h3>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h3>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">author:</th><td class="field-body">Pete R. Jemian</td>
+</tr>
+<tr class="field"><th class="field-name">organization:</th><td class="field-body">Late-Nite(tm) Software</td>
+</tr>
+<tr class="field"><th class="field-name">note:</th><td class="field-body">lake.py was derived from lake.c in 2009</td>
+</tr>
+<tr class="field"><th class="field-name">note:</th><td class="field-body">lake.c was derived from the FORTRAN program Lake.FOR</td>
+</tr>
+<tr class="field"><th class="field-name">note:</th><td class="field-body">Lake.FOR  25 May 1991</td>
+</tr>
+<tr class="field"><th class="field-name">see:</th><td class="field-body">P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).</td>
+</tr>
+<tr class="field"><th class="field-name">see:</th><td class="field-body">J.A. Lake; ACTA CRYST 23 (1967) 191-194.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
+<p>This program applies the iterative desmearing technique of Lake
+to small-angle scattering data.  The way that the program works
+is that the user selects a file of data <em>(x,y,dy)</em> to be desmeared.
+If a file was not chosen, the program will end.  Otherwise the
+user is then asked to specify the slit-length (in the units of the
+x-axis); the <em>x</em> at which to begin fitting the last data points to a
+power-law of <em>x</em>, the output file name, and the number of iterations
+to be run.  Then the data file is opened, the data is read, and the
+data file is closed.  The program begins iterating and shows an
+indicator of progress on the screen in text format.</p>
+<p>It is a mistake to run this program on data that has been desmeared
+at least once (by this program) as you will see.  The problem is
+that the program expects that the input data has been smeared, NOT
+partially desmeared.  Lake&#8217;s technique should be made to iterate
+with the original, smeared data and subsequent trial solutions
+of desmeared data.</p>
+<p>The integration technique used by this program to smear the data
+is the trapezoid-rule where the step-size is chosen by the
+spacing of the data points themselves.  A linear
+interpolation of the data is performed.  To avoid truncation
+effects, a power-law extrapolation of the intensity
+is made for all values beyond the range of available
+data.  This region is also integrated by the trapezoid
+rule.  The integration covers the region from <tt class="docutils literal"><span class="pre">l</span> <span class="pre">=</span> <span class="pre">0</span></tt>
+up to <tt class="docutils literal"><span class="pre">l</span> <span class="pre">=</span> <span class="pre">lo</span></tt>. (see module <a class="reference internal" href="smear.html#module-lake.smear" title="lake.smear: lake.smear is used by lake.desmear to forward smear a test case."><tt class="xref py py-mod docutils literal"><span class="pre">lake.smear</span></tt></a>).
+This technique allows the slit-length weighting function
+to be changed without regard to the limits of integration
+coded into this program.</p>
+</div>
+<div class="section" id="other-deconvolution-methods">
+<h3>Other deconvolution methods<a class="headerlink" href="#other-deconvolution-methods" title="Permalink to this headline">¶</a></h3>
+<p>These authors have presented desmearing/deconvolution methods 
+that were considered or reviewed in the development of this work.</p>
+<ul class="simple">
+<li>O. Glatter.
+ACTA CRYST 7 (1974) 147-153.</li>
+<li>W.E. Blass &amp; G.W.Halsey. (1981) 
+&#8220;Deconvolution of Absorption Spectra.&#8221;
+New York City: Academic Press</li>
+<li>P.A. Jansson.
+(1984) &#8220;Deconvolution with Applications in Spectroscopy.&#8221;
+New York City: Academic Press.</li>
+<li>G.W.Halsey &amp; W.E. Blass.
+(1984)  &#8220;Deconvolution Examples&#8221; in 
+&#8220;Deconvolution with Applications in Spectroscopy.&#8221;
+Ed. P.A. Jansson.  (see above)</li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h3>Source Code Documentation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="lake.lake.GetInf">
+<tt class="descclassname">lake.lake.</tt><tt class="descname">GetInf</tt><big>(</big><em>info</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#GetInf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.GetInf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information about the desmearing parameters.
+This is designed to be independent of wavelength
+or radiation-type (i.e. neutrons, X rays, etc.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input terms by keyword</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">info dictionary or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lake.lake.callback">
+<tt class="descclassname">lake.lake.</tt><tt class="descname">callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function is called after every desmearing iteration
+from <a class="reference internal" href="desmear.html#lake.desmear.Desmear" title="lake.desmear.Desmear"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
+<li><strong>I</strong> (<em>[float]</em>) &#8211; SAS data I(q) +/- dI(q)</li>
+<li><strong>dI</strong> (<em>[float]</em>) &#8211; estimated uncertainties of I(q)</li>
+<li><strong>S</strong> (<em>[float]</em>) &#8211; array (list) of smeared intensity</li>
+<li><strong>C</strong> (<em>[float]</em>) &#8211; array (list) of corrected intensity</li>
+<li><strong>iteration</strong> (<em>int</em>) &#8211; iteration number</li>
+<li><strong>ChiSqr</strong> (<em>float</em>) &#8211; Chi-Squared value</li>
+<li><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input parameters</li>
+<li><strong>extrap</strong> (<em>object</em>) &#8211; extrapolation function structure</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">should desmearing stop?</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lake.lake.developmental_commandline_interface">
+<tt class="descclassname">lake.lake.</tt><tt class="descname">developmental_commandline_interface</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#developmental_commandline_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.developmental_commandline_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>SAS data desmearing, by Pete R. Jemian
+Based on the iterative technique of JA Lake and PR Jemian.
+P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
+J.A. Lake; ACTA CRYST 23 (1967) 191-194.</p>
+<p>$Id: lake.py 1684 2011-08-25 05:19:03Z jemian $
+desmear using the interface from the developmental Java version</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body">This interface is not ready for production yet.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lake.lake.no_plotting_callback">
+<tt class="descclassname">lake.lake.</tt><tt class="descname">no_plotting_callback</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>C</em>, <em>S</em>, <em>iteration</em>, <em>ChiSqr</em>, <em>info</em>, <em>extrap</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#no_plotting_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.no_plotting_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function is called after every desmearing iteration
+from <a class="reference internal" href="desmear.html#lake.desmear.Desmear" title="lake.desmear.Desmear"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmear()</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
+<li><strong>I</strong> (<em>[float]</em>) &#8211; SAS data I(q) +/- dI(q)</li>
+<li><strong>dI</strong> (<em>[float]</em>) &#8211; estimated uncertainties of I(q)</li>
+<li><strong>S</strong> (<em>[float]</em>) &#8211; array (list) of smeared intensity</li>
+<li><strong>C</strong> (<em>[float]</em>) &#8211; array (list) of corrected intensity</li>
+<li><strong>iteration</strong> (<em>int</em>) &#8211; iteration number</li>
+<li><strong>ChiSqr</strong> (<em>float</em>) &#8211; Chi-Squared value</li>
+<li><strong>info</strong> (<em>dict</em>) &#8211; dictionary of input parameters</li>
+<li><strong>extrap</strong> (<em>object</em>) &#8211; extrapolation function structure</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">should desmearing stop?</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lake.lake.plot_results">
+<tt class="descclassname">lake.lake.</tt><tt class="descname">plot_results</tt><big>(</big><em>q</em>, <em>E</em>, <em>C</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#plot_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.plot_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the results of the desmearing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
+<li><strong>E</strong> (<em>[float]</em>) &#8211; experimental (smeared) data</li>
+<li><strong>C</strong> (<em>[float]</em>) &#8211; corrected (desmeared) data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lake.lake.print_results">
+<tt class="descclassname">lake.lake.</tt><tt class="descname">print_results</tt><big>(</big><em>q</em>, <em>E</em>, <em>dE</em>, <em>C</em>, <em>dC</em><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>print the results of the desmearing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>q</strong> (<em>[float]</em>) &#8211; magnitude of scattering vector</li>
+<li><strong>E</strong> (<em>[float]</em>) &#8211; experimental (smeared) data</li>
+<li><strong>dE</strong> (<em>[float]</em>) &#8211; estimated uncertainties of <em>E</em></li>
+<li><strong>C</strong> (<em>[float]</em>) &#8211; corrected (desmeared) data</li>
+<li><strong>dC</strong> (<em>[float]</em>) &#8211; estimated uncertainties of <em>C</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lake.lake.traditional_command_line_interface">
+<tt class="descclassname">lake.lake.</tt><tt class="descname">traditional_command_line_interface</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/lake.html#traditional_command_line_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.lake.traditional_command_line_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>SAS data desmearing, by Pete R. Jemian
+Based on the iterative technique of JA Lake and PR Jemian.
+P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
+J.A. Lake; ACTA CRYST 23 (1967) 191-194.</p>
+<div class="highlight-python"><pre>$Id: lake.py 1684 2011-08-25 05:19:03Z jemian $
+desmear using the same FORTRAN &amp; C command line interface</pre>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="desmear.html" title="Desmearing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example.html" title="Example using test1.smr data set"
+             >previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

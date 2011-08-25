@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Extrapolations at highest q &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../index.html" />
+    <link rel="up" title="lake.lake" href="lake.html" />
+    <link rel="next" title="Extrapolation: Constant" href="extrapolations/constant.html" />
+    <link rel="prev" title="Forward Smearing" href="smear.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="extrapolations/constant.html" title="Extrapolation: Constant"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="smear.html" title="Forward Smearing"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="lake.html" accesskey="U">lake.lake</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="smear.html"
+                        title="previous chapter">Forward Smearing</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="extrapolations/constant.html"
+                        title="next chapter">Extrapolation: Constant</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/lake/extrapolations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="extrapolations-at-highest-q">
+<h1>Extrapolations at highest <em>q</em><a class="headerlink" href="#extrapolations-at-highest-q" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extrapolations/constant.html">Extrapolation: Constant</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extrapolations/linear.html">Extrapolation: Linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extrapolations/porod.html">Extrapolation: Porod Law</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extrapolations/power.html">Extrapolation: Power Law</a></li>
+</ul>
+</div>
+<span class="target" id="module-lake.extrapolation"></span><p>superclass of functions for extrapolation of SAS data past available range</p>
+<dl class="class">
+<dt id="lake.extrapolation.Extrapolation">
+<em class="property">class </em><tt class="descclassname">lake.extrapolation.</tt><tt class="descname">Extrapolation</tt><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation" title="Permalink to this definition">¶</a></dt>
+<dd><p>superclass of functions for extrapolation of SAS data past available range</p>
+<p>The general case to (forward) slit-smear small-angle scattering involves
+integration at <img src="../_images\mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> values past any measurable range.</p>
+<img src="../_images\mathmpl/math-e3afaf06bf.png" class="center" /><p>Due to symmetry, the integral is usually folded around zero,thus becoming</p>
+<img src="../_images\mathmpl/math-582cdb71c2.png" class="center" /><p>Even when the upper limit is reduced due to finite slit dimension (the 
+so-called slit-length, <img src="../_images\mathmpl/math-6da3a050ea.png" style="position: relative; bottom: -8px"/>),</p>
+<img src="../_images\mathmpl/math-22645bfd79.png" class="center" /><p>it is still necessary to evaluate <img src="../_images\mathmpl/math-5d44bec197.png" style="position: relative; bottom: -9px"/> beyond
+the last measured data point, just to evaluate the integral.</p>
+<p>An extrapolation function is used to describe the <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> beyond the measured data.
+In the most trivial case, zero would be returned.  Since this simplification
+is known to introduce truncation errors, an model form for the last few 
+available data points is assumed.  Fitting coefficients are determined from
+the final data points (in the method <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit" title="lake.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>) and are used 
+subsequently to generate the extrapolation at a specific <img src="../_images\mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> value
+(in the method <a class="reference internal" href="#lake.extrapolation.Extrapolation.calc" title="lake.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a>).</p>
+<p>Examples:</p>
+<p>See the subclasses for examples how to implement a new extrapolation function.</p>
+<ul class="simple">
+<li><a class="reference internal" href="extrapolations/constant.html#module-lake.extrap_constant" title="lake.extrap_constant: Extrapolate as:  I(q) = B"><tt class="xref py py-mod docutils literal"><span class="pre">lake.extrap_constant</span></tt></a></li>
+<li><a class="reference internal" href="extrapolations/linear.html#module-lake.extrap_linear" title="lake.extrap_linear: Extrapolate as:  I(q) = B + m * q"><tt class="xref py py-mod docutils literal"><span class="pre">lake.extrap_linear</span></tt></a></li>
+<li><a class="reference internal" href="extrapolations/power.html#module-lake.extrap_power" title="lake.extrap_power: Extrapolate as:  I(q) = A * q^p"><tt class="xref py py-mod docutils literal"><span class="pre">lake.extrap_power</span></tt></a></li>
+<li><a class="reference internal" href="extrapolations/porod.html#module-lake.extrap_porod" title="lake.extrap_porod: Extrapolate as:  I(q) = B + Cp / q^4"><tt class="xref py py-mod docutils literal"><span class="pre">lake.extrap_porod</span></tt></a></li>
+</ul>
+<p>Basics:</p>
+<p>The basic methods to override are</p>
+<ul class="simple">
+<li><tt class="xref py py-meth docutils literal"><span class="pre">__str__()</span></tt> : string representation</li>
+<li><a class="reference internal" href="#lake.extrapolation.Extrapolation.calc" title="lake.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a> : determines <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> from <tt class="docutils literal"><span class="pre">q</span></tt> and <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
+<li><a class="reference internal" href="#lake.extrapolation.Extrapolation.fit_result" title="lake.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> : assigns fit coefficients to <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
+</ul>
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.GetCoefficients">
+<tt class="descname">GetCoefficients</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.GetCoefficients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.GetCoefficients" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the function coefficients</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.SetCoefficients">
+<tt class="descname">SetCoefficients</tt><big>(</big><em>coefficients</em><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.SetCoefficients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.SetCoefficients" title="Permalink to this definition">¶</a></dt>
+<dd><p>define the function coefficients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coefficients</strong> (<em>dict</em>) &#8211; named terms used in evaluating the extrapolation</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.calc">
+<tt class="descname">calc</tt><big>(</big><em>q</em><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.calc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.calc" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluate the extrapolation function at the given q</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><strong>must</strong> override in subclass</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>q</strong> (<em>float</em>) &#8211; magnitude of scattering vector</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value of extrapolation function at <em>q</em></td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.fit">
+<tt class="descname">fit</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>fit the function coefficients to the data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>q</strong> (<em>float</em>) &#8211; magnitude of scattering vector</li>
+<li><strong>I</strong> (<em>float</em>) &#8211; intensity or cross-section</li>
+<li><strong>dI</strong> (<em>float</em>) &#8211; estimated uncertainty of intensity or cross-section</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.fit_add">
+<tt class="descname">fit_add</tt><big>(</big><em>reg</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.fit_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.fit_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a data point to the statistics registers.
+Called from <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit_loop" title="lake.extrapolation.Extrapolation.fit_loop"><tt class="xref py py-meth docutils literal"><span class="pre">fit_loop()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>reg</strong> (<em>StatsRegClass object</em>) &#8211; statistics registers (created in <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit" title="lake.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>)</li>
+<li><strong>x</strong> (<em>float</em>) &#8211; independent axis</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; dependent axis</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; estimated uncertainty of y</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.fit_loop">
+<tt class="descname">fit_loop</tt><big>(</big><em>reg</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.fit_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.fit_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a dataset to the statistics registers 
+for use in curve fitting.  Called from <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit" title="lake.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>reg</strong> (<em>StatsRegClass object</em>) &#8211; statistics registers (created in fit())</li>
+<li><strong>x</strong> (<em>[float]</em>) &#8211; independent axis</li>
+<li><strong>y</strong> (<em>[float]</em>) &#8211; dependent axis</li>
+<li><strong>z</strong> (<em>[float]</em>) &#8211; estimated uncertainties of y</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.fit_result">
+<tt class="descname">fit_result</tt><big>(</big><em>reg</em><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.fit_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.fit_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the results of the fit and store them
+as the set of coefficients in the self.coefficients 
+dictionary.  Called from <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit" title="lake.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">fit_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>
+    <span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">constant</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;m&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">slope</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><em>must</em> override in subclass otherwise <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit_result" title="lake.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> will raise an exception</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg</strong> (<em>StatsRegClass object</em>) &#8211; statistics registers (created in <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit" title="lake.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.fit_setup">
+<tt class="descname">fit_setup</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.fit_setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.fit_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a set of statistics registers to evaluate 
+the coefficients of the curve fit.  Called from <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit" title="lake.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><em>might</em> override in subclass</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">statistics registers</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">StatsRegClass object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.format_coefficient">
+<tt class="descname">format_coefficient</tt><big>(</big><em>key</em>, <em>value</em><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.format_coefficient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.format_coefficient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a specific coefficient.
+Called from <a class="reference internal" href="#lake.extrapolation.Extrapolation.show" title="lake.extrapolation.Extrapolation.show"><tt class="xref py py-meth docutils literal"><span class="pre">show()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>key</strong> (<em>str</em>) &#8211; name of coefficient (must exist in self.coefficients dictionary)</li>
+<li><strong>value</strong> (<em>usually float</em>) &#8211; usually value of self.coefficients[key]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.extrapolation.Extrapolation.show">
+<tt class="descname">show</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>print the function and fit coefficients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note :</th><td class="field-body"><em>might</em> override in subclass</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="extrapolations/constant.html" title="Extrapolation: Constant"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="smear.html" title="Forward Smearing"
+             >previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="lake.html" >lake.lake</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

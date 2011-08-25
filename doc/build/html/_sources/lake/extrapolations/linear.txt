@@ -1,0 +1,8 @@
+.. $Id: linear.rst 1566 2011-04-15 23:58:03Z jemian $
+
+Extrapolation: Linear
+------------------------------------
+
+.. automodule:: lake.extrap_linear
+    :members: 
+    :synopsis: Extrapolate as:  I(q) = B + m * q

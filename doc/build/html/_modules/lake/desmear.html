@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>lake.desmear &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for lake.desmear</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">$Id: desmear.py 1666 2011-08-17 05:28:11Z jemian $</span>
+
+<span class="sd">To desmear, apply the method of Jemian/Lake to 1-D SAS data *(q, I, dI)*.</span>
+
+<span class="sd">Source Code Documentation</span>
+<span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c">########### SVN repository information ###################</span>
+<span class="c"># $Date: 2011-08-17 00:28:11 -0500 (Wed, 17 Aug 2011) $</span>
+<span class="c"># $Author: jemian $</span>
+<span class="c"># $Revision: 1666 $</span>
+<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/src/lake/desmear.py $</span>
+<span class="c"># $Id: desmear.py 1666 2011-08-17 05:28:11Z jemian $</span>
+<span class="c">########### SVN repository information ###################</span>
+
+
+<span class="kn">import</span> <span class="nn">lake</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">smear</span>
+<span class="kn">import</span> <span class="nn">StatsReg</span>
+<span class="kn">import</span> <span class="nn">textplots</span>
+<span class="kn">import</span> <span class="nn">toolbox</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="Desmear"><a class="viewcode-back" href="../../lake/desmear.html#lake.desmear.Desmear">[docs]</a><span class="k">def</span> <span class="nf">Desmear</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">dI</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">quiet</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    desmear the 1-D SAS data *(q, I, dI)* by method of Jemian/Lake</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        I_0 \\approx \\lim_{i \\rightarrow \\infty}\\tilde I_{i+1} =  I_i \\times \\left({ \\tilde I_0 \\div \\tilde I_i}\\right)</span>
+<span class="sd">    </span>
+<span class="sd">    :param [float] q: magnitude of scattering vector</span>
+<span class="sd">    :param [float] I: SAS data I(q) +/- dI(q)</span>
+<span class="sd">    :param [float] dI: estimated uncertainties of I(q)</span>
+<span class="sd">    :param dict info: dictionary of desmearing parameters</span>
+<span class="sd">    :param object callback: function to call after each iteration</span>
+<span class="sd">    :param bool quiet: if True, then no printed output from this routine</span>
+<span class="sd">    :return: tuple of corrected/desmeared SAS (C, dC)</span>
+<span class="sd">    :rtype: ([float], [float])</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">NumPts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">C</span><span class="p">,</span> <span class="n">dC</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">NumPts</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">NumPts</span>  <span class="c"># corrected intensity (results)</span>
+    <span class="c">#  To start Lake&#39;s method, assume that the 0-th approximation </span>
+    <span class="c">#    of the corrected intensity is the measured intensity.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NumPts</span><span class="p">):</span>
+        <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">dC</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dI</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">extrapname</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;extrapname&quot;</span><span class="p">]</span>
+    <span class="n">sFinal</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;sFinal&quot;</span><span class="p">]</span>
+    <span class="n">slitlength</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;slitlength&quot;</span><span class="p">]</span>
+    <span class="n">ChiSqr0</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">weighting</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">maximum_iterations</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span>
+    <span class="n">fixed_iterations</span> <span class="o">=</span> <span class="p">(</span><span class="n">maximum_iterations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">maximum_iterations</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">maximum_iterations</span> <span class="o">=</span> <span class="o">-</span><span class="n">maximum_iterations</span>
+    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maximum_iterations</span><span class="p">):</span>
+        <span class="c"># smear this iteration</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">S</span><span class="p">,</span> <span class="n">extrap</span> <span class="o">=</span> <span class="n">smear</span><span class="o">.</span><span class="n">Smear</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span><span class="p">,</span> 
+                        <span class="n">extrapname</span><span class="p">,</span> <span class="n">sFinal</span><span class="p">,</span> <span class="n">slitlength</span><span class="p">,</span> <span class="n">quiet</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;Smearing failed: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="c">#raise Exception, e</span>
+    
+        <span class="n">ChiSqr</span> <span class="o">=</span> <span class="mf">0.0</span>                        <span class="c"># find the ChiSqr</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NumPts</span><span class="p">):</span>
+            <span class="n">ChiSqr</span> <span class="o">+=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">((</span><span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">/</span><span class="n">dI</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ChiSqr0</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ChiSq0</span> <span class="o">=</span> <span class="n">ChiSqr</span>                 <span class="c"># remember the first one</span>
+
+        <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;LakeWeighting&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;constant&quot;</span><span class="p">:</span>
+            <span class="n">weighting</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;LakeWeighting&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;ChiSqr&quot;</span><span class="p">:</span>
+            <span class="n">weighting</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ChiSq0</span><span class="o">/</span><span class="n">ChiSqr</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NumPts</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;LakeWeighting&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;fast&quot;</span><span class="p">:</span>
+                <span class="n">weighting</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">weighting</span> <span class="o">*</span> <span class="p">(</span><span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="c">#dC = FixErr (q, I, dI, C);</span>
+        <span class="k">if</span> <span class="n">fixed_iterations</span><span class="p">:</span>
+            <span class="c"># caller-supplied function</span>
+            <span class="k">if</span> <span class="n">callback</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">dI</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">ChiSqr</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">extrap</span><span class="p">):</span>
+                <span class="k">break</span>
+    <span class="k">return</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span>
+
+</div>
+<div class="viewcode-block" id="FixErr"><a class="viewcode-back" href="../../lake/desmear.html#lake.desmear.FixErr">[docs]</a><span class="k">def</span> <span class="nf">FixErr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Estimate the error on Z based on data point scatter and</span>
+<span class="sd">    previous error values and smooth that estimate.</span>
+<span class="sd">    </span>
+<span class="sd">    :param [float] x: independent axis</span>
+<span class="sd">    :param [float] y: dependent axis</span>
+<span class="sd">    :param [float] dy: estimated uncertainties of y</span>
+<span class="sd">    :param [float] z: adjusted dependent axis</span>
+<span class="sd">    :return: dz, estimated uncertainties of z</span>
+<span class="sd">    :rtype: [float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">scatter</span> <span class="o">=</span> <span class="n">examine_scatter</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>  <span class="c"># Add this to dz.</span>
+
+    <span class="c">#/* Error proportional to input error */</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="p">):</span> 
+        <span class="n">dz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">dy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+        <span class="n">dz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">scatter</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c"># Smooth the error by a 3-point moving average filter.</span>
+    <span class="c"># Apply the moving average filter 5 times.</span>
+    <span class="c">#</span>
+    <span class="c"># Smoothing is necessary to refine (and likely increase) the error estimate</span>
+    <span class="c"># for some grossly under-estimated errors.</span>
+    <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">dz</span> <span class="o">=</span> <span class="n">moving_average_filter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dz</span>
+
+</div>
+<div class="viewcode-block" id="moving_average_filter"><a class="viewcode-back" href="../../lake/desmear.html#lake.desmear.moving_average_filter">[docs]</a><span class="k">def</span> <span class="nf">moving_average_filter</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Smooth `y(x)` by a 3-point moving average filter.</span>
+<span class="sd">    Do not smooth the end points.</span>
+
+<span class="sd">    Weight the data points by distance^2 (as a penalty)</span>
+<span class="sd">    using the function weight(u,v)= :math:`(1 - |1 - u/v|)^2`</span>
+<span class="sd">    </span>
+<span class="sd">    By its definition, weight(x0,x0) == 1.0.  </span>
+<span class="sd">    </span>
+<span class="sd">    I speed computation using this definition.</span>
+
+<span class="sd">    :param [float] x: independent axis</span>
+<span class="sd">    :param [float] y: dependent axis</span>
+<span class="sd">    :return: smoothed version of ``y(x)``</span>
+<span class="sd">    :rtype: [float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">w1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">w2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">w1</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">w2</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">w1</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">w2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+</div>
+<div class="viewcode-block" id="examine_scatter"><a class="viewcode-back" href="../../lake/desmear.html#lake.desmear.examine_scatter">[docs]</a><span class="k">def</span> <span class="nf">examine_scatter</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Error based on scatter of desmeared data points.</span>
+<span class="sd">    Determine this by fitting a line to the points</span>
+<span class="sd">    i-1, i, i+1 and take the difference.  Add this to dz.</span>
+
+<span class="sd">    :param [float] x: independent axis</span>
+<span class="sd">    :param [float] y: dependent axis</span>
+<span class="sd">    :param [float] dy: estimated uncertainties of ``y``</span>
+<span class="sd">    :param [float] z: adjusted dependent axis</span>
+<span class="sd">    :return: estimated uncertainties of ``z``</span>
+<span class="sd">    :rtype: [float]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dz</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">sr</span> <span class="o">=</span> <span class="n">StatsReg</span><span class="o">.</span><span class="n">StatsRegClass</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">sr</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">dz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span> <span class="n">sr</span><span class="o">.</span><span class="n">LinearEval</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">sr</span><span class="o">.</span><span class="n">Subtract</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">sr</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">zNew</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">LinearEval</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">dz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">zNew</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">dz</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span> <span class="n">sr</span><span class="o">.</span><span class="n">LinearEval</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">dz</span>
+
+</div>
+<span class="k">def</span> <span class="nf">__tests_callback</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">dI</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">ChiSqr</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">extrap</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    this function is called after every desmearing iteration</span>
+<span class="sd">    </span>
+<span class="sd">    :param [float] q: array (list)</span>
+<span class="sd">    :param [float] I: array (list) of SAS data I(q) +/- dI(q)</span>
+<span class="sd">    :param [float] dI: array (list)</span>
+<span class="sd">    :param [float] S: array (list) of smeared intensity</span>
+<span class="sd">    :param [float] C: array (list) of corrected intensity</span>
+<span class="sd">    :param int iteration: iteration number</span>
+<span class="sd">    :param float ChiSqr: Chi-Squared value</span>
+<span class="sd">    :param dict info: dictionary of input parameters</span>
+<span class="sd">    :param object extrap: extrapolation function structure</span>
+<span class="sd">    :return: should desmearing stop?</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">I</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="n">dI</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;standardized residuals, ChiSqr = </span><span class="si">%g</span><span class="s">, iteration </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ChiSqr</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)</span>
+    <span class="n">textplots</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span><span class="o">.</span><span class="n">residualsplot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+    <span class="n">reply</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">AskYesOrNo</span> <span class="p">(</span><span class="s">&quot;Continue?&quot;</span><span class="p">,</span> <span class="s">&quot;y&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;reply: &lt;</span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="n">reply</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">reply</span> <span class="o">==</span> <span class="s">&#39;n&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">__tests</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;show the various routines&#39;&#39;&#39;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Testing $Id: desmear.py 1666 2011-08-17 05:28:11Z jemian $&quot;</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>                <span class="c"># set the defaults</span>
+        <span class="s">&quot;infile&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span> 
+        <span class="s">&quot;outfile&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+        <span class="s">&quot;slitlength&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>              <span class="c"># s: slit length, as defined by Lake</span>
+        <span class="s">&quot;sFinal&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                  <span class="c"># fit extrapolation constants for q&gt;=sFinal</span>
+        <span class="s">&quot;NumItr&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>                <span class="c"># number of desmearing iterations</span>
+        <span class="s">&quot;extrapname&quot;</span><span class="p">:</span> <span class="s">&quot;constant&quot;</span><span class="p">,</span>       <span class="c"># model final data as a constant</span>
+        <span class="s">&quot;LakeWeighting&quot;</span><span class="p">:</span> <span class="s">&quot;fast&quot;</span><span class="p">,</span>        <span class="c"># shows the fastest convergence most times</span>
+    <span class="p">}</span>
+    <span class="c"># override default constants for code development</span>
+    <span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1.smr&#39;</span><span class="p">)</span>
+    <span class="n">info</span><span class="p">[</span><span class="s">&quot;outfile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;test.dsm&quot;</span>
+    <span class="n">info</span><span class="p">[</span><span class="s">&quot;slitlength&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.08</span>           <span class="c"># s: slit length, as defined by Lake</span>
+    <span class="n">info</span><span class="p">[</span><span class="s">&quot;sFinal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.08</span>               <span class="c"># fit extrapolation constants for q&gt;=sFinal</span>
+    <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>                 <span class="c"># *only* 20 iterations</span>
+
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span>          <span class="c"># no input file so quit the program</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">INFINITE_ITERATIONS</span><span class="p">;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Input file: &quot;</span> <span class="o">+</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">])</span>
+    <span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;infile&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;no data points!&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;sFinal&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">q</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;Fit range out of data range&quot;</span>
+    <span class="n">C</span><span class="p">,</span> <span class="n">dC</span> <span class="o">=</span> <span class="n">Desmear</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">__tests_callback</span><span class="p">)</span>
+    <span class="n">toolbox</span><span class="o">.</span><span class="n">SavDat</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;outfile&quot;</span><span class="p">],</span> <span class="n">q</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">lnq</span><span class="p">,</span> <span class="n">lnE</span><span class="p">,</span> <span class="n">lnC</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">lnq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">lnE</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">lnC</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">plot</span> <span class="o">=</span> <span class="n">textplots</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">addtrace</span><span class="p">(</span><span class="n">lnq</span><span class="p">,</span> <span class="n">lnE</span><span class="p">,</span> <span class="s">&quot;S&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">addtrace</span><span class="p">(</span><span class="n">lnq</span><span class="p">,</span> <span class="n">lnC</span><span class="p">,</span> <span class="s">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">SAS log-log plot, final, S=input, D=desmeared&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="o">.</span><span class="n">printplot</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">__tests</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Statistics Registers &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../index.html" />
+    <link rel="up" title="lake.lake" href="lake.html" />
+    <link rel="next" title="Plotting on a console" href="textplots.html" />
+    <link rel="prev" title="Extrapolation: Power Law" href="extrapolations/power.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="textplots.html" title="Plotting on a console"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="extrapolations/power.html" title="Extrapolation: Power Law"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="lake.html" accesskey="U">lake.lake</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Statistics Registers</a><ul>
+<li><a class="reference internal" href="#source-code-documentation">Source code documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="extrapolations/power.html"
+                        title="previous chapter">Extrapolation: Power Law</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="textplots.html"
+                        title="next chapter">Plotting on a console</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/lake/StatsReg.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-lake.StatsReg">
+<span id="statistics-registers"></span><h1>Statistics Registers<a class="headerlink" href="#module-lake.StatsReg" title="Permalink to this headline">¶</a></h1>
+<p>Implement a set of statistics registers in the
+style of a pocket calculator.
+The available routines are:</p>
+<div class="highlight-python"><pre>def  Clear():                        clear the stats registers
+def  Show():                         print the contents of the stats registers
+def  Add(x, y):                      add an X,Y pair
+def  Subtract(x, y):                 remove an X,Y pair
+def  AddWeighted(x, y, z):           add an X,Y pair with weight Z
+def  SubtractWeighted(x, y, z):      remove an X,Y pair with weight Z
+def  Mean():                         arithmetic mean of X &amp; Y
+def  StdDev():                       standard deviation on X &amp; Y
+def  StdErr():                       standard error on X &amp; Y
+def  LinearRegression():             linear regression
+def  LinearRegressionVariance():     est. errors of slope &amp; intercept
+def  LinearRegressionCorrelation():  the regression coefficient
+def  CorrelationCoefficient():       relation of errors in slope &amp; intercept</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">see:</th><td class="field-body"><a class="reference external" href="http://stattrek.com/AP-Statistics-1/Regression.aspx?Tutorial=Stat">http://stattrek.com/AP-Statistics-1/Regression.aspx?Tutorial=Stat</a></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="source-code-documentation">
+<h2>Source code documentation<a class="headerlink" href="#source-code-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lake.StatsReg.StatsRegClass">
+<em class="property">class </em><tt class="descclassname">lake.StatsReg.</tt><tt class="descname">StatsRegClass</tt><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>pocket calculator Statistical Registers class</p>
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.Add">
+<tt class="descname">Add</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.Add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.Add" title="Permalink to this definition">¶</a></dt>
+<dd><p>add an X,Y pair to the statistics registers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) &#8211; value to accumulate</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; value to accumulate</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.AddWeighted">
+<tt class="descname">AddWeighted</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.AddWeighted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.AddWeighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a weighted X,Y+/Z trio to the statistics registers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) &#8211; value to accumulate</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; value to accumulate</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; variance (weight = <tt class="docutils literal"><span class="pre">1/z^2</span></tt>) of y</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.Clear">
+<tt class="descname">Clear</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.Clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.Clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>clear the statistics registers: 
+<img src="../_images\mathmpl/math-7cf7f717aa.png" style="position: relative; bottom: -12px"/></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.CorrelationCoefficient">
+<tt class="descname">CorrelationCoefficient</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.CorrelationCoefficient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.CorrelationCoefficient" title="Permalink to this definition">¶</a></dt>
+<dd><p>relation of errors in slope and intercept</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">correlation coefficient</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.LinearEval">
+<tt class="descname">LinearEval</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.LinearEval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.LinearEval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a linear fit at the given value: <img src="../_images\mathmpl/math-d5cbe8d539.png" style="position: relative; bottom: -7px"/></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>float</em>) &#8211; independent value, <cite>x</cite></td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">y</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.LinearRegression">
+<tt class="descname">LinearRegression</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.LinearRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.LinearRegression" title="Permalink to this definition">¶</a></dt>
+<dd><p>For (<em>x,y</em>) data pairs added to the registers, 
+fit and find (<em>a,b</em>) that satisfy:</p>
+<img src="../_images\mathmpl/math-d5cbe8d539.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(a, b) for fit of y=a+b*x</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">(float, float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.LinearRegressionCorrelation">
+<tt class="descname">LinearRegressionCorrelation</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.LinearRegressionCorrelation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.LinearRegressionCorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>the regression coefficient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(corr_a, corr_b) &#8211; is this correct?</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">(float, float)</td>
+</tr>
+<tr class="field"><th class="field-name">See :</th><td class="field-body"><a class="reference external" href="http://stattrek.com/AP-Statistics-1/Correlation.aspx?Tutorial=Stat">http://stattrek.com/AP-Statistics-1/Correlation.aspx?Tutorial=Stat</a>
+Look at &#8220;Product-moment correlation coefficient&#8221;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.LinearRegressionVariance">
+<tt class="descname">LinearRegressionVariance</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.LinearRegressionVariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.LinearRegressionVariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>est. errors of slope &amp; intercept</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">(var_a, var_b) &#8211; is this correct?</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">(float, float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.Mean">
+<tt class="descname">Mean</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.Mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.Mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>arithmetic mean of X &amp; Y</p>
+<img src="../_images\mathmpl/math-5701b7648b.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">mean X and Y values</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.Show">
+<tt class="descname">Show</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.Show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.Show" title="Permalink to this definition">¶</a></dt>
+<dd><p>contents of the statistics registers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.StdDev">
+<tt class="descname">StdDev</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.StdDev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.StdDev" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard deviation on X &amp; Y</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">standard deviation of mean X and Y values</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">(float, float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.StdErr">
+<tt class="descname">StdErr</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.StdErr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.StdErr" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard error on X &amp; Y</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">standard error of mean X and Y values</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">(float, float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.Subtract">
+<tt class="descname">Subtract</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.Subtract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.Subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove an X,Y pair from the statistics registers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) &#8211; value to remove</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; value to remove</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.SubtractWeighted">
+<tt class="descname">SubtractWeighted</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.SubtractWeighted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.SubtractWeighted" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove a weighted X,Y+/-Z trio from the statistics registers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) &#8211; value to remove</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; value to remove</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; variance (weight = <tt class="docutils literal"><span class="pre">1/z^2</span></tt>) of y</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lake.StatsReg.StatsRegClass.determinant">
+<tt class="descname">determinant</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/StatsReg.html#StatsRegClass.determinant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.StatsReg.StatsRegClass.determinant" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute and return the determinant of the square matrices:</p>
+<div class="highlight-python"><pre>|  sum_w   sum_x      |          |  sum_w   sum_y      |
+|  sum_x   sum_(x^2)  |          |  sum_y   sum_(y^2)  |</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">determinants of x and y summation matrices</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">(float, float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="textplots.html" title="Plotting on a console"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="extrapolations/power.html" title="Extrapolation: Power Law"
+             >previous</a> |</li>
+        <li><a href="../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="lake.html" >lake.lake</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

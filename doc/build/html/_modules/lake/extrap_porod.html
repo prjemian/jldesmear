@@ -1,0 +1,202 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>lake.extrap_porod &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for lake.extrap_porod</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Extrapolate as:  I(q) = B + Cp / q^4</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c">########### SVN repository information ###################</span>
+<span class="c"># $Date: 2011-08-17 00:28:11 -0500 (Wed, 17 Aug 2011) $</span>
+<span class="c"># $Author: jemian $</span>
+<span class="c"># $Revision: 1666 $</span>
+<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/src/lake/extrap_porod.py $</span>
+<span class="c"># $Id: extrap_porod.py 1666 2011-08-17 05:28:11Z jemian $</span>
+<span class="c">########### SVN repository information ###################</span>
+
+
+<span class="kn">import</span> <span class="nn">extrapolation</span>
+<span class="kn">import</span> <span class="nn">toolbox</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="Porod"><a class="viewcode-back" href="../../lake/extrapolations/porod.html#lake.extrap_porod.Porod">[docs]</a><span class="k">class</span> <span class="nc">Porod</span><span class="p">(</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">Extrapolation</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;for extrapolating I(q)&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;set up things&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Cp&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;:return: a text string showing the functional form&#39;&#39;&#39;</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="s">&quot;Porod law: I(q) = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">])</span>
+        <span class="n">form</span> <span class="o">+=</span> <span class="s">&quot; + (&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;Cp&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span>
+        <span class="n">form</span> <span class="o">+=</span> <span class="s">&quot; / q^4&quot;</span>
+        <span class="k">return</span> <span class="n">form</span>
+
+<div class="viewcode-block" id="Porod.calc"><a class="viewcode-back" href="../../lake/extrapolations/porod.html#lake.extrap_porod.Porod.calc">[docs]</a>    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. math::</span>
+<span class="sd">        </span>
+<span class="sd">            I(q) = B + C_p / q^4</span>
+<span class="sd">        </span>
+<span class="sd">        :param float q: magnitude of scattering vector</span>
+<span class="sd">        :return: value of extrapolation function at *q*</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">Cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;Cp&#39;</span><span class="p">]</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">B</span> <span class="o">+</span> <span class="n">Cp</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="Porod.fit_add"><a class="viewcode-back" href="../../lake/extrapolations/porod.html#lake.extrap_porod.Porod.fit_add">[docs]</a>    <span class="k">def</span> <span class="nf">fit_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        Add a data point to the statistics registers.</span>
+<span class="sd">        Called from :meth:`fit_loop()`.</span>
+<span class="sd">        </span>
+<span class="sd">        :note: *might* override in subclass</span>
+<span class="sd">        :param reg: statistics registers (created in :meth:`fit()`)</span>
+<span class="sd">        :type reg: StatsRegClass object</span>
+<span class="sd">        :param x: independent axis</span>
+<span class="sd">        :type x: float</span>
+<span class="sd">        :param y: dependent axis</span>
+<span class="sd">        :type y: float</span>
+<span class="sd">        :param z: estimated uncertainty of y</span>
+<span class="sd">        :type z: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c">#reg.AddWeighted(x, y, z)</span>
+        <span class="n">q4</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">q4</span><span class="p">,</span> <span class="n">q4</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Porod.fit_result"><a class="viewcode-back" href="../../lake/extrapolations/porod.html#lake.extrap_porod.Porod.fit_result">[docs]</a>    <span class="k">def</span> <span class="nf">fit_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        Determine the results of the fit and store them</span>
+<span class="sd">        as the set of coefficients in the self.coefficients </span>
+<span class="sd">        dictionary.  Called from :meth:`fit()`.</span>
+<span class="sd">        </span>
+<span class="sd">        :note: *must* override in subclass otherwise :meth:`fit_result()` will throw an exception</span>
+<span class="sd">        :param reg: statistics registers (created in :meth:`fit()`)</span>
+<span class="sd">        :type reg: StatsRegClass object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;Cp&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">constant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">slope</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;show the various routines&#39;&#39;&#39;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Testing $Id: extrap_porod.py 1666 2011-08-17 05:28:11Z jemian $&quot;</span><span class="p">)</span>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">Porod</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;using default coefficients&quot;</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)))</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">GetCoefficients</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;#--------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;setting coefficients&quot;</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">SetCoefficients</span><span class="p">({</span><span class="s">&#39;B&#39;</span><span class="p">:</span> <span class="mi">163724</span><span class="p">,</span> <span class="s">&#39;Cp&#39;</span><span class="p">:</span> <span class="mf">9.65e-10</span><span class="p">})</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.0004</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.0004</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.0005</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.0005</span><span class="p">)))</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">GetCoefficients</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;#--------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;fitting coefficients&quot;</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1.smr&#39;</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">GetCoefficients</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

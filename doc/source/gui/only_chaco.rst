@@ -1,0 +1,8 @@
+.. $Id$
+
+GUI for lake-python using Chaco
+------------------------------------
+
+.. automodule:: gui.only_chaco
+    :members: 
+    :synopsis: Explore Chaco by adding a GUI plot for lake-python

@@ -1,0 +1,112 @@
+Model.Doc
+
+About the models to test desmearing
+Pete R. Jemian, 4 October 1989, Northwestern University
+
+I have devised two models to test the demsearing program called
+"Lake.FOR", written in Absoft/Microsoft FORTRAN (77) v2.2 for the
+Apple Macintosh.  The program will also compile and run on the Digital
+Equipment Corporation VAX computers.  Be sure to compile the program
+using the G_FLOATING option ON, as in:
+$ FOR/G_FLOATING LAKE
+
+ref: J.A. Lake; ACTA CRYST 23 (1967) 191-194.
+
+The code is written to calculate I[i], the i-th iterative improvement
+to the measured intensity M using
+	I[i+1] = (M / S[i]) * I[i]
+where S[i] is the smeared form of I[i] and I[0] = M.  I use the
+smearing equation
+	S(h) = integral{ Pl(l) * I[sqrt(h*h + l*l)] * dl }
+	limits: -infinity to +infinity
+
+To avoid truncation effects in the desmearing, I fit a 1st-order power
+law to the last of the data beginning at an h specified by the user.
+I call this "sPower" for "start Power-law fit".  Note that the
+power-law fit is only applied to extrapolate the data, not to smooth
+the fit between data points!
+
+I use a rectangular box of width 2*lo for the slit-length weighting
+function Pl(l).  The definition is
+	Pl(l) = { = 1/(2*lo):	|l| <= lo
+		  = zero:	|l| > lo
+
+Model #1: scattering from a sphere, file MODEL1.SMR
+	(The unsmeared data is in file MODEL1.PIN for comparison.)
+	I(h) = {[sin(hr)]/(hr)}^2
+	r = 44 A, hMax = 0.356 1/A (to get 5 bumps)
+	take 250 evenly-spaced h values
+	smear this with lo = 0.2138 1/A
+	create a 3rd column of error estimate as dM = M / 250
+		(remember that M is the "measured" intensity)
+	sPower = 0.2135 1/A
+	Calculation time per iteration on the Mac SE is about 3 min.
+	The peaks of this data will converge within about 5 iterations
+	  but it will require at least 25 iterations to get the valleys
+	  sufficiently deep.  This will also demonstrate that this
+	  technique increases the scatter in the input data so don't
+	  iterate excessively.
+	Don't use the smoothing (set tension to 0.0).
+	Don't use the alternate first guess.
+
+Model #2: scattering from a broad distribution, file MODEL2.SMR
+	I(h) = 1/[1+(hr)^4]
+	r = 200 A, hMax = 0.5 1/A
+	take 70 evenly-spaced (in log-coordinate) h values
+	smear this with lo = 0.375 1/A
+	create a 3rd column of error estimate as dM = M / 250
+		(remember that M is the "measured" intensity)
+	sPower = 0.225 1/A
+	Calculation time per iteration on the Mac SE is about 16 sec.
+	10 iterations should be sufficient to achieve convergence.
+	Don't use the smoothing (set tension to 0.0).
+	Don't use the alternate first guess.
+
+=================
+About the program:
+
+The program is written to apply Lake's technique to SAS data
+that was smeared by a rectangular slit-length function.  The slit-
+length is defined as half the width of the slit-length function.  The
+program will ask for this value.  To avoid truncation effects in the
+forward smearing process, the program extrapolates data past the input
+data.  To do this, the user will need to specify a starting value to
+evaluate the constants for extrapolation.  This value should be within
+the range of input data points or the program will not work correctly.
+Also, the user will have to specify a functional form for the
+extrapolation.  If the data has a constant background, use the flat
+background option.  If it appears that the background obeys a linear
+function, use that option.  If the background has already been removed,
+perhaps it would be better to extrapolate using a power law.  For this
+option, BE SURE that all the intensity is POSITIVE or a LOG OF NEGATIVE
+OR ZERO error will occur.  The data extrapolation function is only used
+to generate values outside the range of the input data.  No data
+interpolation takes place.
+
+There are options for smoothing the data by the technique of C.
+Reinsch.  At this time, my recommendation is to never use this option.
+It has been left in for historical reasons.  There is also a provision
+for starting with an alternate first guess.  Don't avail yourself of
+this option either as it will probably require more iterations to
+achieve the desired convergence.
+
+The number of iterations to be executed is left entirely to the user.
+It may be a fixed number so that one may execute the program in BATCH
+mode (on the VAX, from an indirect command file) or it may be a
+variable number of iterations where the program asks after each
+iteration whether or not the data should be saved.  I prefer this
+method for most cases.
+
+The format for the input file is the same as the format of the output
+file.  It is three columns separated by "white space" (tabs or blanks)
+by a maximum of 500 (I think) rows.  The number of rows is a constant
+in a PARAMETER statement (or statements) in the program.  Change this
+as needs dictate. The three columns are scattering vector, intensity,
+standard error of intensity.  Fixed decimal or floating-point format
+may be used interchangeably.  The output will be in floating-point with
+a healthy number of digits of precision.
+
+The screen plots are designed for a screen that is 80 columns wide by
+at least 15 rows tall.  These are constants in PARAMETER statements in
+each plotting subroutine and may be changed as tastes desire.  Likewise
+for the plotting symbols.

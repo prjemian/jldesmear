@@ -1,0 +1,8 @@
+.. $Id: textplots.rst 1566 2011-04-15 23:58:03Z jemian $
+
+Plotting on a console
+------------------------------------
+
+.. automodule:: lake.textplots
+    :members: 
+    :synopsis: make ASCII plots on a text only screen

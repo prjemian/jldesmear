@@ -1,0 +1,8 @@
+.. $Id: only_chaco.rst 1665 2011-08-17 05:14:48Z jemian $
+
+GUI for lake-python using Chaco
+------------------------------------
+
+.. automodule:: gui.only_chaco
+    :members: 
+    :synopsis: Explore Chaco by adding a GUI plot for lake-python

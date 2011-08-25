@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>lake.StatsReg &mdash; lake-python v2011.08 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2011.08',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="lake-python v2011.08 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for lake.StatsReg</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Implement a set of statistics registers in the</span>
+<span class="sd">style of a pocket calculator.</span>
+<span class="sd">The available routines are::</span>
+
+<span class="sd">     def  Clear():                        clear the stats registers</span>
+<span class="sd">     def  Show():                         print the contents of the stats registers</span>
+<span class="sd">     def  Add(x, y):                      add an X,Y pair</span>
+<span class="sd">     def  Subtract(x, y):                 remove an X,Y pair</span>
+<span class="sd">     def  AddWeighted(x, y, z):           add an X,Y pair with weight Z</span>
+<span class="sd">     def  SubtractWeighted(x, y, z):      remove an X,Y pair with weight Z</span>
+<span class="sd">     def  Mean():                         arithmetic mean of X &amp; Y</span>
+<span class="sd">     def  StdDev():                       standard deviation on X &amp; Y</span>
+<span class="sd">     def  StdErr():                       standard error on X &amp; Y</span>
+<span class="sd">     def  LinearRegression():             linear regression</span>
+<span class="sd">     def  LinearRegressionVariance():     est. errors of slope &amp; intercept</span>
+<span class="sd">     def  LinearRegressionCorrelation():  the regression coefficient</span>
+<span class="sd">     def  CorrelationCoefficient():       relation of errors in slope &amp; intercept</span>
+
+<span class="sd">:see: http://stattrek.com/AP-Statistics-1/Regression.aspx?Tutorial=Stat</span>
+
+<span class="sd">Source code documentation</span>
+<span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c">########### SVN repository information ###################</span>
+<span class="c"># $Date: 2011-08-24 18:11:06 -0500 (Wed, 24 Aug 2011) $</span>
+<span class="c"># $Author: jemian $</span>
+<span class="c"># $Revision: 1683 $</span>
+<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/src/lake/StatsReg.py $</span>
+<span class="c"># $Id: StatsReg.py 1683 2011-08-24 23:11:06Z jemian $</span>
+<span class="c">########### SVN repository information ###################</span>
+
+
+<span class="c">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;pocket calculator Statistical Registers, Pete Jemian, 2003-Apr-18&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<span class="n">version</span> <span class="o">=</span> <span class="s">&#39;0.1a&#39;</span>
+
+
+<div class="viewcode-block" id="StatsRegClass"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass">[docs]</a><span class="k">class</span> <span class="nc">StatsRegClass</span><span class="p">:</span>
+    <span class="s">&#39;pocket calculator Statistical Registers class&#39;</span>
+
+    <span class="k">def</span>  <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">&#39;set up the statistics registers&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Clear</span><span class="p">()</span>
+
+    <span class="k">def</span>  <span class="nf">_ClearResults_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Cache the results to avoid unnecessary recalculation.</span>
+<span class="sd">        When requested, test for None before recalculating.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">determ</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sDev</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sErr</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lrVariance</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="StatsRegClass.Clear"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.Clear">[docs]</a>    <span class="k">def</span>  <span class="nf">Clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        clear the statistics registers: </span>
+<span class="sd">        :math:`N=w=\sum{x}=\sum{x^2}=\sum{y}=\sum{y^2}=\sum{xy}=0`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span>   <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span>  <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumY</span>   <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumYY</span>  <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumXY</span>  <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ClearResults_</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.Show"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.Show">[docs]</a>    <span class="k">def</span>  <span class="nf">Show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">&#39;contents of the statistics registers&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Show</span><span class="o">.</span><span class="n">__doc__</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">=</span><span class="si">%d</span><span class="s">&quot;</span>        <span class="o">%</span> <span class="p">(</span><span class="s">&#39;NumPts&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">=</span><span class="si">%g</span><span class="se">\t</span><span class="si">%s</span><span class="s">=</span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;SumX  &#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span><span class="p">,</span>   <span class="s">&#39;SumXX&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">=</span><span class="si">%g</span><span class="se">\t</span><span class="si">%s</span><span class="s">=</span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;SumY  &#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">sumY</span><span class="p">,</span>   <span class="s">&#39;SumYY&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">sumYY</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">=</span><span class="si">%g</span><span class="se">\t</span><span class="si">%s</span><span class="s">=</span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;weight&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="s">&#39;SumXY&#39;</span><span class="p">,</span>   <span class="bp">self</span><span class="o">.</span><span class="n">sumXY</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.Add"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.Add">[docs]</a>    <span class="k">def</span>  <span class="nf">Add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        add an X,Y pair to the statistics registers</span>
+
+<span class="sd">        :param float x: value to accumulate</span>
+<span class="sd">        :param float y: value to accumulate</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">AddWeighted</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.Subtract"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.Subtract">[docs]</a>    <span class="k">def</span>  <span class="nf">Subtract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        remove an X,Y pair from the statistics registers</span>
+
+<span class="sd">        :param float x: value to remove</span>
+<span class="sd">        :param float y: value to remove</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SubtractWeighted</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.AddWeighted"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.AddWeighted">[docs]</a>    <span class="k">def</span>  <span class="nf">AddWeighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        add a weighted X,Y+/Z trio to the statistics registers</span>
+
+<span class="sd">        :param float x: value to accumulate</span>
+<span class="sd">        :param float y: value to accumulate</span>
+<span class="sd">        :param float z: variance (weight = ``1/z^2``) of y</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ClearResults_</span><span class="p">()</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">xWt</span> <span class="o">=</span> <span class="n">x</span><span class="o">*</span><span class="n">weight</span>
+        <span class="n">yWt</span> <span class="o">=</span> <span class="n">y</span><span class="o">*</span><span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span>  <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">+=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span>   <span class="o">+=</span> <span class="n">xWt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span>  <span class="o">+=</span> <span class="n">xWt</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumY</span>   <span class="o">+=</span> <span class="n">yWt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumYY</span>  <span class="o">+=</span> <span class="n">yWt</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumXY</span>  <span class="o">+=</span> <span class="n">xWt</span><span class="o">*</span><span class="n">yWt</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.SubtractWeighted"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.SubtractWeighted">[docs]</a>    <span class="k">def</span>  <span class="nf">SubtractWeighted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        remove a weighted X,Y+/-Z trio from the statistics registers</span>
+
+<span class="sd">        :param float x: value to remove</span>
+<span class="sd">        :param float y: value to remove</span>
+<span class="sd">        :param float z: variance (weight = ``1/z^2``) of y</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ClearResults_</span><span class="p">()</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">xWt</span> <span class="o">=</span> <span class="n">x</span><span class="o">*</span><span class="n">weight</span>
+        <span class="n">yWt</span> <span class="o">=</span> <span class="n">y</span><span class="o">*</span><span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span>  <span class="o">-=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">-=</span> <span class="n">weight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span>   <span class="o">-=</span> <span class="n">xWt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span>  <span class="o">-=</span> <span class="n">xWt</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumY</span>   <span class="o">-=</span> <span class="n">yWt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumYY</span>  <span class="o">-=</span> <span class="n">yWt</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sumXY</span>  <span class="o">-=</span> <span class="n">xWt</span><span class="o">*</span><span class="n">yWt</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.Mean"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.Mean">[docs]</a>    <span class="k">def</span>  <span class="nf">Mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		arithmetic mean of X &amp; Y</span>
+
+<span class="sd">		.. math::</span>
+
+<span class="sd">		  (1 / N) \\sum_i^N x_i</span>
+
+<span class="sd">		:return: mean X and Y values</span>
+<span class="sd">		:rtype: float</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumX</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumY</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+</div>
+    <span class="k">def</span>  <span class="nf">__sdeverr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">sqr</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		internal routine standard deviation and </span>
+<span class="sd">		standard error of from given data</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">sqr</span> <span class="o">-</span> <span class="p">(</span><span class="nb">sum</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">weight</span>
+        <span class="k">if</span> <span class="n">temp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dev</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">temp</span> <span class="o">/</span> <span class="n">weight</span><span class="p">)</span>        <span class="c"># standard deviation</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">temp</span> <span class="o">/</span> <span class="p">(</span><span class="n">weight</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>    <span class="c"># standard error</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dev</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StatsRegClass.StdDev"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.StdDev">[docs]</a>    <span class="k">def</span>  <span class="nf">StdDev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		standard deviation on X &amp; Y</span>
+
+<span class="sd">		:return: standard deviation of mean X and Y values</span>
+<span class="sd">		:rtype: (float, float)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sDev</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">xDev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sdeverr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumX</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">yDev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sdeverr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumYY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sDev</span> <span class="o">=</span> <span class="p">(</span><span class="n">xDev</span><span class="p">,</span> <span class="n">yDev</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sDev</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.StdErr"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.StdErr">[docs]</a>    <span class="k">def</span>  <span class="nf">StdErr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		standard error on X &amp; Y</span>
+
+<span class="sd">		:return: standard error of mean X and Y values</span>
+<span class="sd">		:rtype: (float, float)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sErr</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">xErr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sdeverr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumX</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">yErr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sdeverr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumYY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sErr</span> <span class="o">=</span> <span class="p">(</span><span class="n">xErr</span><span class="p">,</span> <span class="n">yErr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sErr</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.LinearEval"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.LinearEval">[docs]</a>    <span class="k">def</span>  <span class="nf">LinearEval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Evaluate a linear fit at the given value: :math:`y = a + b x`</span>
+
+<span class="sd">        :param x: independent value, `x`</span>
+<span class="sd">        :type x: float</span>
+<span class="sd">        :return: y</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.determinant"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.determinant">[docs]</a>    <span class="k">def</span>  <span class="nf">determinant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; compute and return the determinant of the square matrices::</span>
+<span class="sd">        </span>
+<span class="sd">          |  sum_w   sum_x      |          |  sum_w   sum_y      |</span>
+<span class="sd">          |  sum_x   sum_(x^2)  |          |  sum_y   sum_(y^2)  |</span>
+<span class="sd">        </span>
+<span class="sd">        :return: determinants of x and y summation matrices</span>
+<span class="sd">        :rtype: (float, float)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">determ</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumYY</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumY</span><span class="o">**</span><span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">determ</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">determ</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.LinearRegression"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.LinearRegression">[docs]</a>    <span class="k">def</span>  <span class="nf">LinearRegression</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        For (*x,y*) data pairs added to the registers, </span>
+<span class="sd">        fit and find (*a,b*) that satisfy:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">          y = a + b x</span>
+
+<span class="sd">        :return: (a, b) for fit of y=a+b*x</span>
+<span class="sd">        :rtype: (float, float)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">determ</span>         <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">determinant</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slope</span>     <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumXY</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumY</span><span class="p">)</span> <span class="o">/</span> <span class="n">determ</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumY</span>  <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumXY</span><span class="p">)</span> <span class="o">/</span> <span class="n">determ</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intercept</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.LinearRegressionVariance"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.LinearRegressionVariance">[docs]</a>    <span class="k">def</span>  <span class="nf">LinearRegressionVariance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        est. errors of slope &amp; intercept</span>
+<span class="sd">        </span>
+<span class="sd">        :return: (var_a, var_b) -- is this correct?</span>
+<span class="sd">        :rtype: (float, float)</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lrVariance</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">determ</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">determinant</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">slope</span>    <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">/</span> <span class="n">determ</span><span class="p">)</span>
+            <span class="n">constant</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span> <span class="o">/</span> <span class="n">determ</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lrVariance</span> <span class="o">=</span> <span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lrVariance</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.LinearRegressionCorrelation"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.LinearRegressionCorrelation">[docs]</a>    <span class="k">def</span>  <span class="nf">LinearRegressionCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        the regression coefficient</span>
+<span class="sd">        </span>
+<span class="sd">        :return: (corr_a, corr_b) -- is this correct?</span>
+<span class="sd">        :rtype: (float, float)</span>
+<span class="sd">        </span>
+<span class="sd">        :see: http://stattrek.com/AP-Statistics-1/Correlation.aspx?Tutorial=Stat</span>
+<span class="sd">           Look at &quot;Product-moment correlation coefficient&quot;</span>
+<span class="sd">		&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">VarX</span><span class="p">,</span> <span class="n">VarY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">determinant</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumX</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">sumY</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">VarX</span><span class="o">*</span><span class="n">VarY</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+</div>
+<div class="viewcode-block" id="StatsRegClass.CorrelationCoefficient"><a class="viewcode-back" href="../../lake/StatsReg.html#lake.StatsReg.StatsRegClass.CorrelationCoefficient">[docs]</a>    <span class="k">def</span>  <span class="nf">CorrelationCoefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        relation of errors in slope and intercept</span>
+<span class="sd">        </span>
+<span class="sd">        :return: correlation coefficient  </span>
+<span class="sd">        :rtype: float     </span>
+<span class="sd">		&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">sumX</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sumXX</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">correlation</span>
+
+    <span class="c"># # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #</span>
+</div></div>
+<span class="k">def</span> <span class="nf">__selftest</span><span class="p">():</span>
+    <span class="s">&#39;internal test StatsReg functions&#39;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;documentation&#39;</span><span class="p">,</span> <span class="n">__selftest</span><span class="o">.</span><span class="n">__doc__</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;---------------------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;create a set of stats registers&quot;</span><span class="p">)</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="n">StatsRegClass</span><span class="p">()</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;---------------------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;add data to the stats registers&quot;</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">2.01</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">xBar</span><span class="p">,</span>        <span class="n">yBar</span><span class="p">)</span>     <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">Mean</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">xBarDev</span><span class="p">,</span>     <span class="n">yBarDev</span><span class="p">)</span>  <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">StdDev</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">: </span><span class="si">%g</span><span class="s"> +/- </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;&lt;x&gt;&#39;</span><span class="p">,</span> <span class="n">xBar</span><span class="p">,</span> <span class="n">xBarDev</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">: </span><span class="si">%g</span><span class="s"> +/- </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;&lt;y&gt;&#39;</span><span class="p">,</span> <span class="n">yBar</span><span class="p">,</span> <span class="n">yBarDev</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;---------------------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;subtract data from the stats registers&quot;</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Subtract</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">xBar</span><span class="p">,</span>        <span class="n">yBar</span><span class="p">)</span>     <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">Mean</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">xBarDev</span><span class="p">,</span>     <span class="n">yBarDev</span><span class="p">)</span>  <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">StdDev</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">: </span><span class="si">%g</span><span class="s"> +/- </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;&lt;x&gt;&#39;</span><span class="p">,</span> <span class="n">xBar</span><span class="p">,</span> <span class="n">xBarDev</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">: </span><span class="si">%g</span><span class="s"> +/- </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;&lt;y&gt;&#39;</span><span class="p">,</span> <span class="n">yBar</span><span class="p">,</span> <span class="n">yBarDev</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;---------------------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;clear the stats registers&quot;</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Clear</span><span class="p">()</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;---------------------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;linear regression test:&quot;</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="mi">518</span><span class="p">,</span> <span class="mf">1.101</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="mi">519</span><span class="p">,</span> <span class="mf">0.869</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="mi">520</span><span class="p">,</span> <span class="mf">0.674</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="mi">521</span><span class="p">,</span> <span class="mf">0.376</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="mi">522</span><span class="p">,</span> <span class="mf">0.143</span><span class="p">)</span>
+    <span class="n">reg</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">xBar</span><span class="p">,</span>        <span class="n">yBar</span><span class="p">)</span>     <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">Mean</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">xBarDev</span><span class="p">,</span>     <span class="n">yBarDev</span><span class="p">)</span>  <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">StdDev</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">constant</span><span class="p">,</span>    <span class="n">slope</span><span class="p">)</span>    <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">constantVar</span><span class="p">,</span> <span class="n">slopeVar</span><span class="p">)</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegressionVariance</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">: </span><span class="si">%g</span><span class="s"> +/- </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant</span><span class="p">,</span> <span class="n">constantVar</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="si">%s</span><span class="s">: </span><span class="si">%g</span><span class="s"> +/- </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;slope&#39;</span><span class="p">,</span>    <span class="n">slope</span><span class="p">,</span>    <span class="n">slopeVar</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">LinearRegressionCorrelation = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegressionCorrelation</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">CorrelationCoefficient = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">reg</span><span class="o">.</span><span class="n">CorrelationCoefficient</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">: v</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;documentation&#39;</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">__doc__</span><span class="p">))</span>
+    <span class="n">__selftest</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">lake-python v2011.08 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Pete Jemian.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
