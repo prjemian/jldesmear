@@ -19,7 +19,7 @@ from traitsui.api import *
 import math
 
 class Left(HasTraits):
-    """ Camera object """
+    """ demo object """
 
     lhs1 = String
     lhs2 = Enum('one', 'apple', 'island', 14, math.pi, __file__)
@@ -28,13 +28,15 @@ class Left(HasTraits):
         self.lhs1 = str(self.lhs2)
 
 class Right(HasTraits):
-    pilgrim = String
+    ''' another object '''
+    pilgrim = Float
     joe = Range(-5.0, 5, 0)
     
     def _joe_changed(self):
-        self.pilgrim = str(self.joe)
+        self.pilgrim = self.joe
 
 class Container(HasTraits):
+    ''' arranges and shows the widgets '''
     left = Instance(Left, ())
     right = Instance(Right, ())
 
