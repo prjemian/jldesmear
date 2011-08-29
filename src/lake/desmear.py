@@ -78,7 +78,7 @@ class Desmearing():
         back to start.  This technique is used here if
         the list of ChiSqr results is not empty.
         '''
-        if len(self.ChiSqr) > 0:
+        if len(self.ChiSqr) > 1:
             # clear it out and start again
             self.first_step()
         done = False

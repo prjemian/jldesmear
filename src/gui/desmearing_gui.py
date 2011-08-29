@@ -21,6 +21,8 @@ sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..'
 import lake.toolbox
 import lake.desmear
 import lake.info
+import lake.info
+import time
 
 #from traits.etsconfig.api import ETSConfig
 #ETSConfig.toolkit = 'qt4'
@@ -35,6 +37,12 @@ from traitsui.api \
 
 from enthought.chaco.chaco_plot_editor \
     import ChacoPlotItem
+
+from enthought.chaco.api \
+    import Plot, ArrayPlotData
+
+from enthought.enable.component_editor \
+    import ComponentEditor
 
 
 class Gui(HasTraits):
@@ -66,6 +74,18 @@ class Gui(HasTraits):
     status_label = String('status:')
     status_msg = String
 
+    Qvec = Array
+    smr = Array
+    smr_esd = Array
+    dsm = Array
+    dsm_esd = Array
+    z = Array
+    
+    goofball = Instance(ChacoPlotItem)
+    
+    def __init__(self):
+        super(Gui, self).__init__()
+        self.GetDat()
     Qvec = []
     smr = []
     smr_esd = []
@@ -81,19 +101,25 @@ class Gui(HasTraits):
     def _LakeWeighting_default(self): return 'fast'
 
     def _infile_changed(self):
+        print self.infile
         if len(self.infile) == 0:
             return
         if os.path.exists(self.infile):
             try:
-                self.Qvec, self.smr, self.smr_esd = lake.toolbox.GetDat(self.infile)
-                self.z = [0 for x in self.Qvec]
-                self.post_message("read %d points from %s" % (len(self.Qvec), self.infile) )
+                self.GetDat()
             except:
                 self.post_message("could not read data from %s" % self.infile)
                 self.infile = ""
         else:
             self.post_message("%s does not exist" % self.infile)
             self.infile = ""
+        
+    def GetDat(self):
+        ''' get the I(Q) data '''
+        if os.path.exists(self.infile):
+            self.Qvec, self.smr, self.smr_esd = lake.toolbox.GetDat(self.infile)
+            self.z = [0.0]*len(self.Qvec)
+            self.post_message("read %d points from %s" % (len(self.Qvec), self.infile) )
         
     def _btnClearConsole_fired(self):
         ''' clear the console widget '''
@@ -133,6 +159,30 @@ class Gui(HasTraits):
             self.post_message("cannot desmear now, fit range beyond data range")
             return
 
+        params = lake.info.Info()
+        if params == None:
+            raise Exception, "Could not create Info() structure ... serious!"
+    
+        params.infile = self.infile
+        params.outfile = self.outfile
+        params.slitlength = self.l_o
+        params.sFinal = self.qFinal
+        params.NumItr = self.NumItr
+        params.extrapname = self.extrapolation
+        params.LakeWeighting = self.LakeWeighting
+        params.callback = self.my_callback
+
+        self.obj_dsm = lake.desmear.Desmearing(self.Qvec, self.smr, self.smr_esd, params)
+        self.my_callback(self.obj_dsm)
+        #self.obj_dsm.traditional()
+        done = False
+        while not done:
+            self.obj_dsm.iteration()
+            quit_requested = self.my_callback(self.obj_dsm)
+            more_steps = self.obj_dsm.params.moreIterationsOk(self.obj_dsm.iteration_count)
+            done = quit_requested or not more_steps
+        self.post_message( "desmearing finished" )
+
  	params = lake.info.Info()
  	if params == None:
             self.post_message("serious: could not get an Info() object")
@@ -161,14 +211,22 @@ class Gui(HasTraits):
         :return: should desmearing stop?
         :rtype: bool
         '''
-	fmt = "#%d  ChiSqr=%g  %s"
-	msg = fmt % (dsm.iteration_count, dsm.ChiSqr[-1], str(dsm.params.extrap) )
-        self.post_message( msg )
+        self.post_message( "#%d  ChiSqr=%g  %s" % (dsm.iteration_count, dsm.ChiSqr[-1], str(dsm.params.extrap)) )
         # TODO: How to update the residuals chart?
-        self.z = list( dsm.z )
-        #self._residuals_plot.window.control.Update()
-	more_steps_ok = dsm.params.moreIterationsOk(dsm.iteration_count)
-        return not more_steps_ok
+        #self.rp.data.set_data("x", dsm.q)
+        #self.rp.data.set_data("y", dsm.z)
+        return not dsm.params.moreIterationsOk(dsm.iteration_count)
+        
+    def to_dict(self):
+        return  {
+            "infile": self.infile, 
+            "outfile": self.outfile,
+            "slitlength": self.l_o,
+            "sFinal": self.qFinal,
+            "NumItr": self.NumItr,
+            "extrapname": self.extrapolation,
+            "LakeWeighting": self.LakeWeighting,
+        }
     
     def post_message(self, msg):
         self.status_msg = msg
@@ -185,7 +243,8 @@ class Gui(HasTraits):
         show_label=False,
     )
     # TODO: need linlog plot -- perhaps change from a ChacoPlotItem to a plot inside an item
-    _residuals_plot = ChacoPlotItem(
+    #resPlot = Instance(Plot)
+    residuals_plot = ChacoPlotItem(
         "Qvec", "z", 
         resizable=True,
         y_label="residuals",
@@ -195,6 +254,15 @@ class Gui(HasTraits):
         springy=True,
         show_label=False,
     )
+    goofball = residuals_plot
+    #residuals_plot = Item(
+    #    'resPlot', 
+    #    editor=ComponentEditor(), 
+    #    show_label=False,
+    #    springy=True,
+    #)
+    #rp = Plot(ArrayPlotData(x = Qvec, y = z))
+    #resPlot = rp
     # see: http://github.enthought.com/traitsui/traitsui_user_manual/handler.html#controlling-the-interface-the-handler
     traits_view = View(
         HSplit(
@@ -237,7 +305,7 @@ class Gui(HasTraits):
             ),
             VSplit(
                 _sas_plot,
-                _residuals_plot,
+                residuals_plot,
             ),
         ),
         resizable = True,
@@ -257,7 +325,8 @@ def main(paramfile = None):
         name = os.path.basename( os.path.splitext(__file__)[0] )
         paramfile = os.path.join(path, name + '.pkl')
     gui = Gui()
-    gui.configure_traits(filename=paramfile)
+    #gui.configure_traits(filename=paramfile)
+    gui.configure_traits()
 
 if __name__ == "__main__":
     main()
