@@ -21,8 +21,6 @@ sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..'
 import lake.toolbox
 import lake.desmear
 import lake.info
-import lake.info
-import time
 
 #from traits.etsconfig.api import ETSConfig
 #ETSConfig.toolkit = 'qt4'
@@ -81,17 +79,9 @@ class Gui(HasTraits):
     dsm_esd = Array
     z = Array
     
-    goofball = Instance(ChacoPlotItem)
-    
     def __init__(self):
         super(Gui, self).__init__()
         self.GetDat()
-    Qvec = []
-    smr = []
-    smr_esd = []
-    dsmI = []
-    dsmI_esd = []
-    z = []
 
     def _infile_default(self): return os.path.join('..', '..', 'data', 'test1.smr')
     def _l_o_default(self): return 0.08
@@ -127,21 +117,18 @@ class Gui(HasTraits):
         self.status_msg = "console cleared"
 
     def _console_text_changed(self):
+        print "_console_text_changed"
         # TODO: scroll to last line in view and force UI update/redraw
-        #try:
-        #    print self.trait( 'traits_view' ).inner_traits
-        #    print self.trait( 'traits_view' ).trait_type
-        #    print self.trait( 'traits_view' ).parent
-        #    print self.trait( 'traits_view' ).type
-        #except:
-        #    print sys.exc_info()
-        #sys.stdout.flush()
+        print "="*80+"\n" + self.console_text + "\n"+"="*80+"\n"
         pass
 
     def _status_msg_changed(self):
+        txt = ""
         if len(self.console_text):
-            self.console_text += "\n"
-        self.console_text += self.status_msg
+            txt = self.console_text + "\n"
+        txt += self.status_msg
+        # avoid extra calls to _console_text_changed(), assign only once
+        self.console_text = txt
             
     def _btnDesmear_fired(self):
         ''' start desmearing '''
@@ -183,22 +170,6 @@ class Gui(HasTraits):
             done = quit_requested or not more_steps
         self.post_message( "desmearing finished" )
 
- 	params = lake.info.Info()
- 	if params == None:
-            self.post_message("serious: could not get an Info() object")
- 	    return	    # no input file so bail out
-
-        params.infile = self.infile
-        params.outfile =  self.outfile
-        params.slitlength =  self.l_o
-        params.sFinal =  self.qFinal
-        params.NumItr =  self.NumItr
-        params.extrapname = self.extrapolation
-        params.LakeWeighting = self.LakeWeighting
-	params.callback = self.my_callback
-
-        dsm = lake.desmear.Desmearing( self.Qvec, self.smr, self.smr_esd, params )
-	dsm.traditional()
         # TODO: need to plot final result
         # TODO: offer to save final result
     
@@ -212,9 +183,16 @@ class Gui(HasTraits):
         :rtype: bool
         '''
         self.post_message( "#%d  ChiSqr=%g  %s" % (dsm.iteration_count, dsm.ChiSqr[-1], str(dsm.params.extrap)) )
+        self.z = list(dsm.z)
+        # p is a ChacoPlotItem
+        p = self.trait_view('residuals_plot')
+        n = p.traits()
+        #print p.index
+        #print p.trait_get(("index", "value", "orientation"))
+        #p.value = 'z'
         # TODO: How to update the residuals chart?
-        #self.rp.data.set_data("x", dsm.q)
-        #self.rp.data.set_data("y", dsm.z)
+        #self.resPlot.data.set_data("x", dsm.q)
+        #self.resPlot.data.set_data("y", dsm.z)
         return not dsm.params.moreIterationsOk(dsm.iteration_count)
         
     def to_dict(self):
@@ -243,6 +221,8 @@ class Gui(HasTraits):
         show_label=False,
     )
     # TODO: need linlog plot -- perhaps change from a ChacoPlotItem to a plot inside an item
+    #    plot.value_scale = 'log'
+    #    plot.index_scale = 'log'
     #resPlot = Instance(Plot)
     residuals_plot = ChacoPlotItem(
         "Qvec", "z", 
@@ -254,16 +234,22 @@ class Gui(HasTraits):
         springy=True,
         show_label=False,
     )
-    goofball = residuals_plot
     #residuals_plot = Item(
     #    'resPlot', 
     #    editor=ComponentEditor(), 
     #    show_label=False,
     #    springy=True,
     #)
-    #rp = Plot(ArrayPlotData(x = Qvec, y = z))
-    #resPlot = rp
+    #resPlot = Plot(ArrayPlotData(x = Qvec, y = z))
     # see: http://github.enthought.com/traitsui/traitsui_user_manual/handler.html#controlling-the-interface-the-handler
+
+    console_item = Item("console_text", 
+                             springy=True, 
+                             style='custom', 
+                             show_label=False, 
+                             editor=TextEditor(multi_line=True),
+                        )
+
     traits_view = View(
         HSplit(
             Group(
@@ -294,11 +280,7 @@ class Gui(HasTraits):
                          show_border = True,
                       ),
                 Group(
-                        Item("console_text", 
-                             springy=True, 
-                             style='custom', 
-                             show_label=False, 
-                        ),
+                        console_item,
                         label="console output",
                         show_border = True,
                   ),
