@@ -1,4 +1,4 @@
-.. $Id: only_chaco.rst 1665 2011-08-17 05:14:48Z jemian $
+.. $Id: only_chaco.rst 1687 2011-08-25 15:24:33Z jemian $
 
 GUI for lake-python using Chaco
 ------------------------------------

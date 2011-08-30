@@ -71,17 +71,18 @@
 
 
 <span class="c">########### SVN repository information ###################</span>
-<span class="c"># $Date: 2011-08-29 18:01:31 -0500 (Mon, 29 Aug 2011) $</span>
+<span class="c"># $Date: 2011-08-30 17:32:13 -0500 (Tue, 30 Aug 2011) $</span>
 <span class="c"># $Author: jemian $</span>
-<span class="c"># $Revision: 1696 $</span>
-<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/gui/desmearing_gui.py $</span>
-<span class="c"># $Id: desmearing_gui.py 1696 2011-08-29 23:01:31Z jemian $</span>
+<span class="c"># $Revision: 1700 $</span>
+<span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/gui/gui2.py $</span>
+<span class="c"># $Id: gui2.py 1700 2011-08-30 22:32:13Z jemian $</span>
 <span class="c">########### SVN repository information ###################</span>
 
 
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
 <span class="c"># make sure lake is on the path, as well</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;..&#39;</span><span class="p">)</span> <span class="p">))</span>
+<span class="c">#os.environ[&#39;ETS_TOOLKIT&#39;] = &#39;qt4&#39;</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
 
@@ -90,7 +91,7 @@
 <span class="kn">import</span> <span class="nn">lake.info</span>
 
 <span class="kn">from</span> <span class="nn">enthought.traits.api</span> \
-    <span class="kn">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Array</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Button</span>
+    <span class="kn">import</span> <span class="n">HasTraits</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Button</span><span class="p">,</span> <span class="n">Range</span><span class="p">,</span> <span class="n">Property</span>
 
 <span class="kn">from</span> <span class="nn">enthought.traits.ui.api</span> \
     <span class="kn">import</span> <span class="n">View</span><span class="p">,</span> <span class="n">Group</span><span class="p">,</span> <span class="n">Item</span><span class="p">,</span> <span class="n">StatusItem</span><span class="p">,</span> <span class="n">NoButtons</span><span class="p">,</span> <span class="n">HSplit</span><span class="p">,</span> <span class="n">VSplit</span><span class="p">,</span> <span class="n">HGroup</span><span class="p">,</span> <span class="n">spring</span>
@@ -99,7 +100,7 @@
     <span class="kn">import</span> <span class="n">ComponentEditor</span>
 
 <span class="kn">from</span> <span class="nn">enthought.chaco.api</span> \
-    <span class="kn">import</span> <span class="n">Plot</span><span class="p">,</span> <span class="n">ArrayPlotData</span>
+    <span class="kn">import</span> <span class="n">Plot</span><span class="p">,</span> <span class="n">ArrayPlotData</span><span class="p">,</span> <span class="n">ScatterPlot</span>
 
 <span class="kn">from</span> <span class="nn">enthought.chaco.tools.api</span> \
     <span class="kn">import</span> <span class="n">PanTool</span><span class="p">,</span> <span class="n">ZoomTool</span>
@@ -119,22 +120,22 @@
     <span class="n">infile</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;I(Q) file&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&quot;the name of the input smeared SAS data file&quot;</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">sas_plot</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Plot</span><span class="p">)</span>
     <span class="n">residuals_plot</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">Plot</span><span class="p">)</span>
+    <span class="n">sas_renderer</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ScatterPlot</span><span class="p">)</span>
+    <span class="n">residuals_renderer</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span><span class="n">ScatterPlot</span><span class="p">)</span>
     <span class="n">status_label</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="s">&#39;status:&#39;</span><span class="p">)</span>
     <span class="n">status_msg</span> <span class="o">=</span> <span class="n">String</span>
     <span class="n">obj_dsm</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">(</span> <span class="n">lake</span><span class="o">.</span><span class="n">desmear</span><span class="o">.</span><span class="n">Desmearing</span> <span class="p">)</span>
-    <span class="n">btnDesmear</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s">&quot;desmear&quot;</span><span class="p">)</span>
-    <span class="n">btnDesmearOnce</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s">&quot;desmear one time&quot;</span><span class="p">)</span>
+    <span class="n">btnRestartDsm</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s">&quot;(re)start&quot;</span><span class="p">)</span>
+    <span class="n">btnDesmear</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s">&quot;N times&quot;</span><span class="p">)</span>
+    <span class="n">btnDesmearOnce</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s">&quot;once&quot;</span><span class="p">)</span>
     <span class="n">btnClearConsole</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="s">&quot;clear console&quot;</span><span class="p">)</span>
+    <span class="c">#console_text = Property( depends_on = [ &#39;status_msg&#39; ] )</span>
     <span class="n">console_text</span> <span class="o">=</span> <span class="n">String</span>
     
-    <span class="c"># TODO: move these inside the Desmearing class</span>
-    <span class="n">Qvec</span> <span class="o">=</span> <span class="n">Array</span>
-    <span class="n">smr</span> <span class="o">=</span> <span class="n">Array</span>
-    <span class="n">esd</span> <span class="o">=</span> <span class="n">Array</span>
 
     <span class="n">l_o</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;slit length&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&quot;slit length, as defined by Lake&quot;</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">qFinal</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;qFinal&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&quot;fit extrapolation constants for Q&gt;=qFinal&quot;</span><span class="p">,)</span>
-    <span class="n">NumItr</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;# iterations&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&quot;number of desmearing iterations&quot;</span><span class="p">,)</span>
+    <span class="n">NumItr</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;# iterations&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&quot;number of desmearing iterations&quot;</span><span class="p">,)</span>
     <span class="n">extrapolation</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span> 
                  <span class="s">&#39;constant&#39;</span><span class="p">,</span>  <span class="s">&#39;linear&#39;</span><span class="p">,</span> <span class="s">&#39;powerlaw&#39;</span><span class="p">,</span> <span class="s">&#39;Porod&#39;</span><span class="p">,</span>
                  <span class="n">label</span><span class="o">=</span><span class="s">&quot;Extrapolation&quot;</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s">&quot;form of extrapolation&quot;</span><span class="p">,)</span>
@@ -172,13 +173,13 @@
                 <span class="n">HGroup</span><span class="p">(</span>
                     <span class="n">Item</span><span class="p">(</span><span class="s">&#39;btnDesmear&#39;</span><span class="p">,</span> <span class="n">show_label</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
                     <span class="n">Item</span><span class="p">(</span><span class="s">&#39;btnDesmearOnce&#39;</span><span class="p">,</span> <span class="n">show_label</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-                    <span class="n">spring</span><span class="p">,</span>
-                    <span class="n">Item</span><span class="p">(</span><span class="s">&#39;btnClearConsole&#39;</span><span class="p">,</span> <span class="n">show_label</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-                    <span class="n">label</span><span class="o">=</span><span class="s">&quot;buttons&quot;</span><span class="p">,</span>
+                    <span class="n">Item</span><span class="p">(</span><span class="s">&#39;btnRestartDsm&#39;</span><span class="p">,</span> <span class="n">show_label</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+                    <span class="n">label</span><span class="o">=</span><span class="s">&quot;desmearing controls&quot;</span><span class="p">,</span>
                     <span class="n">show_border</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
                 <span class="p">),</span>
                 <span class="n">Group</span><span class="p">(</span>
                     <span class="n">console_item</span><span class="p">,</span>
+                    <span class="n">Item</span><span class="p">(</span><span class="s">&#39;btnClearConsole&#39;</span><span class="p">,</span> <span class="n">show_label</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
                     <span class="n">label</span><span class="o">=</span><span class="s">&quot;console output&quot;</span><span class="p">,</span>
                     <span class="n">show_border</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
                 <span class="p">),</span>
@@ -210,6 +211,7 @@
     <span class="k">def</span> <span class="nf">_NumItr_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="mi">10</span>
     <span class="k">def</span> <span class="nf">_extrapolation_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="s">&#39;linear&#39;</span>
     <span class="k">def</span> <span class="nf">_LakeWeighting_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="s">&#39;fast&#39;</span>
+    <span class="k">def</span> <span class="nf">_console_text_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="s">&#39;&#39;</span>
     
     <span class="k">def</span> <span class="nf">_init_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;common construction of a plot</span>
@@ -232,20 +234,20 @@
 
     <span class="k">def</span> <span class="nf">_infile_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">esd</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
+            <span class="n">Qvec</span><span class="p">,</span> <span class="n">smr</span><span class="p">,</span> <span class="n">esd</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sas_plot</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">data</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">)</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smr</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="n">Qvec</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">smr</span><span class="p">)</span>
             <span class="n">p</span><span class="o">.</span><span class="n">index_scale</span> <span class="o">=</span> <span class="s">&#39;log&#39;</span>
             <span class="n">p</span><span class="o">.</span><span class="n">value_scale</span> <span class="o">=</span> <span class="s">&#39;log&#39;</span>
             
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residuals_plot</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="n">Qvec</span><span class="p">)</span>
             <span class="n">p</span><span class="o">.</span><span class="n">index_scale</span> <span class="o">=</span> <span class="s">&#39;log&#39;</span>
             <span class="n">p</span><span class="o">.</span><span class="n">value_scale</span> <span class="o">=</span> <span class="s">&#39;linear&#39;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&quot;read </span><span class="si">%d</span><span class="s"> points from </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span> <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setupDesmearing</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&quot;read </span><span class="si">%d</span><span class="s"> points from </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Qvec</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setupDesmearing</span><span class="p">(</span><span class="n">Qvec</span><span class="p">,</span> <span class="n">smr</span><span class="p">,</span> <span class="n">esd</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&quot;could not find &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
 
@@ -262,14 +264,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">console_text</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&#39;console cleared&#39;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_btnRestartDsm_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&#39;desmearing reset&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_infile_changed</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_btnDesmear_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&#39;desmearing should start&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&#39;desmearing </span><span class="si">%d</span><span class="s"> times&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="o">.</span><span class="n">traditional</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span><span class="p">):</span>
+                <span class="c"># TODO: can we put this into its own thread?</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="o">.</span><span class="n">iteration</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dsm_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">)</span>
+
 
     <span class="k">def</span> <span class="nf">_btnDesmearOnce_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&#39;desmearing should go one iteration&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="o">.</span><span class="n">iteration</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dsm_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">)</span>
 
@@ -277,25 +289,30 @@
         <span class="sd">&#39;&#39;&#39; put text in the status box &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status_msg</span> <span class="o">=</span> <span class="n">msg</span>
     </div>
-<div class="viewcode-block" id="Gui2.setupDesmearing"><a class="viewcode-back" href="../../gui/desmearing-gui.html#gui.gui2.Gui2.setupDesmearing">[docs]</a>    <span class="k">def</span> <span class="nf">setupDesmearing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Gui2.setupDesmearing"><a class="viewcode-back" href="../../gui/desmearing-gui.html#gui.gui2.Gui2.setupDesmearing">[docs]</a>    <span class="k">def</span> <span class="nf">setupDesmearing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Qvec</span><span class="p">,</span> <span class="n">smr</span><span class="p">,</span> <span class="n">esd</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; prepare to start desmearing &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Qvec</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&quot;cannot desmear now, no data&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smr</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Qvec</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">smr</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&quot;cannot desmear now, number of data points inconsistent&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">esd</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Qvec</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">esd</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&quot;cannot desmear now, number of data points inconsistent&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span> <span class="o">&gt;</span> <span class="n">Qvec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="s">&quot;cannot desmear now, fit range beyond data range&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">Info</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">,</span> <span class="s">&quot;Could not create Info() structure ... serious!&quot;</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">toInfo</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">desmear</span><span class="o">.</span><span class="n">Desmearing</span><span class="p">(</span><span class="n">Qvec</span><span class="p">,</span> <span class="n">smr</span><span class="p">,</span> <span class="n">esd</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsm_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Gui2.toInfo"><a class="viewcode-back" href="../../gui/desmearing-gui.html#gui.gui2.Gui2.toInfo">[docs]</a>    <span class="k">def</span> <span class="nf">toInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; copy local variables to Info() structure &#39;&#39;&#39;</span>
         <span class="n">params</span><span class="o">.</span><span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span>
         <span class="c">#params.outfile = self.outfile</span>
         <span class="n">params</span><span class="o">.</span><span class="n">slitlength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_o</span>
@@ -304,9 +321,6 @@
         <span class="n">params</span><span class="o">.</span><span class="n">extrapname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span>
         <span class="n">params</span><span class="o">.</span><span class="n">LakeWeighting</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LakeWeighting</span>
         <span class="n">params</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm_callback</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">desmear</span><span class="o">.</span><span class="n">Desmearing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">esd</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dsm_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">)</span>
         </div>
 <div class="viewcode-block" id="Gui2.dsm_callback"><a class="viewcode-back" href="../../gui/desmearing-gui.html#gui.gui2.Gui2.dsm_callback">[docs]</a>    <span class="k">def</span> <span class="nf">dsm_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsm</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -324,8 +338,18 @@
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residuals_plot</span><span class="o">.</span><span class="n">data</span>
         <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
-        <span class="c"># TODO: plot should update</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        
+        <span class="sd">&#39;&#39;&#39;force the plot to redraw itself</span>
+<span class="sd">        </span>
+<span class="sd">        :see: https://mail.enthought.com/pipermail/enthought-dev/2010-December/027790.html</span>
+<span class="sd">        </span>
+<span class="sd">         ...</span>
+<span class="sd">        try calling wx&#39;s Window.Update() method.  (The</span>
+<span class="sd">        wx.Window object can be referenced via</span>
+<span class="sd">        outermost_chaco_component.window.control.)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># TODO: only for wxPython, different for Qt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residuals_plot</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">Update</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">SetStatus</span><span class="p">(</span> <span class="n">msg</span> <span class="p">)</span>
 

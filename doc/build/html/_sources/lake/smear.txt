@@ -1,4 +1,4 @@
-.. $Id: smear.rst 1684 2011-08-25 05:19:03Z jemian $
+.. $Id: smear.rst 1687 2011-08-25 15:24:33Z jemian $
 
 Forward Smearing
 ------------------------------------
