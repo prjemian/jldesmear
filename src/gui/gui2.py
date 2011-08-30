@@ -17,6 +17,7 @@ Lake desmearing GUI using Enthought's Chaco and Traits packages.
 import os, sys
 # make sure lake is on the path, as well
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
+#os.environ['ETS_TOOLKIT'] = 'qt4'
 
 import time
 
@@ -25,7 +26,7 @@ import lake.desmear
 import lake.info
 
 from enthought.traits.api \
-    import HasTraits, Instance, Int, File, String, Array, Float, Enum, Button
+    import HasTraits, Instance, Int, File, String, Float, Enum, Button, Range
 
 from enthought.traits.ui.api \
     import View, Group, Item, StatusItem, NoButtons, HSplit, VSplit, HGroup, spring
@@ -34,7 +35,7 @@ from enthought.enable.component_editor \
     import ComponentEditor
 
 from enthought.chaco.api \
-    import Plot, ArrayPlotData
+    import Plot, ArrayPlotData, ScatterPlot
 
 from enthought.chaco.tools.api \
     import PanTool, ZoomTool
@@ -54,22 +55,21 @@ class Gui2(HasTraits):
     infile = File(label="I(Q) file", desc="the name of the input smeared SAS data file", )
     sas_plot = Instance(Plot)
     residuals_plot = Instance(Plot)
+    sas_renderer = Instance(ScatterPlot)
+    residuals_renderer = Instance(ScatterPlot)
     status_label = String('status:')
     status_msg = String
     obj_dsm = Instance( lake.desmear.Desmearing )
-    btnDesmear = Button("desmear")
-    btnDesmearOnce = Button("desmear one time")
+    btnRestartDsm = Button("(re)start")
+    btnDesmear = Button("N times")
+    btnDesmearOnce = Button("once")
     btnClearConsole = Button("clear console")
     console_text = String
     
-    # TODO: move these inside the Desmearing class
-    Qvec = Array
-    smr = Array
-    esd = Array
 
     l_o = Float(label="slit length", desc="slit length, as defined by Lake", )
     qFinal = Float(label="qFinal", desc="fit extrapolation constants for Q>=qFinal",)
-    NumItr = Int(label="# iterations", desc="number of desmearing iterations",)
+    NumItr = Range(1,1000, 10, label="# iterations", desc="number of desmearing iterations",)
     extrapolation = Enum( 
                  'constant',  'linear', 'powerlaw', 'Porod',
                  label="Extrapolation", desc="form of extrapolation",)
@@ -107,13 +107,13 @@ class Gui2(HasTraits):
                 HGroup(
                     Item('btnDesmear', show_label=False),
                     Item('btnDesmearOnce', show_label=False),
-                    spring,
-                    Item('btnClearConsole', show_label=False),
-                    label="buttons",
+                    Item('btnRestartDsm', show_label=False),
+                    label="desmearing controls",
                     show_border = True,
                 ),
                 Group(
                     console_item,
+                    Item('btnClearConsole', show_label=False),
                     label="console output",
                     show_border = True,
                 ),
@@ -167,20 +167,20 @@ class Gui2(HasTraits):
 
     def _infile_changed(self):
         if os.path.exists(self.infile):
-            self.Qvec, self.smr, self.esd = lake.toolbox.GetDat(self.infile)
+            Qvec, smr, esd = lake.toolbox.GetDat(self.infile)
             p = self.sas_plot
             d = p.data
-            d.set_data("x", self.Qvec)
-            d.set_data("y", self.smr)
+            d.set_data("x", Qvec)
+            d.set_data("y", smr)
             p.index_scale = 'log'
             p.value_scale = 'log'
             
             p = self.residuals_plot
-            p.data.set_data("x", self.Qvec)
+            p.data.set_data("x", Qvec)
             p.index_scale = 'log'
             p.value_scale = 'linear'
-            self.SetStatus("read %d points from %s" % (len(self.Qvec), self.infile) )
-            self.setupDesmearing()
+            self.SetStatus("read %d points from %s" % (len(Qvec), self.infile) )
+            self.setupDesmearing(Qvec, smr, esd)
         else:
             self.SetStatus("could not find " + self.infile)
 
@@ -197,14 +197,23 @@ class Gui2(HasTraits):
         self.console_text = ""
         self.SetStatus('console cleared')
 
+    def _btnRestartDsm_fired(self):
+        self.SetStatus('desmearing reset')
+        self._infile_changed()
+
     def _btnDesmear_fired(self):
-        self.SetStatus('desmearing should start')
+        self.SetStatus('desmearing %d times' % self.NumItr)
         if self.obj_dsm:
-            self.obj_dsm.traditional()
+            self.toInfo(self.obj_dsm.params)
+            for _ in range(self.NumItr):
+                self.obj_dsm.iteration()
+                self.dsm_callback(self.obj_dsm)
+
 
     def _btnDesmearOnce_fired(self):
         self.SetStatus('desmearing should go one iteration')
         if self.obj_dsm:
+            self.toInfo(self.obj_dsm.params)
             self.obj_dsm.iteration()
             self.dsm_callback(self.obj_dsm)
 
@@ -212,25 +221,30 @@ class Gui2(HasTraits):
         ''' put text in the status box '''
         self.status_msg = msg
     
-    def setupDesmearing(self):
+    def setupDesmearing(self, Qvec, smr, esd):
         ''' prepare to start desmearing '''
-        if len(self.Qvec) == 0:
+        if len(Qvec) == 0:
             self.SetStatus("cannot desmear now, no data")
             return
-        if len(self.Qvec) != len(self.smr):
+        if len(Qvec) != len(smr):
             self.SetStatus("cannot desmear now, number of data points inconsistent")
             return
-        if len(self.Qvec) != len(self.esd):
+        if len(Qvec) != len(esd):
             self.SetStatus("cannot desmear now, number of data points inconsistent")
             return
-        if self.qFinal > self.Qvec[-2]:
+        if self.qFinal > Qvec[-2]:
             self.SetStatus("cannot desmear now, fit range beyond data range")
             return
 
         params = lake.info.Info()
         if params == None:
             raise Exception, "Could not create Info() structure ... serious!"
-
+        self.toInfo(params)
+        self.obj_dsm = lake.desmear.Desmearing(Qvec, smr, esd, params)
+        self.dsm_callback(self.obj_dsm)
+        
+    def toInfo(self, params):
+        ''' copy local variables to Info() structure '''
         params.infile = self.infile
         #params.outfile = self.outfile
         params.slitlength = self.l_o
@@ -239,9 +253,6 @@ class Gui2(HasTraits):
         params.extrapname = self.extrapolation
         params.LakeWeighting = self.LakeWeighting
         params.callback = self.dsm_callback
-
-        self.obj_dsm = lake.desmear.Desmearing(self.Qvec, self.smr, self.esd, params)
-        self.dsm_callback(self.obj_dsm)
         
     def dsm_callback(self, dsm):
         '''
@@ -259,6 +270,11 @@ class Gui2(HasTraits):
         d = self.residuals_plot.data
         d.set_data("x", dsm.q)
         d.set_data("y", dsm.z)
+        
+        # force the plot to redraw itself
+        r = self.residuals_plot
+        #r.invalidate_and_redraw()
+        r.request_redraw()
         # TODO: plot should update
         time.sleep(0.05)
 
