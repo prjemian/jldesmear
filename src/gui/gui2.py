@@ -26,7 +26,7 @@ import lake.desmear
 import lake.info
 
 from enthought.traits.api \
-    import HasTraits, Instance, Int, File, String, Float, Enum, Button, Range
+    import HasTraits, Instance, Int, File, String, Float, Enum, Button, Range, Property
 
 from enthought.traits.ui.api \
     import View, Group, Item, StatusItem, NoButtons, HSplit, VSplit, HGroup, spring
@@ -64,6 +64,7 @@ class Gui2(HasTraits):
     btnDesmear = Button("N times")
     btnDesmearOnce = Button("once")
     btnClearConsole = Button("clear console")
+    #console_text = Property( depends_on = [ 'status_msg' ] )
     console_text = String
     
 
@@ -145,6 +146,7 @@ class Gui2(HasTraits):
     def _NumItr_default(self): return 10
     def _extrapolation_default(self): return 'linear'
     def _LakeWeighting_default(self): return 'fast'
+    def _console_text_default(self): return ''
     
     def _init_plot(self, color = "blue"):
         '''common construction of a plot
@@ -206,6 +208,7 @@ class Gui2(HasTraits):
         if self.obj_dsm:
             self.toInfo(self.obj_dsm.params)
             for _ in range(self.NumItr):
+                # TODO: can we put this into its own thread?
                 self.obj_dsm.iteration()
                 self.dsm_callback(self.obj_dsm)
 
@@ -271,12 +274,17 @@ class Gui2(HasTraits):
         d.set_data("x", dsm.q)
         d.set_data("y", dsm.z)
         
-        # force the plot to redraw itself
-        r = self.residuals_plot
-        #r.invalidate_and_redraw()
-        r.request_redraw()
-        # TODO: plot should update
-        time.sleep(0.05)
+        '''force the plot to redraw itself
+        
+        :see: https://mail.enthought.com/pipermail/enthought-dev/2010-December/027790.html
+        
+         ...
+        try calling wx's Window.Update() method.  (The
+        wx.Window object can be referenced via
+        outermost_chaco_component.window.control.)
+        '''
+        # TODO: only for wxPython, different for Qt
+        self.residuals_plot._window.control.Update()
 
         self.SetStatus( msg )
 
