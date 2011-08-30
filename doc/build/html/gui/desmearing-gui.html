@@ -81,21 +81,28 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gui.desmearing_gui">
-<span id="gui-for-lake-jemian-desmearing"></span><h1>GUI for Lake/Jemian desmearing<a class="headerlink" href="#module-gui.desmearing_gui" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-gui.gui2">
+<span id="gui-for-lake-jemian-desmearing"></span><h1>GUI for Lake/Jemian desmearing<a class="headerlink" href="#module-gui.gui2" title="Permalink to this headline">¶</a></h1>
 <p>Lake desmearing GUI using Enthought&#8217;s Chaco and Traits packages.</p>
 <dl class="class">
-<dt id="gui.desmearing_gui.Gui">
-<em class="property">class </em><tt class="descclassname">gui.desmearing_gui.</tt><tt class="descname">Gui</tt><a class="reference internal" href="../_modules/gui/desmearing_gui.html#Gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearing_gui.Gui" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.gui2.Gui2">
+<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">Gui2</tt><a class="reference internal" href="../_modules/gui/gui2.html#Gui2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide interactive access to all the parameters used in desmearing</p>
-<p>This is a main GUI.  It uses Traits.  Call it with code like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">gui</span> <span class="o">=</span> <span class="n">Gui</span><span class="p">()</span>
-<span class="n">gui</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">paramfile</span><span class="p">)</span>
+<p>This is a main GUI for the Lake/Jemian small-angle scattering desmearing program.  
+It uses Traits, Chaco, and Enable.  
+Call it with code like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Gui2</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="gui.desmearing_gui.Gui.my_callback">
-<tt class="descname">my_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/gui/desmearing_gui.html#Gui.my_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearing_gui.Gui.my_callback" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.gui2.Gui2.SetStatus">
+<tt class="descname">SetStatus</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#Gui2.SetStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2.SetStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>put text in the status box</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.gui2.Gui2.dsm_callback">
+<tt class="descname">dsm_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#Gui2.dsm_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2.dsm_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
 from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desmearing.traditional" title="lake.desmear.Desmearing.traditional"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmearing.traditional()</span></tt></a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -110,6 +117,12 @@ from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desme
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gui.gui2.Gui2.setupDesmearing">
+<tt class="descname">setupDesmearing</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#Gui2.setupDesmearing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2.setupDesmearing" title="Permalink to this definition">¶</a></dt>
+<dd><p>prepare to start desmearing</p>
 </dd></dl>
 
 </dd></dl>

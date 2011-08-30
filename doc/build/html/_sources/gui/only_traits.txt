@@ -1,4 +1,4 @@
-.. $Id: only_traits.rst 1687 2011-08-25 15:24:33Z jemian $
+.. $Id: only_traits.rst 1664 2011-08-17 03:51:26Z jemian $
 
 GUI for lake-python using Traits
 ------------------------------------

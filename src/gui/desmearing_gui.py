@@ -49,7 +49,7 @@ class Gui(HasTraits):
     This is a main GUI.  It uses Traits.  Call it with code like this::
 
         gui = Gui()
-        gui.configure_traits(filename=paramfile)
+        gui.configure_traits()
 
     '''
     infile = File(label="in", desc="the name of the input smeared SAS data file", )
@@ -194,23 +194,12 @@ class Gui(HasTraits):
         #self.resPlot.data.set_data("x", dsm.q)
         #self.resPlot.data.set_data("y", dsm.z)
         return not dsm.params.moreIterationsOk(dsm.iteration_count)
-        
-    def to_dict(self):
-        return  {
-            "infile": self.infile, 
-            "outfile": self.outfile,
-            "slitlength": self.l_o,
-            "sFinal": self.qFinal,
-            "NumItr": self.NumItr,
-            "extrapname": self.extrapolation,
-            "LakeWeighting": self.LakeWeighting,
-        }
     
     def post_message(self, msg):
         self.status_msg = msg
     
     # TODO: need loglog plot
-    _sas_plot = ChacoPlotItem(
+    sas_plot = ChacoPlotItem(
         "Qvec", "smr", 
         resizable=True,
         y_label="scattering",
@@ -286,7 +275,7 @@ class Gui(HasTraits):
                   ),
             ),
             VSplit(
-                _sas_plot,
+                sas_plot,
                 residuals_plot,
             ),
         ),

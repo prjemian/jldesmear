@@ -71,11 +71,11 @@
 
 
 <span class="c">########### SVN repository information ###################</span>
-<span class="c"># $Date: 2011-08-25 10:24:33 -0500 (Thu, 25 Aug 2011) $</span>
+<span class="c"># $Date: 2011-08-25 00:33:16 -0500 (Thu, 25 Aug 2011) $</span>
 <span class="c"># $Author: jemian $</span>
-<span class="c"># $Revision: 1687 $</span>
+<span class="c"># $Revision: 1685 $</span>
 <span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/gui/desmearing_gui.py $</span>
-<span class="c"># $Id: desmearing_gui.py 1687 2011-08-25 15:24:33Z jemian $</span>
+<span class="c"># $Id: desmearing_gui.py 1685 2011-08-25 05:33:16Z jemian $</span>
 <span class="c">########### SVN repository information ###################</span>
 
 
@@ -85,7 +85,6 @@
 
 <span class="kn">import</span> <span class="nn">lake.toolbox</span>
 <span class="kn">import</span> <span class="nn">lake.desmear</span>
-<span class="kn">import</span> <span class="nn">lake.info</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="c">#from traits.etsconfig.api import ETSConfig</span>
@@ -129,14 +128,14 @@
 
     <span class="n">console_text</span> <span class="o">=</span> <span class="n">String</span>
 
-    <span class="n">status_label</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="s">&#39;status:&#39;</span><span class="p">)</span>
     <span class="n">status_msg</span> <span class="o">=</span> <span class="n">String</span>
+    <span class="n">status_label</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="s">&#39;status:&#39;</span><span class="p">)</span>
 
     <span class="n">Qvec</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">smr</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">smr_esd</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">dsmI</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">dsmI_esd</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">dsm</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">dsm_esd</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">z</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_infile_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1.smr&#39;</span><span class="p">)</span>
@@ -198,44 +197,54 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="s">&quot;cannot desmear now, fit range beyond data range&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-
- 	<span class="n">params</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">Info</span><span class="p">()</span>
- 	<span class="k">if</span> <span class="n">params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span><span class="s">&quot;serious: could not get an Info() object&quot;</span><span class="p">)</span>
- 	    <span class="k">return</span>	    <span class="c"># no input file so bail out</span>
-
-        <span class="n">params</span><span class="o">.</span><span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">slitlength</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">l_o</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">sFinal</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">extrapname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">LakeWeighting</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LakeWeighting</span>
-	<span class="n">params</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">my_callback</span>
-
-        <span class="n">dsm</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">desmear</span><span class="o">.</span><span class="n">Desmearing</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smr_esd</span><span class="p">,</span> <span class="n">params</span> <span class="p">)</span>
-	<span class="n">dsm</span><span class="o">.</span><span class="n">traditional</span><span class="p">()</span>
+        <span class="n">params_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm_esd</span> <span class="o">=</span> <span class="n">lake</span><span class="o">.</span><span class="n">desmear</span><span class="o">.</span><span class="n">Desmear</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Qvec</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">smr</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">smr_esd</span><span class="p">,</span> 
+            <span class="n">info</span><span class="o">=</span><span class="n">params_dict</span><span class="p">,</span> 
+            <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">my_callback</span><span class="p">,</span> 
+            <span class="n">quiet</span><span class="o">=</span><span class="bp">True</span>
+        <span class="p">)</span>
         <span class="c"># TODO: need to plot final result</span>
         <span class="c"># TODO: offer to save final result</span>
     
-<div class="viewcode-block" id="Gui.my_callback"><a class="viewcode-back" href="../../gui/desmearing-gui.html#gui.desmearing_gui.Gui.my_callback">[docs]</a>    <span class="k">def</span> <span class="nf">my_callback</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsm</span><span class="p">):</span>
+<div class="viewcode-block" id="Gui.my_callback"><a class="viewcode-back" href="../../gui/desmearing-gui.html#gui.desmearing_gui.Gui.my_callback">[docs]</a>    <span class="k">def</span> <span class="nf">my_callback</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">dI</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">ChiSqr</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">extrap</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        this function is called after every desmearing iteration</span>
-<span class="sd">        from :func:`lake.desmear.Desmearing.traditional()`</span>
+<span class="sd">        from :func:`lake.desmear.Desmear()`</span>
 <span class="sd">    </span>
-<span class="sd">        :param obj dsm: desmearing parameters object</span>
+<span class="sd">        :param array q: array (list)</span>
+<span class="sd">        :param array I: array (list) of SAS data I(q) +/- dI(q)</span>
+<span class="sd">        :param array dI: array (list)</span>
+<span class="sd">        :param array S: array (list) of smeared intensity</span>
+<span class="sd">        :param array C: array (list) of corrected intensity</span>
+<span class="sd">        :param int iteration: iteration number</span>
+<span class="sd">        :param float ChiSqr: Chi-Squared value</span>
+<span class="sd">        :param dict info: dictionary of input parameters</span>
+<span class="sd">        :param obj extrap: extrapolation function structure</span>
 <span class="sd">        :return: should desmearing stop?</span>
 <span class="sd">        :rtype: bool</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-	<span class="n">fmt</span> <span class="o">=</span> <span class="s">&quot;#</span><span class="si">%d</span><span class="s">  ChiSqr=</span><span class="si">%g</span><span class="s">  </span><span class="si">%s</span><span class="s">&quot;</span>
-	<span class="n">msg</span> <span class="o">=</span> <span class="n">fmt</span> <span class="o">%</span> <span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">iteration_count</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">extrap</span><span class="p">)</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span> <span class="n">msg</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_message</span><span class="p">(</span> <span class="s">&quot;#</span><span class="si">%d</span><span class="s">  ChiSqr=</span><span class="si">%g</span><span class="s">  </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">iteration</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ChiSqr</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">extrap</span><span class="p">))</span> <span class="p">)</span>
         <span class="c"># TODO: How to update the residuals chart?</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span> <span class="n">dsm</span><span class="o">.</span><span class="n">z</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">smr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">smr_esd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="c">#self._residuals_plot.window.control.Update()</span>
-	<span class="n">more_steps_ok</span> <span class="o">=</span> <span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">moreIterationsOk</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">iteration_count</span><span class="p">)</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">more_steps_ok</span>
-    </div>
+	<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iteration</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;NumItr&quot;</span><span class="p">]</span>
+        </div>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>  <span class="p">{</span>
+            <span class="s">&quot;infile&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span><span class="p">,</span> 
+            <span class="s">&quot;outfile&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span>
+            <span class="s">&quot;slitlength&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_o</span><span class="p">,</span>
+            <span class="s">&quot;sFinal&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span><span class="p">,</span>
+            <span class="s">&quot;NumItr&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span><span class="p">,</span>
+            <span class="s">&quot;extrapname&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span><span class="p">,</span>
+            <span class="s">&quot;LakeWeighting&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">LakeWeighting</span><span class="p">,</span>
+        <span class="p">}</span>
+    
     <span class="k">def</span> <span class="nf">post_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status_msg</span> <span class="o">=</span> <span class="n">msg</span>
     

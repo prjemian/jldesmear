@@ -3,7 +3,7 @@
 GUI for Lake/Jemian desmearing
 ------------------------------------
 
-.. automodule:: gui.desmearing_gui
+.. automodule:: gui.gui2
     :members: 
-    :synopsis: Uses Enthought's Traits+Chaco, best effort so far in Python
+    :synopsis: Uses Enthought's Traits+Chaco+Enable, best effort so far in Python
 

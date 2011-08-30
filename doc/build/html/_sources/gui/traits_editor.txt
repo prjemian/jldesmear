@@ -1,8 +1,0 @@
-.. $Id: traits_editor.rst 1687 2011-08-25 15:24:33Z jemian $
-
-Example code: traits_editor
-------------------------------------
-
-.. automodule:: gui.traits_editor
-    :members: 
-    :synopsis: Example code from Enthought showing Traits+Chaco
