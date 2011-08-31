@@ -2,9 +2,6 @@
 
 '''
 Lake desmearing GUI using Enthought's Traits, Chaco, and Enable packages.
-
-Source Code Documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 '''
 
 

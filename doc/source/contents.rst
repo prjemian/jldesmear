@@ -8,7 +8,6 @@ Contents
    :maxdepth: 2
    :glob:
    
-   lake/example
    lake/lake
    gui/*
    changes

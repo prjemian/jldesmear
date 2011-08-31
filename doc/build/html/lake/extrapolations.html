@@ -98,18 +98,18 @@
 <em class="property">class </em><tt class="descclassname">lake.extrapolation.</tt><tt class="descname">Extrapolation</tt><a class="reference internal" href="../_modules/lake/extrapolation.html#Extrapolation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.extrapolation.Extrapolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>superclass of functions for extrapolation of SAS data past available range</p>
 <p>The general case to (forward) slit-smear small-angle scattering involves
-integration at <img src="../_images\mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> values past any measurable range.</p>
-<img src="../_images\mathmpl/math-e3afaf06bf.png" class="center" /><p>Due to symmetry, the integral is usually folded around zero,thus becoming</p>
-<img src="../_images\mathmpl/math-582cdb71c2.png" class="center" /><p>Even when the upper limit is reduced due to finite slit dimension (the 
-so-called slit-length, <img src="../_images\mathmpl/math-6da3a050ea.png" style="position: relative; bottom: -8px"/>),</p>
-<img src="../_images\mathmpl/math-22645bfd79.png" class="center" /><p>it is still necessary to evaluate <img src="../_images\mathmpl/math-5d44bec197.png" style="position: relative; bottom: -9px"/> beyond
+integration at <img src="../_images/mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> values past any measurable range.</p>
+<img src="../_images/mathmpl/math-e3afaf06bf.png" class="center" /><p>Due to symmetry, the integral is usually folded around zero,thus becoming</p>
+<img src="../_images/mathmpl/math-582cdb71c2.png" class="center" /><p>Even when the upper limit is reduced due to finite slit dimension (the 
+so-called slit-length, <img src="../_images/mathmpl/math-6da3a050ea.png" style="position: relative; bottom: -8px"/>),</p>
+<img src="../_images/mathmpl/math-22645bfd79.png" class="center" /><p>it is still necessary to evaluate <img src="../_images/mathmpl/math-5d44bec197.png" style="position: relative; bottom: -9px"/> beyond
 the last measured data point, just to evaluate the integral.</p>
-<p>An extrapolation function is used to describe the <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> beyond the measured data.
+<p>An extrapolation function is used to describe the <img src="../_images/mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> beyond the measured data.
 In the most trivial case, zero would be returned.  Since this simplification
 is known to introduce truncation errors, an model form for the last few 
 available data points is assumed.  Fitting coefficients are determined from
 the final data points (in the method <a class="reference internal" href="#lake.extrapolation.Extrapolation.fit" title="lake.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>) and are used 
-subsequently to generate the extrapolation at a specific <img src="../_images\mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> value
+subsequently to generate the extrapolation at a specific <img src="../_images/mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> value
 (in the method <a class="reference internal" href="#lake.extrapolation.Extrapolation.calc" title="lake.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a>).</p>
 <p>Examples:</p>
 <p>See the subclasses for examples how to implement a new extrapolation function.</p>
@@ -123,7 +123,7 @@ subsequently to generate the extrapolation at a specific <img src="../_images\ma
 <p>The basic methods to override are</p>
 <ul class="simple">
 <li><tt class="xref py py-meth docutils literal"><span class="pre">__str__()</span></tt> : string representation</li>
-<li><a class="reference internal" href="#lake.extrapolation.Extrapolation.calc" title="lake.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a> : determines <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> from <tt class="docutils literal"><span class="pre">q</span></tt> and <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
+<li><a class="reference internal" href="#lake.extrapolation.Extrapolation.calc" title="lake.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a> : determines <img src="../_images/mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> from <tt class="docutils literal"><span class="pre">q</span></tt> and <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
 <li><a class="reference internal" href="#lake.extrapolation.Extrapolation.fit_result" title="lake.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> : assigns fit coefficients to <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
 </ul>
 <dl class="method">

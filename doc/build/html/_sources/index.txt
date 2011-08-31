@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
    
-.. $Id: index.rst 1671 2011-08-20 15:48:50Z jemian $
+.. $Id: index.rst 1687 2011-08-25 15:24:33Z jemian $
 
 Program Documentation: lake-python
 =======================================

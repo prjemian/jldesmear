@@ -1,7 +1,8 @@
-.. $Id: example.rst 1684 2011-08-25 05:19:03Z jemian $
+.. $Id: example.rst 1687 2011-08-25 15:24:33Z jemian $
 
+------------------------------------------------------------------------------
 Example using ``test1.smr`` data set
-=======================================================
+------------------------------------------------------------------------------
 
 Input Commands
 -------------------------------------------------------
@@ -24,7 +25,7 @@ The program will print a header::
 	<<< 	P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
 	<<< 	J.A. Lake; ACTA CRYST 23 (1967) 191-194.
 	<<< 
-	<<< 	$Id: example.rst 1684 2011-08-25 05:19:03Z jemian $
+	<<< 	$Id: example.rst 1687 2011-08-25 15:24:33Z jemian $
 	<<< 	desmear using the same FORTRAN & C command line interface
 	<<< 
 

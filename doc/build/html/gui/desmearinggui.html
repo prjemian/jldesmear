@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>GUI for Lake/Jemian desmearing: gui.desmearinggui.DesmearingGui &mdash; lake-python v2011.09.dev documentation</title>
+    <title>Graphical User Interface for Lake/Jemian desmearing &mdash; lake-python v2011.09.dev documentation</title>
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -51,8 +51,8 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">GUI for Lake/Jemian desmearing: <tt class="docutils literal"><span class="pre">gui.desmearinggui.DesmearingGui</span></tt></a><ul>
-<li><a class="reference internal" href="#source-code-documentation">Source Code Documentation</a></li>
+<li><a class="reference internal" href="#">Graphical User Interface for Lake/Jemian desmearing</a><ul>
+<li><a class="reference internal" href="#module-gui.desmearinggui"><tt class="docutils literal"><span class="pre">gui.desmearinggui</span></tt> documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -89,11 +89,19 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-gui.desmearinggui">
-<span id="gui-for-lake-jemian-desmearing-gui-desmearinggui-desmearinggui"></span><h1>GUI for Lake/Jemian desmearing: <a class="reference internal" href="#gui.desmearinggui.DesmearingGui" title="gui.desmearinggui.DesmearingGui"><tt class="xref py py-class docutils literal"><span class="pre">gui.desmearinggui.DesmearingGui</span></tt></a><a class="headerlink" href="#module-gui.desmearinggui" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="graphical-user-interface-for-lake-jemian-desmearing">
+<h1>Graphical User Interface for Lake/Jemian desmearing<a class="headerlink" href="#graphical-user-interface-for-lake-jemian-desmearing" title="Permalink to this headline">¶</a></h1>
+<p>Several classes are defined in the source code.
+This class is used to start the GUI:
+<a class="reference internal" href="#gui.desmearinggui.DesmearingGui" title="gui.desmearinggui.DesmearingGui"><tt class="xref py py-class docutils literal"><span class="pre">gui.desmearinggui.DesmearingGui</span></tt></a>
+The main GUI program is started with a Python command such as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">desmearinggui</span>
+<span class="n">desmearinggui</span><span class="o">.</span><span class="n">DesmearingGui</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="module-gui.desmearinggui">
+<span id="gui-desmearinggui-documentation"></span><h2><a class="reference internal" href="#module-gui.desmearinggui" title="gui.desmearinggui: Uses Enthought's Traits+Chaco+Enable, best effort so far in Python"><tt class="xref py py-mod docutils literal"><span class="pre">gui.desmearinggui</span></tt></a> documentation<a class="headerlink" href="#module-gui.desmearinggui" title="Permalink to this headline">¶</a></h2>
 <p>Lake desmearing GUI using Enthought&#8217;s Traits, Chaco, and Enable packages.</p>
-<div class="section" id="source-code-documentation">
-<h2>Source Code Documentation<a class="headerlink" href="#source-code-documentation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gui.desmearinggui.ChiSqr_plot">
 <em class="property">class </em><tt class="descclassname">gui.desmearinggui.</tt><tt class="descname">ChiSqr_plot</tt><a class="reference internal" href="../_modules/gui/desmearinggui.html#ChiSqr_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearinggui.ChiSqr_plot" title="Permalink to this definition">¶</a></dt>

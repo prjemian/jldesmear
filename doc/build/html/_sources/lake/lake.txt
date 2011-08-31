@@ -1,14 +1,29 @@
 .. $Id: lake.rst 1703 2011-08-31 13:47:14Z jemian $
 
 ------------------------------------------------------------------------------
-Command-line program for Lake/Jemian desmearing: lake
+Command-line program for Lake/Jemian desmearing
 ------------------------------------------------------------------------------
 
 :mod:`lake.lake` is the main program to run desmearing.
 It provides the same command-line interface as its FORTRAN and C predecessors.
+The main command-line interface is started with a Python command such as::
 
-Contents
+	import lake
+	lake.traditional_command_line_interface()
+
+Example
 ^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 2
+   
+   example
+
+Supporting Code Modules
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+No support code modules contain GUI code of any sort.
+Any output from these modules, if at all, is directly to the console. 
 
 .. toctree::
    :maxdepth: 2
@@ -22,7 +37,7 @@ Contents
    toolbox
 
 
-Source code documentation
+:mod:`lake.lake` documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: lake.lake
