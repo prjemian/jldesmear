@@ -61,8 +61,13 @@ class ChiSqr_plot(HasTraits):
         self.plot = plot
         self.renderer = r[0]  # 1st item in the list is our scatter plot
 
-
     def SetData(self, chiSqr):
+        '''
+        provide the data to be plotted,
+        replaces any existing data on the plot
+        
+        :param [float] chiSqr: list of ChiSqr values for each iteration
+        '''
         it = range(len(chiSqr))
         # TODO: log-lin plot of ChiSqr vs it
         p = self.plot
