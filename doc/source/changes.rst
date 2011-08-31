@@ -8,21 +8,22 @@ development: lake-python (trunk)
 
 Changes:
 
-* refactor :mod:`lake.desmear` as a class
+* refactored :mod:`lake.desmear` into a class: :class:`lake.desmear.Desmearing`
 
   * allows iterating one at a time
+  * computes ChiSqr data after iteration
+  * keeps record of all ChiSqr values
 
 * added single iteration method to :mod:`lake.desmear`
 * added single and N desmearing iteration controls to GUI
 * update plots in the GUI after each iteration by running desmear calculation in a separate thread
+* provided ChiSqr v iteration plot (log-lin)
 
 TODO:
 
 * learn how to number this list
 * switch code from [float] to numpy.ndarray or Traits Array()
-* refactor others in lake to be classes as well?
-* provide ChiSqr v iteration plot (log-lin)
-* add write desmeared data file handling to GUI
+* add capability for GUI to write desmeared data to a file
 * resolve the Traits invisible MenuBar problems seen on Ubuntu
 
 2011-08-25: lake-python-2011-08

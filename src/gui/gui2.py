@@ -2,6 +2,9 @@
 
 '''
 Lake desmearing GUI using Enthought's Traits, Chaco, and Enable packages.
+
+Source Code Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 '''
 
 
@@ -29,7 +32,7 @@ from enthought.traits.api \
     import HasTraits, Instance, File, String, Float, Enum, Button, Range
 
 from enthought.traits.ui.api \
-    import View, Group, Item, StatusItem, NoButtons, HSplit, VSplit, HGroup
+    import View, Group, Item, StatusItem, NoButtons, HSplit, VSplit, HGroup, spring
 
 from enthought.enable.component_editor \
     import ComponentEditor
@@ -39,6 +42,46 @@ from enthought.chaco.api \
 
 from enthought.chaco.tools.api \
     import PanTool, ZoomTool
+
+
+
+class ChiSqr_plot(HasTraits):
+    ''' '''
+    plot = Instance(Plot)
+    renderer = Instance(ScatterPlot)
+
+    def __init__(self):
+        plot = Plot( ArrayPlotData(x = [], y = []) )
+        plot.tools.append(PanTool(plot, drag_button="right"))
+        plot.overlays.append(ZoomTool(plot))
+        r = plot.plot(
+            ("x", "y"), 
+            type="scatter", 
+            color="goldenrod", 
+            marker='circle', 
+            marker_size=3
+        )
+        self.plot = plot
+        self.renderer = r[0]  # 1st item in the list is our scatter plot
+
+
+    def SetData(self, chiSqr):
+        it = range(len(chiSqr))
+        # TODO: log-lin plot of ChiSqr vs it
+        p = self.plot
+        d = p.data
+        d.set_data("x", it)
+        d.set_data("y", chiSqr)
+        p.index_scale = 'linear'
+        p.value_scale = 'log'
+    
+    traits_view = View(
+        Item('plot', editor=ComponentEditor(), show_label=False),
+        resizable = True,
+        title="ChiSqr vs. desmearing iteration",
+        width=400,
+        height=300,
+    )
 
 
 class DesmearingGui(HasTraits):
@@ -64,6 +107,7 @@ class DesmearingGui(HasTraits):
     btnDesmearOnce = Button("once")
     btnClearConsole = Button("clear console")
     console_text = String
+    chiSqr_plot = Instance(ChiSqr_plot)
 
     l_o = Float(label="slit length", desc="slit length, as defined by Lake", )
     qFinal = Float(label="qFinal", desc="fit extrapolation constants for Q>=qFinal",)
@@ -106,6 +150,8 @@ class DesmearingGui(HasTraits):
                     Item('btnDesmear', show_label=False),
                     Item('btnDesmearOnce', show_label=False),
                     Item('btnRestartDsm', show_label=False),
+                    spring,
+                    Item('chiSqr_plot', show_label=False),
                     label="desmearing controls",
                     show_border = True,
                 ),
@@ -136,6 +182,8 @@ class DesmearingGui(HasTraits):
         super(DesmearingGui, self).__init__()
         self.sas_plot, self.sas_renderer = self._init_plot("goldenrod")
         self.residuals_plot, self.residuals_renderer = self._init_plot("silver")
+        if self.chiSqr_plot == None:
+            self.chiSqr_plot = ChiSqr_plot()
 
     def _infile_default(self): return os.path.join('..', '..', 'data', 'test1.smr')
     def _l_o_default(self): return 0.08
@@ -269,6 +317,8 @@ class DesmearingGui(HasTraits):
         d = self.residuals_plot.data
         d.set_data("x", dsm.q)
         d.set_data("y", dsm.z)
+        
+        self.chiSqr_plot.SetData(dsm.ChiSqr)
 
         self.SetStatus( msg )
 

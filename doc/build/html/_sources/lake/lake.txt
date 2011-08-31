@@ -1,8 +1,8 @@
 .. $Id: lake.rst 1689 2011-08-25 19:38:55Z jemian $
 
---------------------------
-lake.lake
---------------------------
+------------------------------------------------------------------------------
+Command-line program for Lake/Jemian desmearing: lake
+------------------------------------------------------------------------------
 
 :mod:`lake.lake` is the main program to run desmearing.
 It provides the same command-line interface as its FORTRAN and C predecessors.

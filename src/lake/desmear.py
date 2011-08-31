@@ -46,6 +46,7 @@ class Desmearing():
     :param [float] dI: estimated uncertainties of I(q)
     :param obj params: Info object with desmearing parameters
     '''
+    # TODO: that equation is the 'fast' method, provide a more general equation and recommend the 'fast' method
     
     def __init__(self, q, I, dI, params):
         self.params = params
@@ -193,6 +194,7 @@ class Desmearing():
         '''
         :param str LakeWeighting: one of ``constant``,  ``ChiSqr``, or ``fast``
         '''
+        # TODO: document the various weighting methods
         choices = ('constant', 'ChiSqr', 'fast')
         if LakeWeighting not in choices:
             msg = "LakeWeighting must be one of " + str(choices)

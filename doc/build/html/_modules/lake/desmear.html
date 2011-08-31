@@ -158,25 +158,15 @@
 </div>
 <div class="viewcode-block" id="Desmearing.iteration"><a class="viewcode-back" href="../../lake/desmear.html#lake.desmear.Desmearing.iteration">[docs]</a>    <span class="k">def</span> <span class="nf">iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Compute one iteration of the Lake algorithm.</span>
+<span class="sd">        compute one iteration of the Lake algorithm</span>
 <span class="sd">        </span>
-<span class="sd">        No need to call the callback routine, </span>
-<span class="sd">        the caller can take care of that directly.</span>
+<span class="sd">        no need to call the callback routine, </span>
+<span class="sd">        the caller can take care of that directly</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refine_desmeared</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_smear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ChiSqr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_ChiSqr</span><span class="p">()</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iteration_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
-</div>
-<div class="viewcode-block" id="Desmearing.iterate_and_callback"><a class="viewcode-back" href="../../lake/desmear.html#lake.desmear.Desmearing.iterate_and_callback">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_and_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Compute one iteration of the Lake algorithm</span>
-<span class="sd">        and then call the supplied callback method.</span>
-<span class="sd">        Use this method to run a desmearing operation in another thread.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">callback</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_smear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>

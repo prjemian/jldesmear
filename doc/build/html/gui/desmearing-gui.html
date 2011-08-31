@@ -49,6 +49,14 @@
     </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">GUI for Lake/Jemian desmearing</a><ul>
+<li><a class="reference internal" href="#source-code-documentation">Source Code Documentation</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="../lake/toolbox.html"
                         title="previous chapter">Utility Routines</a></p>
@@ -84,9 +92,16 @@
   <div class="section" id="module-gui.gui2">
 <span id="gui-for-lake-jemian-desmearing"></span><h1>GUI for Lake/Jemian desmearing<a class="headerlink" href="#module-gui.gui2" title="Permalink to this headline">¶</a></h1>
 <p>Lake desmearing GUI using Enthought&#8217;s Traits, Chaco, and Enable packages.</p>
+<div class="section" id="source-code-documentation">
+<h2>Source Code Documentation<a class="headerlink" href="#source-code-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gui.gui2.ChiSqr_plot">
+<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">ChiSqr_plot</tt><a class="headerlink" href="#gui.gui2.ChiSqr_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="class">
 <dt id="gui.gui2.DesmearingGui">
-<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">DesmearingGui</tt><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">DesmearingGui</tt><a class="headerlink" href="#gui.gui2.DesmearingGui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide interactive access to all the parameters used in desmearing</p>
 <p>This is a main GUI for the Lake/Jemian small-angle scattering desmearing program.  
 It uses Traits, Chaco, and Enable.  
@@ -96,13 +111,13 @@ Call it with code like this:</p>
 </div>
 <dl class="method">
 <dt id="gui.gui2.DesmearingGui.SetStatus">
-<tt class="descname">SetStatus</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.SetStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.SetStatus" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">SetStatus</tt><big>(</big><em>msg</em><big>)</big><a class="headerlink" href="#gui.gui2.DesmearingGui.SetStatus" title="Permalink to this definition">¶</a></dt>
 <dd><p>put text in the status box</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.gui2.DesmearingGui.dsm_callback">
-<tt class="descname">dsm_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.dsm_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.dsm_callback" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dsm_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="headerlink" href="#gui.gui2.DesmearingGui.dsm_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
 from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desmearing.traditional" title="lake.desmear.Desmearing.traditional"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmearing.traditional()</span></tt></a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -121,13 +136,13 @@ from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desme
 
 <dl class="method">
 <dt id="gui.gui2.DesmearingGui.setupDesmearing">
-<tt class="descname">setupDesmearing</tt><big>(</big><em>Qvec</em>, <em>smr</em>, <em>esd</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.setupDesmearing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.setupDesmearing" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">setupDesmearing</tt><big>(</big><em>Qvec</em>, <em>smr</em>, <em>esd</em><big>)</big><a class="headerlink" href="#gui.gui2.DesmearingGui.setupDesmearing" title="Permalink to this definition">¶</a></dt>
 <dd><p>prepare to start desmearing</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="gui.gui2.DesmearingGui.toInfo">
-<tt class="descname">toInfo</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.toInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.toInfo" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">toInfo</tt><big>(</big><em>params</em><big>)</big><a class="headerlink" href="#gui.gui2.DesmearingGui.toInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>copy local variables to Info() structure</p>
 </dd></dl>
 
@@ -135,7 +150,7 @@ from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desme
 
 <dl class="class">
 <dt id="gui.gui2.IterativeDesmear">
-<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">IterativeDesmear</tt><big>(</big><em>dsm</em>, <em>n</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#IterativeDesmear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.IterativeDesmear" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">IterativeDesmear</tt><big>(</big><em>dsm</em>, <em>n</em><big>)</big><a class="headerlink" href="#gui.gui2.IterativeDesmear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run <tt class="docutils literal"><span class="pre">n</span></tt> iterations of the desmearing operation in a separate thread.
 Running in a separate thread with callbacks allows the 
 GUI widgets to be updated after each iteration.</p>
@@ -157,6 +172,7 @@ GUI widgets to be updated after each iteration.</p>
 </div>
 </dd></dl>
 
+</div>
 </div>
 
 

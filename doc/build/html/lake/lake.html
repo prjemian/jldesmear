@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>lake.lake &mdash; lake-python v2011.09.dev documentation</title>
+    <title>Command-line program for Lake/Jemian desmearing: lake &mdash; lake-python v2011.09.dev documentation</title>
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -51,7 +51,7 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">lake.lake</a><ul>
+<li><a class="reference internal" href="#">Command-line program for Lake/Jemian desmearing: lake</a><ul>
 <li><a class="reference internal" href="#contents">Contents</a><ul>
 </ul>
 </li>
@@ -68,10 +68,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="example.html"
-                        title="previous chapter">Example using <tt class="docutils literal docutils literal docutils literal"><span class="pre">test1.smr</span></tt> data set</a></p>
+                        title="previous chapter">Example using <tt class="docutils literal"><span class="pre">test1.smr</span></tt> data set</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="info.html"
-                        title="next chapter">Desmearing parameters, the <tt class="docutils literal docutils literal docutils literal"><span class="pre">Info()</span></tt> object</a></p>
+                        title="next chapter">Desmearing parameters, the <tt class="docutils literal docutils literal"><span class="pre">Info()</span></tt> object</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/lake/lake.txt"
@@ -98,8 +98,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="lake-lake">
-<h1>lake.lake<a class="headerlink" href="#lake-lake" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="command-line-program-for-lake-jemian-desmearing-lake">
+<h1>Command-line program for Lake/Jemian desmearing: lake<a class="headerlink" href="#command-line-program-for-lake-jemian-desmearing-lake" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference internal" href="#module-lake.lake" title="lake.lake: command-line program to run desmearing"><tt class="xref py py-mod docutils literal"><span class="pre">lake.lake</span></tt></a> is the main program to run desmearing.
 It provides the same command-line interface as its FORTRAN and C predecessors.</p>
 <div class="section" id="contents">
@@ -172,12 +172,19 @@ power-law of <em>x</em>, the output file name, and the number of iterations
 to be run.  Then the data file is opened, the data is read, and the
 data file is closed.  The program begins iterating and shows an
 indicator of progress on the screen in text format.</p>
-<p>It is a mistake to run this program on data that has been desmeared
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">caution:</th><td class="field-body">It is a mistake to run this program on data that has been desmeared
 at least once (by this program) as you will see.  The problem is
 that the program expects that the input data has been smeared, NOT
 partially desmeared.  Lake&#8217;s technique should be made to iterate
 with the original, smeared data and subsequent trial solutions
-of desmeared data.</p>
+of desmeared data.</td>
+</tr>
+</tbody>
+</table>
 <p>The integration technique used by this program to smear the data
 is the trapezoid-rule where the step-size is chosen by the
 spacing of the data points themselves.  A linear

@@ -1,5 +1,6 @@
 .. $Id: desmearing-gui.rst 1697 2011-08-30 04:38:39Z jemian $
 
+------------------------------------
 GUI for Lake/Jemian desmearing
 ------------------------------------
 

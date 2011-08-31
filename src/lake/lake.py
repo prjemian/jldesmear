@@ -28,12 +28,13 @@ to be run.  Then the data file is opened, the data is read, and the
 data file is closed.  The program begins iterating and shows an
 indicator of progress on the screen in text format.
 
-It is a mistake to run this program on data that has been desmeared
-at least once (by this program) as you will see.  The problem is
-that the program expects that the input data has been smeared, NOT
-partially desmeared.  Lake's technique should be made to iterate
-with the original, smeared data and subsequent trial solutions
-of desmeared data.
+:caution:
+    It is a mistake to run this program on data that has been desmeared
+    at least once (by this program) as you will see.  The problem is
+    that the program expects that the input data has been smeared, NOT
+    partially desmeared.  Lake's technique should be made to iterate
+    with the original, smeared data and subsequent trial solutions
+    of desmeared data.
 
 The integration technique used by this program to smear the data
 is the trapezoid-rule where the step-size is chosen by the
