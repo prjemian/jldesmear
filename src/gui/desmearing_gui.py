@@ -28,7 +28,7 @@ import lake.info
 
 #from enthought.chaco.shell import plot, show
 from traits.api \
-    import *
+    import HasTraits, File, Float, Int, Enum, Button, String, Array
 
 from traitsui.api \
     import *

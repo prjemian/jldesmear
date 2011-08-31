@@ -156,11 +156,19 @@ of the corrected intensity is the measured intensity.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="lake.desmear.Desmearing.iterate_and_callback">
+<tt class="descname">iterate_and_callback</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/desmear.html#Desmearing.iterate_and_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.desmear.Desmearing.iterate_and_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute one iteration of the Lake algorithm
+and then call the supplied callback method.
+Use this method to run a desmearing operation in another thread.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="lake.desmear.Desmearing.iteration">
 <tt class="descname">iteration</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/lake/desmear.html#Desmearing.iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lake.desmear.Desmearing.iteration" title="Permalink to this definition">¶</a></dt>
-<dd><p>compute one iteration of the Lake algorithm</p>
-<p>no need to call the callback routine, 
-the caller can take care of that directly</p>
+<dd><p>Compute one iteration of the Lake algorithm.</p>
+<p>No need to call the callback routine, 
+the caller can take care of that directly.</p>
 </dd></dl>
 
 <dl class="method">

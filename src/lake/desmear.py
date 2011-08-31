@@ -93,15 +93,25 @@ class Desmearing():
 
     def iteration(self):
         '''
-        compute one iteration of the Lake algorithm
+        Compute one iteration of the Lake algorithm.
         
-        no need to call the callback routine, 
-        the caller can take care of that directly
+        No need to call the callback routine, 
+        the caller can take care of that directly.
         '''
         self._refine_desmeared()
         self._smear()
         self.ChiSqr.append( self._calc_ChiSqr() )
         self.iteration_count = len(self.ChiSqr)-1
+
+    def iterate_and_callback(self):
+        '''
+        Compute one iteration of the Lake algorithm
+        and then call the supplied callback method.
+        Use this method to run a desmearing operation in another thread.
+        '''
+        self.iteration()
+        if self.params.callback != None:
+            self.params.callback(self)
 
     def _smear(self):
         '''

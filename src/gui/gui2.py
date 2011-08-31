@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Lake desmearing GUI using Enthought's Chaco and Traits packages.
+Lake desmearing GUI using Enthought's Traits, Chaco, and Enable packages.
 '''
 
 
@@ -19,17 +19,17 @@ import os, sys
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
 #os.environ['ETS_TOOLKIT'] = 'qt4'
 
-import time
+import threading
 
 import lake.toolbox
 import lake.desmear
 import lake.info
 
 from enthought.traits.api \
-    import HasTraits, Instance, Int, File, String, Float, Enum, Button, Range, Property
+    import HasTraits, Instance, File, String, Float, Enum, Button, Range
 
 from enthought.traits.ui.api \
-    import View, Group, Item, StatusItem, NoButtons, HSplit, VSplit, HGroup, spring
+    import View, Group, Item, StatusItem, NoButtons, HSplit, VSplit, HGroup
 
 from enthought.enable.component_editor \
     import ComponentEditor
@@ -41,17 +41,16 @@ from enthought.chaco.tools.api \
     import PanTool, ZoomTool
 
 
-class Gui2(HasTraits):
+class DesmearingGui(HasTraits):
     '''Provide interactive access to all the parameters used in desmearing
     
     This is a main GUI for the Lake/Jemian small-angle scattering desmearing program.  
     It uses Traits, Chaco, and Enable.  
     Call it with code like this::
 
-        Gui2().configure_traits()
+        DesmearingGui().configure_traits()
 
     '''
-
     infile = File(label="I(Q) file", desc="the name of the input smeared SAS data file", )
     sas_plot = Instance(Plot)
     residuals_plot = Instance(Plot)
@@ -64,9 +63,7 @@ class Gui2(HasTraits):
     btnDesmear = Button("N times")
     btnDesmearOnce = Button("once")
     btnClearConsole = Button("clear console")
-    #console_text = Property( depends_on = [ 'status_msg' ] )
     console_text = String
-    
 
     l_o = Float(label="slit length", desc="slit length, as defined by Lake", )
     qFinal = Float(label="qFinal", desc="fit extrapolation constants for Q>=qFinal",)
@@ -136,7 +133,7 @@ class Gui2(HasTraits):
     )
 
     def __init__(self):
-        super(Gui2, self).__init__()
+        super(DesmearingGui, self).__init__()
         self.sas_plot, self.sas_renderer = self._init_plot("goldenrod")
         self.residuals_plot, self.residuals_renderer = self._init_plot("silver")
 
@@ -177,6 +174,9 @@ class Gui2(HasTraits):
             p.index_scale = 'log'
             p.value_scale = 'log'
             
+            # TODO: append dsm and resmeared data curves
+            # TODO: what about error bars?
+            
             p = self.residuals_plot
             p.data.set_data("x", Qvec)
             p.index_scale = 'log'
@@ -191,8 +191,7 @@ class Gui2(HasTraits):
         if len(self.console_text):
             txt = self.console_text + "\n"
         txt += self.status_msg
-        # avoid extra calls to _console_text_changed(), assign only once
-        self.console_text = txt
+        self.console_text = txt     # assign only once to avoid excess Traits updates
 
     def _btnClearConsole_fired(self):
         ''' clear the console widget '''
@@ -204,21 +203,16 @@ class Gui2(HasTraits):
         self._infile_changed()
 
     def _btnDesmear_fired(self):
-        self.SetStatus('desmearing %d times' % self.NumItr)
+        self.SetStatus('desmearing %d iterations' % self.NumItr)
         if self.obj_dsm:
             self.toInfo(self.obj_dsm.params)
-            for _ in range(self.NumItr):
-                # TODO: can we put this into its own thread?
-                self.obj_dsm.iteration()
-                self.dsm_callback(self.obj_dsm)
-
+            IterativeDesmear(self.obj_dsm, self.NumItr).start()
 
     def _btnDesmearOnce_fired(self):
-        self.SetStatus('desmearing should go one iteration')
+        self.SetStatus('desmearing one iteration')
         if self.obj_dsm:
             self.toInfo(self.obj_dsm.params)
-            self.obj_dsm.iteration()
-            self.dsm_callback(self.obj_dsm)
+            IterativeDesmear(self.obj_dsm, 1).start()
 
     def SetStatus(self, msg):
         ''' put text in the status box '''
@@ -269,25 +263,40 @@ class Gui2(HasTraits):
         msg = "#" + str(dsm.iteration_count)
         msg += "  ChiSqr=" + str(dsm.ChiSqr[-1])
         msg += "  " + str(dsm.params.extrap)
+        
+        # TODO: update the SAS plot
 
         d = self.residuals_plot.data
         d.set_data("x", dsm.q)
         d.set_data("y", dsm.z)
-        
-        '''force the plot to redraw itself
-        
-        :see: https://mail.enthought.com/pipermail/enthought-dev/2010-December/027790.html
-        
-         ...
-        try calling wx's Window.Update() method.  (The
-        wx.Window object can be referenced via
-        outermost_chaco_component.window.control.)
-        '''
-        # TODO: only for wxPython, different for Qt
-        self.residuals_plot._window.control.Update()
 
         self.SetStatus( msg )
 
 
+class IterativeDesmear(threading.Thread):
+    ''' 
+    Run ``n`` iterations of the desmearing operation in a separate thread.
+    Running in a separate thread with callbacks allows the 
+    GUI widgets to be updated after each iteration.
+        
+    :param obj dsm: Desmearing object
+    :param int n: number of iterations to perform
+    
+    Start this thread with code such as this example::
+    
+        IterativeDesmear(self.obj_dsm, self.NumItr).start()
+
+    '''
+    
+    def __init__(self, dsm, n):
+        threading.Thread.__init__(self)
+        self.dsm = dsm
+        self.n = n
+
+    def run(self):
+        for _ in range(self.n):
+            self.dsm.iterate_and_callback()
+
+
 if __name__ == "__main__":
-    Gui2().configure_traits()
+    DesmearingGui().configure_traits()

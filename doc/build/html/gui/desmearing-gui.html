@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="lake-python v2011.09.dev documentation" href="../index.html" />
     <link rel="up" title="Contents" href="../contents.html" />
-    <link rel="next" title="GUI for lake-python using Chaco" href="only_chaco.html" />
+    <link rel="next" title="Change History" href="../changes.html" />
     <link rel="prev" title="Utility Routines" href="../lake/toolbox.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="only_chaco.html" title="GUI for lake-python using Chaco"
+          <a href="../changes.html" title="Change History"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../lake/toolbox.html" title="Utility Routines"
@@ -53,8 +53,8 @@
   <p class="topless"><a href="../lake/toolbox.html"
                         title="previous chapter">Utility Routines</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="only_chaco.html"
-                        title="next chapter">GUI for lake-python using Chaco</a></p>
+  <p class="topless"><a href="../changes.html"
+                        title="next chapter">Change History</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/gui/desmearing-gui.txt"
@@ -83,26 +83,26 @@
             
   <div class="section" id="module-gui.gui2">
 <span id="gui-for-lake-jemian-desmearing"></span><h1>GUI for Lake/Jemian desmearing<a class="headerlink" href="#module-gui.gui2" title="Permalink to this headline">¶</a></h1>
-<p>Lake desmearing GUI using Enthought&#8217;s Chaco and Traits packages.</p>
+<p>Lake desmearing GUI using Enthought&#8217;s Traits, Chaco, and Enable packages.</p>
 <dl class="class">
-<dt id="gui.gui2.Gui2">
-<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">Gui2</tt><a class="reference internal" href="../_modules/gui/gui2.html#Gui2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.gui2.DesmearingGui">
+<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">DesmearingGui</tt><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide interactive access to all the parameters used in desmearing</p>
 <p>This is a main GUI for the Lake/Jemian small-angle scattering desmearing program.  
 It uses Traits, Chaco, and Enable.  
 Call it with code like this:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Gui2</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DesmearingGui</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="gui.gui2.Gui2.SetStatus">
-<tt class="descname">SetStatus</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#Gui2.SetStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2.SetStatus" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.gui2.DesmearingGui.SetStatus">
+<tt class="descname">SetStatus</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.SetStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.SetStatus" title="Permalink to this definition">¶</a></dt>
 <dd><p>put text in the status box</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gui.gui2.Gui2.dsm_callback">
-<tt class="descname">dsm_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#Gui2.dsm_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2.dsm_callback" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.gui2.DesmearingGui.dsm_callback">
+<tt class="descname">dsm_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.dsm_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.dsm_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>this function is called after every desmearing iteration
 from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desmearing.traditional" title="lake.desmear.Desmearing.traditional"><tt class="xref py py-func docutils literal"><span class="pre">lake.desmear.Desmearing.traditional()</span></tt></a></p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -120,17 +120,41 @@ from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desme
 </dd></dl>
 
 <dl class="method">
-<dt id="gui.gui2.Gui2.setupDesmearing">
-<tt class="descname">setupDesmearing</tt><big>(</big><em>Qvec</em>, <em>smr</em>, <em>esd</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#Gui2.setupDesmearing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2.setupDesmearing" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.gui2.DesmearingGui.setupDesmearing">
+<tt class="descname">setupDesmearing</tt><big>(</big><em>Qvec</em>, <em>smr</em>, <em>esd</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.setupDesmearing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.setupDesmearing" title="Permalink to this definition">¶</a></dt>
 <dd><p>prepare to start desmearing</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gui.gui2.Gui2.toInfo">
-<tt class="descname">toInfo</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#Gui2.toInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.Gui2.toInfo" title="Permalink to this definition">¶</a></dt>
+<dt id="gui.gui2.DesmearingGui.toInfo">
+<tt class="descname">toInfo</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#DesmearingGui.toInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.DesmearingGui.toInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>copy local variables to Info() structure</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="gui.gui2.IterativeDesmear">
+<em class="property">class </em><tt class="descclassname">gui.gui2.</tt><tt class="descname">IterativeDesmear</tt><big>(</big><em>dsm</em>, <em>n</em><big>)</big><a class="reference internal" href="../_modules/gui/gui2.html#IterativeDesmear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.gui2.IterativeDesmear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run <tt class="docutils literal"><span class="pre">n</span></tt> iterations of the desmearing operation in a separate thread.
+Running in a separate thread with callbacks allows the 
+GUI widgets to be updated after each iteration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dsm</strong> (<em>obj</em>) &#8211; Desmearing object</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; number of iterations to perform</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Start this thread with code such as this example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IterativeDesmear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -151,7 +175,7 @@ from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desme
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="only_chaco.html" title="GUI for lake-python using Chaco"
+          <a href="../changes.html" title="Change History"
              >next</a> |</li>
         <li class="right" >
           <a href="../lake/toolbox.html" title="Utility Routines"

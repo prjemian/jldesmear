@@ -13,15 +13,15 @@ Changes:
   * allows iterating one at a time
 
 * added single iteration method to :mod:`lake.desmear`
+* added single and N desmearing iteration controls to GUI
+* update plots in the GUI after each iteration by running desmear calculation in a separate thread
 
 TODO:
 
 * learn how to number this list
 * switch code from [float] to numpy.ndarray or Traits Array()
 * refactor others in lake to be classes as well?
-* update plots in the GUI
 * provide ChiSqr v iteration plot (log-lin)
-* add single and N iteration controls to GUI
 * add write desmeared data file handling to GUI
 * resolve the Traits invisible MenuBar problems seen on Ubuntu
 

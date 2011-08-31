@@ -1,8 +1,0 @@
-.. $Id: only_traits.rst 1687 2011-08-25 15:24:33Z jemian $
-
-GUI for lake-python using Traits
-------------------------------------
-
-.. automodule:: gui.only_traits
-    :members: 
-    :synopsis: Explore Traits by building a GUI for lake-python
