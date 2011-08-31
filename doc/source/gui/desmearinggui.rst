@@ -1,0 +1,10 @@
+.. $Id$
+
+------------------------------------------------------------------------
+GUI for Lake/Jemian desmearing: :class:`gui.desmearinggui.DesmearingGui`
+------------------------------------------------------------------------
+
+.. automodule:: gui.desmearinggui
+    :members: 
+    :synopsis: Uses Enthought's Traits+Chaco+Enable, best effort so far in Python
+
