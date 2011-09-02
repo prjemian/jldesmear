@@ -69,7 +69,6 @@ class ChiSqr_plot(HasTraits):
         :param [float] chiSqr: list of ChiSqr values for each iteration
         '''
         it = range(len(chiSqr))
-        # TODO: log-lin plot of ChiSqr vs it
         p = self.plot
         d = p.data
         d.set_data("x", it)
@@ -291,7 +290,11 @@ class DesmearingGui(HasTraits):
         self.dsm_callback(self.obj_dsm)
         
     def toInfo(self, params):
-        ''' copy local variables to Info() structure '''
+        ''' copy local variables to Info() structure 
+        
+        :param params: desmearing parameters structure
+        :type params: Info object
+        '''
         params.infile = self.infile
         #params.outfile = self.outfile
         params.slitlength = self.l_o
