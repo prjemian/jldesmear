@@ -69,13 +69,13 @@ def _create_plot_component():
     value_mapper = None
     index_mapper = None
     plots = {}
-    for i in range(10):
+    for i in range(20):
         y = jn(i, x)
         if i%2 == 1:
-            plot = create_line_plot((x,y), color=tuple(COLOR_PALETTE[i]), width=2.0)
+            plot = create_line_plot((x,y), color=tuple(COLOR_PALETTE[i%len(COLOR_PALETTE)]), width=2.0)
             plot.index.sort_order = "ascending"
         else:
-            plot = create_scatter_plot((x,y), color=tuple(COLOR_PALETTE[i]))
+            plot = create_scatter_plot((x,y), color=tuple(COLOR_PALETTE[i%len(COLOR_PALETTE)]))
 
         plot.bgcolor = "white"
         plot.border_visible = True
@@ -112,7 +112,7 @@ def _create_plot_component():
             plot.overlays.append(legend)
 
         container.add(plot)
-        plots["Bessel j_%d"%i] = plot
+        plots["Bessel j_%02d"%i] = plot
 
     # Set the list of plots on the legend
     legend.plots = plots
@@ -149,7 +149,7 @@ class Demo(HasTraits):
                     )
     
     def _plot_default(self):
-         return _create_plot_component()
+        return _create_plot_component()
     
 demo = Demo()
 
