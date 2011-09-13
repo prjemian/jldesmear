@@ -68,17 +68,20 @@
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Lake desmearing GUI using Enthought&#39;s Traits, Chaco, and Enable packages.</span>
 
-<span class="sd">Source Code Documentation</span>
-<span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span class="sd">:note:  If you are using Ubuntu 11.04 and cannot see a menubar,</span>
+<span class="sd">   this is a bug in Ubuntu 11.04. Try setting the environment</span>
+<span class="sd">   variable: UBUNTU_MENUPROXY=1</span>
+
+<span class="sd">   Or, the code does not call for a menubar. ... Nevermind.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 
 <span class="c">########### SVN repository information ###################</span>
-<span class="c"># $Date: 2011-08-31 08:56:47 -0500 (Wed, 31 Aug 2011) $</span>
+<span class="c"># $Date: 2011-09-02 09:49:23 -0500 (Fri, 02 Sep 2011) $</span>
 <span class="c"># $Author: jemian $</span>
-<span class="c"># $Revision: 1704 $</span>
+<span class="c"># $Revision: 1709 $</span>
 <span class="c"># $URL: http://svn.jemian.org/svn/regitte/lake-python/trunk/src/gui/desmearinggui.py $</span>
-<span class="c"># $Id: desmearinggui.py 1704 2011-08-31 13:56:47Z jemian $</span>
+<span class="c"># $Id: desmearinggui.py 1709 2011-09-02 14:49:23Z jemian $</span>
 <span class="c">########### SVN repository information ###################</span>
 
 
@@ -129,17 +132,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">plot</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># 1st item in the list is our scatter plot</span>
 
-
-    <span class="k">def</span> <span class="nf">SetData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chiSqr</span><span class="p">):</span>
+<div class="viewcode-block" id="ChiSqr_plot.SetData"><a class="viewcode-back" href="../../gui/desmearinggui.html#gui.desmearinggui.ChiSqr_plot.SetData">[docs]</a>    <span class="k">def</span> <span class="nf">SetData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chiSqr</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        provide the data to be plotted,</span>
+<span class="sd">        replaces any existing data on the plot</span>
+<span class="sd">        </span>
+<span class="sd">        :param [float] chiSqr: list of ChiSqr values for each iteration</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">it</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chiSqr</span><span class="p">))</span>
-        <span class="c"># TODO: log-lin plot of ChiSqr vs it</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">data</span>
         <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="n">it</span><span class="p">)</span>
         <span class="n">d</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">chiSqr</span><span class="p">)</span>
         <span class="n">p</span><span class="o">.</span><span class="n">index_scale</span> <span class="o">=</span> <span class="s">&#39;linear&#39;</span>
         <span class="n">p</span><span class="o">.</span><span class="n">value_scale</span> <span class="o">=</span> <span class="s">&#39;log&#39;</span>
-    
+    </div>
     <span class="n">traits_view</span> <span class="o">=</span> <span class="n">View</span><span class="p">(</span>
         <span class="n">Item</span><span class="p">(</span><span class="s">&#39;plot&#39;</span><span class="p">,</span> <span class="n">editor</span><span class="o">=</span><span class="n">ComponentEditor</span><span class="p">(),</span> <span class="n">show_label</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
         <span class="n">resizable</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
@@ -354,7 +361,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dsm_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">)</span>
         </div>
 <div class="viewcode-block" id="DesmearingGui.toInfo"><a class="viewcode-back" href="../../gui/desmearinggui.html#gui.desmearinggui.DesmearingGui.toInfo">[docs]</a>    <span class="k">def</span> <span class="nf">toInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; copy local variables to Info() structure &#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39; copy local variables to Info() structure </span>
+<span class="sd">        </span>
+<span class="sd">        :param params: desmearing parameters structure</span>
+<span class="sd">        :type params: Info object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">params</span><span class="o">.</span><span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infile</span>
         <span class="c">#params.outfile = self.outfile</span>
         <span class="n">params</span><span class="o">.</span><span class="n">slitlength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_o</span>

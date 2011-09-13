@@ -1,4 +1,4 @@
-.. $Id: lake.rst 1703 2011-08-31 13:47:14Z jemian $
+.. $Id: lake.rst 1705 2011-08-31 14:32:11Z jemian $
 
 ------------------------------------------------------------------------------
 Command-line program for Lake/Jemian desmearing

@@ -102,10 +102,37 @@ The main GUI program is started with a Python command such as:</p>
 <div class="section" id="module-gui.desmearinggui">
 <span id="gui-desmearinggui-documentation"></span><h2><a class="reference internal" href="#module-gui.desmearinggui" title="gui.desmearinggui: Uses Enthought's Traits+Chaco+Enable, best effort so far in Python"><tt class="xref py py-mod docutils literal"><span class="pre">gui.desmearinggui</span></tt></a> documentation<a class="headerlink" href="#module-gui.desmearinggui" title="Permalink to this headline">¶</a></h2>
 <p>Lake desmearing GUI using Enthought&#8217;s Traits, Chaco, and Enable packages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">note:</th><td class="field-body"><p class="first">If you are using Ubuntu 11.04 and cannot see a menubar,
+this is a bug in Ubuntu 11.04. Try setting the environment
+variable: UBUNTU_MENUPROXY=1</p>
+<p class="last">Or, the code does not call for a menubar. ... Nevermind.</p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="class">
 <dt id="gui.desmearinggui.ChiSqr_plot">
 <em class="property">class </em><tt class="descclassname">gui.desmearinggui.</tt><tt class="descname">ChiSqr_plot</tt><a class="reference internal" href="../_modules/gui/desmearinggui.html#ChiSqr_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearinggui.ChiSqr_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="method">
+<dt id="gui.desmearinggui.ChiSqr_plot.SetData">
+<tt class="descname">SetData</tt><big>(</big><em>chiSqr</em><big>)</big><a class="reference internal" href="../_modules/gui/desmearinggui.html#ChiSqr_plot.SetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearinggui.ChiSqr_plot.SetData" title="Permalink to this definition">¶</a></dt>
+<dd><p>provide the data to be plotted,
+replaces any existing data on the plot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chiSqr</strong> (<em>[float]</em>) &#8211; list of ChiSqr values for each iteration</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="class">
 <dt id="gui.desmearinggui.DesmearingGui">
@@ -152,6 +179,14 @@ from <a class="reference internal" href="../lake/desmear.html#lake.desmear.Desme
 <dt id="gui.desmearinggui.DesmearingGui.toInfo">
 <tt class="descname">toInfo</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/gui/desmearinggui.html#DesmearingGui.toInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gui.desmearinggui.DesmearingGui.toInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>copy local variables to Info() structure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>Info object</em>) &#8211; desmearing parameters structure</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

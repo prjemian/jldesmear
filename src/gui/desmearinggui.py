@@ -2,6 +2,12 @@
 
 '''
 Lake desmearing GUI using Enthought's Traits, Chaco, and Enable packages.
+
+:note:  If you are using Ubuntu 11.04 and cannot see a menubar,
+   this is a bug in Ubuntu 11.04. Try setting the environment
+   variable: UBUNTU_MENUPROXY=1
+
+   Or, the code does not call for a menubar. ... Nevermind.
 '''
 
 

@@ -1,4 +1,4 @@
-.. $Id: desmearinggui.rst 1704 2011-08-31 13:56:47Z jemian $
+.. $Id: desmearinggui.rst 1705 2011-08-31 14:32:11Z jemian $
 
 -----------------------------------------------------
 Graphical User Interface for Lake/Jemian desmearing

@@ -3,6 +3,10 @@
 ''' demo the menu bar
 
 :see: https://mail.enthought.com/pipermail/enthought-dev/2010-February/025563.html
+
+:note:  If you are using Ubuntu 11.04 and cannot see the menubar,
+   this is a bug in Ubuntu 11.04. Try setting the environment
+   variable: UBUNTU_MENUPROXY=1
 '''
 
 
@@ -42,7 +46,7 @@ class MyView(HasTraits):
     def _btnIncrement_fired(self):
         pass
 
-    def trait_view(self, parent=None):
+    def default_traits_view(self):
         menu_file = Menu(
 	    Separator(),
 	    CloseAction,
