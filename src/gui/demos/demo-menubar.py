@@ -18,6 +18,8 @@
 # $Id$
 ########### SVN repository information ###################
 
+import os
+os.environ['UBUNTU_MENUPROXY'] = "1"
 
 from enthought.pyface.action.api \
     import Group as ActionGroup 
