@@ -24,6 +24,7 @@ import os, sys
 # make sure lake is on the path, as well
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
 #os.environ['ETS_TOOLKIT'] = 'qt4'
+os.environ['UBUNTU_MENUPROXY'] = "1"    # work around a menubar bug in Ubuntu 11.04
 
 import threading
 
@@ -36,6 +37,8 @@ from enthought.traits.api \
 
 from enthought.traits.ui.api \
     import View, Group, Item, StatusItem, NoButtons, HSplit, VSplit, HGroup, spring
+    
+from enthought.traits.ui.menu import StandardMenuBar
 
 from enthought.enable.component_editor \
     import ComponentEditor
@@ -178,6 +181,7 @@ class DesmearingGui(HasTraits):
         title="Lake/Jemian Desmearing GUI",
         width=700,
         height=500,
+        menubar = StandardMenuBar,
         statusbar = [
             StatusItem(name = 'status_label', width = 80),
             StatusItem(name = 'status_msg', width = 0.5),
