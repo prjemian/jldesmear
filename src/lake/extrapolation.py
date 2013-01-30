@@ -15,7 +15,7 @@ superclass of functions for extrapolation of SAS data past available range
 import StatsReg
 
 
-__metaclass__ = type # new style classes
+#__metaclass__ = type # new style classes
 
 
 class Extrapolation:
@@ -215,3 +215,10 @@ class Extrapolation:
         :param dict coefficients: named terms used in evaluating the extrapolation
         '''
         self.coefficients = coefficients
+
+    def ListSubclasses(self):
+        '''return a list of the subclasses of this class'''
+        # TODO: see these suggestions
+        #   http://stackoverflow.com/questions/3862310/how-can-i-find-all-subclasses-of-a-given-class-in-python
+        #   http://code.activestate.com/recipes/576949-find-all-subclasses-of-a-given-class/
+        return []

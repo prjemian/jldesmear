@@ -153,6 +153,8 @@ def prepare_extrapolation(q, C, dC, extrapname, sFinal):
          "powerlaw": extrap_power.Power,
          "Porod": extrap_porod.Porod
     }
+    # TODO: replace "functions" with a something that has learned what is available
+    subclasses = extrap_constant.Constant.ListSubclasses()
     if extrapname not in functions.keys():
         raise Exception, "did not identify extrapolation function"
     extrap = functions[extrapname]()
@@ -290,6 +292,9 @@ def __test_Smear():
         S, extrap = Smear(q, C, dC, "constant", .08, .08)
     except Exception, e:
         print("")
+        # TODO: fix this:;
+        #        raise Exception, "Smearing failed: " + e
+        #    TypeError: cannot concatenate 'str' and 'exceptions.Exception' objects
         raise Exception, "Smearing failed: " + e
     print(" Done.")
 
