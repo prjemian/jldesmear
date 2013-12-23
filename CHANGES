@@ -36,7 +36,7 @@ Changes:
 * [2005] add package installation support
 * [2006] release test data with package
 * [2006] rebrand package as JLdesmear (Jemian/Lake desmearing code)
-* [2008] start to use numpy.ndarray() instead of [float]
+* [2009] start to use numpy.ndarray() instead of [float]
 
 TODO:
 
