@@ -1,7 +1,7 @@
 .. $Id$
 
 Statistics Registers
---------------------
+####################
 
 .. automodule:: jldesmear.api.StatsReg
     :members: 

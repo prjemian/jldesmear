@@ -1,7 +1,7 @@
 .. $Id$
 
-Desmearing parameters, the ``Info()`` object
-############################################
+Desmearing parameters, the :class:`~jldesmear.api.info.Info` object
+###################################################################
 
 .. automodule:: jldesmear.api.info
     :members: 

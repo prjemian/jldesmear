@@ -36,8 +36,8 @@ Any output from these modules, if at all, is directly to the console.
    toolbox
 
 
-:mod:`api.traditional` documentation
-************************************
+:mod:`~jldesmear.api.traditional` documentation
+***********************************************
 
 .. automodule:: jldesmear.api.traditional
     :members: 

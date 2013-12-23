@@ -1,7 +1,7 @@
 .. $Id$
 
 Forward Smearing
-----------------
+################
 
 .. automodule:: jldesmear.api.smear
     :members: 
