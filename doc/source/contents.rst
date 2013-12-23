@@ -11,6 +11,7 @@ Contents
    api/traditional
    gui/*
    changes
+   license
 
 Indices and tables
 ##################

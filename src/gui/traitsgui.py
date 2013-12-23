@@ -11,15 +11,6 @@ Lake desmearing GUI using Enthought's Traits, Chaco, and Enable packages.
 '''
 
 
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################
-
-
 import os, sys
 # make sure lake is on the path, as well
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
@@ -369,5 +360,18 @@ class IterativeDesmear(threading.Thread):
             self.dsm.iterate_and_callback()
 
 
-if __name__ == "__main__":
+def main():
     DesmearingGui().configure_traits()
+
+
+if __name__ == "__main__":
+    main()
+
+
+########### SVN repository information ###################
+# $Date$
+# $Author$
+# $Revision$
+# $URL$
+# $Id$
+########### SVN repository information ###################

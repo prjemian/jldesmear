@@ -1,7 +1,7 @@
 .. $Id$
 
-CHANGES
+License
 ==================================
 
-.. literalinclude:: ../../CHANGES
+.. literalinclude:: ../../LICENSE
    :language: text

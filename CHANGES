@@ -1,0 +1,71 @@
+.. -*- restructuredtext -*-
+   $Id$
+
+This describes user-visible changes between the versions.
+
+..
+	Refer to the TRAC site for details on the tickets noting *lake-python* in the title.
+	(TRAC URL here)
+
+
+Change History
+##############
+
+Development: lake-python (trunk)
+---------------------------------
+
+Changes:
+
+* refactored :mod:`api.desmear` into a class: :class:`api.desmear.Desmearing`
+
+  * allows iterating one at a time
+  * computes ChiSqr data after iteration
+  * keeps record of all ChiSqr values
+
+* added single iteration method to :mod:`api.desmear`
+* added single and N desmearing iteration controls to GUI
+* update plots in the GUI after each iteration by running desmear calculation in a separate thread
+* provided ChiSqr v iteration plot (log-lin)
+* auto-discover all extrapolation functions
+* renamed packages and modules to reduce overuse of "lake"
+* moved content off first page of documentation
+* refactor all GUI code from Enthought Traits to PySide (or PyQt4)
+
+TODO:
+
+#. switch code from [float] to numpy.ndarray
+#. add capability for GUI to write desmeared data to a file
+#. read data from CanSAS XML
+#. read data from HDF5/NeXus
+
+Production
+-----------
+
+This documents tagged releases.
+
+2011-08-25: lake-python-2011-08
+*******************************
+
+Initial release:
+
+* python code fully operable
+* command line interface
+
+  * uses same paradigm as original FORTRAN code
+  * Q&A in a console session, then desmear
+  * tested on Windows, Macintosh, and Linux
+  * only uses standard Python libraries, no NumPy or SciPy
+
+* All test data copied from legacy C and FORTRAN projects
+
+* Documentation 
+
+  * as good or better than FORTRAN manual
+  * could improve still with content from thesis
+
+* graphical user interface
+
+  * provisional, demo only
+  * uses Enthought's Traits and Chaco
+  * does not write desmeared data to a file
+

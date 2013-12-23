@@ -124,7 +124,7 @@ class JLdesmearGui(QMainWindow):
         self.dirty = False
 
         self.fr = MainFrame(self)
-        self.setGeometry(5, 5, 500, 300)
+        self.setGeometry(75, 50, 500, 300)
         self.setCentralWidget(self.fr)
         
         self.createActions()
