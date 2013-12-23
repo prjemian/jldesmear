@@ -23,8 +23,8 @@ for pkg in ('jldesmear', 'jldesmear/api', 'jldesmear/gui'):
 
 console_scripts = []
 for launcher, method_path in {
-    'jldesmear': 'jldesmear.lake:main',
-    'jldesmear_qt': 'jldesmear.lake:lake_qt',
+    'jldesmear': 'jldesmear.desmear:desmear_cli',
+    'jldesmear_qt': 'jldesmear.desmear:desmear_qt',
     'jldesmear_traits': 'jldesmear.gui.traitsgui:main',
                  }.items():
     console_scripts.append(launcher + ' = ' + method_path)

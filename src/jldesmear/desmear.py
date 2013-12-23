@@ -6,21 +6,21 @@ traditional command-line interface: Iterative desmearing technique of Lake to sm
 
 
 import os, sys
+sys.path.insert(0, os.path.abspath(os.path.join('.')))
 
 
-def main():
-    import api.traditional
-    api.traditional.command_line_interface()
+def desmear_cli():
+    import jldesmear.api.traditional
+    jldesmear.api.traditional.command_line_interface()
 
 
-def lake_qt():
-    sys.path.insert(0, os.path.abspath(os.path.join('..')))
-    import gui.desmearinggui
-    gui.desmearinggui.main()
+def desmear_qt():
+    import jldesmear.gui.desmearinggui
+    jldesmear.gui.desmearinggui.main()
 
 
 if __name__ == '__main__':
-    main()
+    desmear_cli()
 
 
 ########### SVN repository information ###################
