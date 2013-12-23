@@ -28,9 +28,9 @@ os.environ['UBUNTU_MENUPROXY'] = "1"    # work around a menubar bug in Ubuntu 11
 
 import threading
 
-import lake.toolbox
-import lake.desmear
-import lake.info
+import api.toolbox  #@UnusedImport
+import api.desmear  #@UnusedImport
+import api.info     #@UnusedImport
 
 from enthought.traits.api \
     import HasTraits, Instance, File, String, Float, Enum, Button, Range
@@ -111,7 +111,7 @@ class DesmearingGui(HasTraits):
     residuals_renderer = Instance(ScatterPlot)
     status_label = String('status:')
     status_msg = String
-    obj_dsm = Instance( lake.desmear.Desmearing )
+    obj_dsm = Instance( api.desmear.Desmearing )
     btnRestartDsm = Button("(re)start")
     btnDesmear = Button("N times")
     btnDesmearOnce = Button("once")
@@ -122,12 +122,18 @@ class DesmearingGui(HasTraits):
     l_o = Float(label="slit length", desc="slit length, as defined by Lake", )
     qFinal = Float(label="qFinal", desc="fit extrapolation constants for Q>=qFinal",)
     NumItr = Range(1,1000, 10, label="# iterations", desc="number of desmearing iterations",)
+
+    from api.extrapolation import discover_extrapolation_functions
+    extrap_keys = sorted(discover_extrapolation_functions().keys())
     extrapolation = Enum( 
-                 'constant',  'linear', 'powerlaw', 'Porod',
-                 label="Extrapolation", desc="form of extrapolation",)
+                 *extrap_keys,
+                 label="Extrapolation", 
+                 desc="form of extrapolation")
+
     LakeWeighting = Enum( 
                  'constant', 'fast',  'ChiSqr',
-                 label="weighting", desc="weighting method for iterative refinement",)
+                 label="weighting", 
+                 desc="weighting method for iterative refinement",)
 
     sas_plot_item = Item('sas_plot', editor=ComponentEditor(), show_label=False)
     residuals_plot_item = Item('residuals_plot', editor=ComponentEditor(), show_label=False)
@@ -225,7 +231,7 @@ class DesmearingGui(HasTraits):
 
     def _infile_changed(self):
         if os.path.exists(self.infile):
-            Qvec, smr, esd = lake.toolbox.GetDat(self.infile)
+            Qvec, smr, esd = api.toolbox.GetDat(self.infile)
             p = self.sas_plot
             d = p.data
             d.set_data("x", Qvec)
@@ -292,11 +298,11 @@ class DesmearingGui(HasTraits):
             self.SetStatus("cannot desmear now, fit range beyond data range")
             return
 
-        params = lake.info.Info()
+        params = api.info.Info()
         if params == None:
             raise Exception, "Could not create Info() structure ... serious!"
         self.toInfo(params)
-        self.obj_dsm = lake.desmear.Desmearing(Qvec, smr, esd, params)
+        self.obj_dsm = api.desmear.Desmearing(Qvec, smr, esd, params)
         self.dsm_callback(self.obj_dsm)
         
     def toInfo(self, params):
@@ -317,7 +323,7 @@ class DesmearingGui(HasTraits):
     def dsm_callback(self, dsm):
         '''
         this function is called after every desmearing iteration
-        from :func:`lake.desmear.Desmearing.traditional()`
+        from :func:`api.desmear.Desmearing.traditional()`
     
         :param obj dsm: desmearing parameters object
         :return: should desmearing stop?

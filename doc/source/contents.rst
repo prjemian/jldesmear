@@ -1,19 +1,19 @@
 .. $Id$
 
-
 Contents
-==================
+########
 
 .. toctree::
    :maxdepth: 2
    :glob:
    
-   lake/lake
+   overview
+   api/traditional
    gui/*
    changes
 
 Indices and tables
-==================
+##################
 
 * :ref:`genindex`
 * :ref:`modindex`

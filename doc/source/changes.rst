@@ -1,23 +1,26 @@
 .. $Id$
 
 Change History
-==================
+##############
 
 development: lake-python (trunk)
-------------------------------------------------
+********************************
 
 Changes:
 
-* refactored :mod:`lake.desmear` into a class: :class:`lake.desmear.Desmearing`
+* refactored :mod:`api.desmear` into a class: :class:`api.desmear.Desmearing`
 
   * allows iterating one at a time
   * computes ChiSqr data after iteration
   * keeps record of all ChiSqr values
 
-* added single iteration method to :mod:`lake.desmear`
+* added single iteration method to :mod:`api.desmear`
 * added single and N desmearing iteration controls to GUI
 * update plots in the GUI after each iteration by running desmear calculation in a separate thread
 * provided ChiSqr v iteration plot (log-lin)
+* auto-discover all extrapolation functions
+* renamed packages and modules to reduce overuse of "lake"
+* moved content off first page of documentation
 
 TODO:
 
@@ -27,12 +30,12 @@ TODO:
 #. read data from HDF5/NeXus
 
 2013-12-22: lake-python-2011-09-traits
-------------------------------------------------
+**************************************
 
 Tag existing work and switch GUI to use PySide
 
 2011-08-25: lake-python-2011-08
-------------------------------------------------
+*******************************
 
 Initial release:
 
