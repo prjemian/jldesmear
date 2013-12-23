@@ -24,15 +24,20 @@ import api.info     #@UnusedImport
 
 
 class FileEntry(QFrame):
+    '''FileEntry = QLineEdit + QPushButton'''
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, callback=None):
+        '''
+        :param obj callback:  method to call if a name is selected
+        '''
         super(FileEntry, self).__init__(parent)
         self.parent = parent
+        self.callback = callback
         
         self.entry = QLineEdit('data file name here')
         #self.icon_button = QPushButton(icon, 'select ...')
         icon_button = QPushButton('&Open ...')
-        icon_button.clicked[bool].connect(self.onPressed)
+        icon_button.clicked[bool].connect(self.onOpenFile)
 
         layout = QHBoxLayout()
         layout.addWidget(self.entry)
@@ -41,11 +46,7 @@ class FileEntry(QFrame):
         layout.setStretch(1, 0)
         self.setLayout(layout)
 
-    def onPressed(self, **kw):
-        '''button was pressed, open the file dialog'''
-        self.onOpenFile()
-
-    def onOpenFile(self):
+    def onOpenFile(self, **kw):
         '''Choose a text file with 3-column smeared SAS data'''
         filters = ';;'.join([
                              'smeared SAS (*.smr)',
@@ -54,28 +55,9 @@ class FileEntry(QFrame):
         fileName = QFileDialog().getOpenFileName(self, filter=filters)[0]
         if len(fileName) > 0:
             self.entry.setText(fileName)
+            if self.callback is not None:
+                self.callback(fileName)
         return fileName
-
-
-class BigPanel(QFrame):
-
-    def __init__(self, parent=None):
-        super(BigPanel, self).__init__(parent)
-        self.parent = parent
-        
-        parms = QFrame(self)
-        parms.setFrameStyle(QFrame.StyledPanel)
-        plots = QFrame(self)
-        plots.setFrameStyle(QFrame.StyledPanel)
-
-        splitter = QSplitter(self)
-        splitter.setOrientation(Qt.Horizontal)
-        splitter.addWidget(parms)
-        splitter.addWidget(plots)
-
-        layout = QVBoxLayout()
-        layout.addWidget(splitter)
-        self.setLayout(layout)
 
 
 class MainFrame(QFrame):
@@ -84,8 +66,8 @@ class MainFrame(QFrame):
         super(MainFrame, self).__init__(parent)
         self.parent = parent
 
-        self.fileentry = FileEntry(self)
-        panel = BigPanel(self)
+        self.fileentry = FileEntry(self, callback=self.openFileCallback)
+        panel = self.create_Big_Panel(self)
         panel.setFrameStyle(QFrame.StyledPanel)
 
         layout = QVBoxLayout()
@@ -100,16 +82,37 @@ class MainFrame(QFrame):
 
     def onOpenFile(self):
         '''Choose a text file with 3-column smeared SAS data'''
-        fileName = self.fileentry.onOpenFile()
-        if len(fileName) > 0:
-            self.setStatus('selected file: ' + fileName[0])
-            self.loadFile(fileName[0])
-            self.dirty = False
+        self.fileentry.onOpenFile()
+    
+    def openFileCallback(self, fileName):
+        self.setStatus('selected file: ' + fileName)
+        self.loadFile(fileName)
+        self.dirty = False
 
     def loadFile(self, filename):
         '''Open a file with 3-column smeared SAS data'''
         if os.path.exists(filename):
             self.setStatus('did not open file: ' + filename)
+    
+    def create_Big_Panel(self, parent):
+        '''contains parameter entries and plots'''
+        fr = QFrame(parent)
+        
+        parms = QFrame(fr)
+        parms.setFrameStyle(QFrame.StyledPanel)
+        plots = QFrame(fr)
+        plots.setFrameStyle(QFrame.StyledPanel)
+
+        splitter = QSplitter(fr)
+        splitter.setOrientation(Qt.Horizontal)
+        splitter.addWidget(parms)
+        splitter.addWidget(plots)
+
+        layout = QVBoxLayout()
+        layout.addWidget(splitter)
+        fr.setLayout(layout)
+        
+        return fr
 
 
 class JLdesmearGui(QMainWindow):
