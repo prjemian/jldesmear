@@ -18,6 +18,7 @@ import toolbox
 import info
 import os
 import sys
+import numpy
 
 
 class Desmearing():
@@ -55,15 +56,35 @@ class Desmearing():
     def first_step(self):
         '''
         the first step
-        '''
-        self.C = list(self.I)       # desmeared intensity after current iteration
-        self.dC = list(self.dI)     # estimated uncertainty of C
 
-        self.S = [1.0]*len(self.I)  # smeared intensity from most recent C +/- dC
-        self.z = [0.0]*len(self.I)  # standardized residuals
+
+        calculate the standardized residuals (:math:`z =` ``self.z`` )
+        
+        .. math::
+        
+          z = (\hat{y} - y) \sigma
+        
+        where ``y = S``, ``yHat = I``, and ``sigma = dI``
+        
+
+
+        calculate the chi-squared statistic (:math:`\chi^2 =` ``self.ChiSqr`` )
+        
+        .. math::
+        
+          \chi^2 = \sum z^2
+
+        '''
+        self.C = numpy.array(self.I)        # desmeared intensity after current iteration
+        self.dC = numpy.array(self.dI)      # estimated uncertainty of C
+
+        n = len(self.I)
+        self.S = 1+numpy.zeros( (n,) )      # smeared intensity from most recent C +/- dC
+        self.z = numpy.zeros( (n,) )        # standardized residuals
+        self.ChiSqr = []                    # ChiSqr vs. iterations
         self._smear()
-        self.ChiSqr = []
-        self.ChiSqr.append( self._calc_ChiSqr() )
+        self.z = (self.S - self.I) / self.dI
+        self.ChiSqr.append( numpy.sum(self.z*self.z) )
         self.iteration_count = len(self.ChiSqr)-1
 
     def traditional(self):
@@ -98,7 +119,8 @@ class Desmearing():
         '''
         self._refine_desmeared()
         self._smear()
-        self.ChiSqr.append( self._calc_ChiSqr() )
+        self.z = (self.S - self.I) / self.dI
+        self.ChiSqr.append( numpy.sum(self.z*self.z) )
         self.iteration_count = len(self.ChiSqr)-1
 
     def iterate_and_callback(self):
@@ -137,49 +159,15 @@ class Desmearing():
         from the current desmeared and smeared intensities
         '''
         if self.params.LakeWeighting == "constant":
-            weighting = 1
+            weight = numpy.ones((len(self.C),))
         elif self.params.LakeWeighting == "ChiSqr":
-            weighting = 2*math.sqrt(self.ChiSqr[0]/self.ChiSqr[-1])
-
+            ratio = self.ChiSqr[0]/self.ChiSqr[-1]
+            weight = 2*math.sqrt(ratio) * numpy.ones((len(self.C),))
+        elif self.params.LakeWeighting == "fast":
+            weight = self.C / self.S
+        
         # apply the weight to get the corrected terms
-        for i in range(len(self.I)):
-            if self.params.LakeWeighting == "fast":
-                weighting = self.C[i] / self.S[i]
-            self.C[i] += weighting * (self.I[i] - self.S[i])
-
-    def _calc_ChiSqr(self):
-        '''
-        calculate the chi-squared statistic
-        
-        .. math::
-        
-          \chi^2 = \sum z^2
-        
-        where ``z`` is the [float] of standardized residuals
-        
-        :return: ChiSqr
-        :rtype: float
-        '''
-        self._calc_residuals()
-        result = 0.0
-        for z in self.z:
-            result += z*z
-        return result
-
-    def _calc_residuals(self):
-        '''
-        calculate the standardized residuals ( ``self.z`` )
-        
-        .. math::
-        
-          z = (\hat{y} - y) \sigma
-        
-        where ``y = S``, ``yHat = I``, and ``sigma = dI``
-        
-        calculates a new ``self.z``
-        '''
-        for i in range(len(self.I)):
-            self.z[i] = (self.S[i] - self.I[i]) / self.dI[i]
+        self.C += weight * (self.I - self.S)
 
     def SetExtrap(self, extrapolation_object = None):
         '''
@@ -259,12 +247,9 @@ def __demo():
     dsm = Desmearing(q, E, dE, params)
     dsm.traditional()
     toolbox.SavDat(params.outfile, dsm.q, dsm.C, dsm.dC)
-    n = len(q)
-    lnq, lnE, lnC = [0]*n, [0]*n, [0]*n
-    for i in range(n):
-        lnq[i] = math.log(q[i])
-        lnE[i] = math.log(E[i])
-        lnC[i] = math.log(dsm.C[i])
+    lnq = numpy.log(q)
+    lnE = numpy.log(E)
+    lnC = numpy.log(dsm.C)
     plot = textplots.Screen()
     plot.addtrace(lnq, lnE, "S")
     plot.addtrace(lnq, lnC, "D")

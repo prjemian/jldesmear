@@ -14,6 +14,7 @@ so that they may be improved, as needed.
 import sys
 import math
 import string
+import numpy
 
 
 def AskQuestion(question, answer):
@@ -130,8 +131,7 @@ def GetDat (infile):
     y = []
     dy = []
     try:
-        f = open(infile, "r")
-        for line in f.readlines():
+        for line in open(infile, "r").readlines():
             if isDataLine(line):
                 sx, sy, sdy = line.strip().split()
                 try:
@@ -143,10 +143,12 @@ def GetDat (infile):
                     dy.append(fdy)
                 except:
                     continue
-        f.close()
     except:
         message = "GetDat: error while opening or reading: " + infile
-        raise Exception, message
+        raise RuntimeError, message
+    x  = numpy.array(x)
+    y  = numpy.array(y)
+    dy = numpy.array(dy)
     return x, y, dy
 
 
@@ -168,7 +170,7 @@ def SavDat (outfile, x, y, dy):
         return outfile
     except:
         message = "SavDat: error while opening or writing: " + outfile
-        raise Exception, message
+        raise RuntimeError, message
 
 
 def Iswap (a, b):
@@ -189,6 +191,7 @@ def BSearch(z, x):
     :return: (True|False, iTest)  
     :rtype: (bool, int)
     '''
+    # TODO: can numpy do this faster?
     global iLo, iHi
     iTest = -1                 # assume that z < x[1] and test
     if (z < x[0]): return (False, iTest)
@@ -262,8 +265,9 @@ def find_first_index(x, target):
     :return: index of array x or None
     :rtype: float | int
     '''
-    for i in range(len(x)):
-        if x[i] >= target:
+    # TODO: can numpy do this faster?
+    for i, v in enumerate(x):
+        if v >= target:
             return i
     return None
 

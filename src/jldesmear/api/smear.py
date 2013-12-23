@@ -33,6 +33,7 @@ import extrapolation             #@UnusedImport
 import extrap_linear             #@UnusedImport
 import textplots
 import pprint
+import numpy
 
 
 def Plengt (l, slitlength):
@@ -72,10 +73,15 @@ def Plengt (l, slitlength):
     :return: P_l(l)
     :rtype: float
     '''
-    if math.fabs(l) > slitlength:
+    if isinstance(l, numpy.ndarray):
+        n = len(l)
+        zeroes = numpy.zeros((n,))
+        p_l = 0.5 * numpy.ones((n,)) / slitlength
+        result = numpy.where(numpy.abs(l) > slitlength, zeroes, p_l)
+    elif math.fabs(l) > slitlength:
         result = 0
     else:
-        result = 0.5 / slitlength;
+        result = 0.5 / slitlength
     return result
 
 
@@ -92,6 +98,7 @@ def FindIc (x, y, q, C, extrap):
     :return: I(x,y)
     :rtype: float
     '''
+    # TODO: can numpy do this faster?
     u = math.sqrt(x*x + y*y)                    # circularly symmetric
     (result, iTest) = toolbox.BSearch (u, q)    # find index
     if not result:
@@ -180,11 +187,10 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
     '''
     # make the slit-length weighting function
     NumPts = len(q)
-    x = [0.]*NumPts      # use "x" rather than "l" to avoid typos
-    w = [0.]*NumPts      # w = P_l(l) or P_l(x)
-    for i in range(NumPts):
-        x[i] = slitlength * (q[i] - q[0])/(q[-1] - q[0])
-        w[i] = Plengt(x[i], slitlength)
+    q0 = q[0]
+    qRange = q[-1] - q0
+    x = slitlength * (q - q0) / qRange      # use "x" rather than "l" to avoid typos
+    w = Plengt(x, slitlength)               # w = P_l(l) or P_l(x)
 
     # select and fit the extrapolation
     try:
@@ -194,8 +200,9 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
         raise Exception, message
 
     # calculate the slit-smearing
-    S = [0.]*NumPts     # slit-smeared intensity (to be the result)
-    Ic = [0.]*NumPts    # integrand for the smearing integral
+    # TODO: optimize with any numpy/scipy methods?
+    S = numpy.ndarray((NumPts,))     # slit-smeared intensity (to be the result)
+    Ic = numpy.ndarray((NumPts,))    # integrand for the smearing integral
     for i in range(NumPts):
         if not quiet:
             toolbox.Spinner(i)
@@ -208,33 +215,30 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
 
 def trapezoid_integration(x, y):
     '''
-    integrate the area under the curve using trapezoid rule
-    
-    .. math::
-    
-        \sum_{i=2}^N (x_i - x_{i-1}) (y_i + y_{i-1})/2
+    integrate the area under the curve using trapezoid rule (from :meth:`numpy.trapz`)
 
     :param [float] x: abcissae
     :param [float] y: ordinates
     :return: area under the curve
     :rtype: float
     '''
-    area = 0
-    for i in range(1, len(x)):
-        area += (x[i] - x[i-1]) * (y[i] + y[i-1])
-    return area/2
+    return numpy.trapz(y, x)
 
 
 def __test_FindIc():
     '''test FindIc()'''
+    # TODO: optimize with any numpy/scipy methods?
     print("test of FindIc")
-    q, C, dC = toolbox.GetDat(os.path.join('..', '..', 'data', 'test1.dsm'))
+    path = os.path.dirname(__file__)
+    q, C, dC = toolbox.GetDat(os.path.join(path, '..', 'data', 'test1.dsm'))
     start = toolbox.find_first_index(q, 0.08)
     print('q[%d:]=%s' % (start, q[start:-1]))
     extrap = extrap_linear.Linear()
     extrap.fit(q[start:-1], C[start:-1], dC[start:-1])
+
     num_tests = 200
-    x, y = [0]*num_tests, [0]*num_tests
+    x = numpy.zeros((num_tests,))
+    y = numpy.zeros((num_tests,))
     i1 = 170
     i2 = i1+5
     print("qNow\tInow (test of FindIc())")
@@ -244,6 +248,7 @@ def __test_FindIc():
         print("%g\t%g" % (qNow, Inow))
         x[i] = qNow
         y[i] = Inow
+
     title = "\nplot of interpolated data, Ic(q), *=data, O=interpolates"
     xy = textplots.Screen()
     xy.addtrace(x, y, "O")
@@ -262,14 +267,12 @@ def __test_integrate():
 def __test_Smear():
     '''test Smear()'''
     print("Testing Smear()")
-    q, C, dC = toolbox.GetDat(os.path.join('..', 'data', 'test1.dsm'))
+    path = os.path.dirname(__file__)
+    q, C, dC = toolbox.GetDat(os.path.join(path, '..', 'data', 'test1.dsm'))
 
     title = "\nPorod plot, I * q^4 vs q: C=input data"
-    NumPts = len(q)
-    q4, q4I = [0]*NumPts, [0]*NumPts
-    for i in range(NumPts):
-        q4[i] = math.pow(q[i],4)
-        q4I[i] = C[i]*q4[i]
+    q4 = q*q*q*q
+    q4I = q4 * C
     textplots.Screen().xyplot(q, q4I, title)
 
     try:
@@ -283,14 +286,12 @@ def __test_Smear():
 
     coeff = extrap.GetCoefficients()
     pprint.pprint(coeff)
-    B = 0
-    if 'B' in coeff.keys():
-        B = coeff['B']
-    qS4I = [0]*NumPts
+    B = coeff.get('B', 0.)
+    q4I = q4 * (C - B)
+    qS4I = q4 * (S - B)
     print("%s\t%s\t%s\t%s\t%s" % ("q", "C", "dC", "S", "dS"))
+    NumPts = len(q)
     for i in range(NumPts):
-        q4I[i] = (C[i] - B)*q4[i]
-        qS4I[i] = (S[i] - B)*q4[i]
         print("%g\t%g\t%g\t%g\t%g" % (q[i], C[i], dC[i], S[i], dC[i]*S[i]/C[i]))
     plot = textplots.Screen()
     title = "Porod plot, I * q^4 vs q: C=input (background subtracted)"
@@ -311,8 +312,8 @@ def __test_Smear():
     	"p": "p (power law exponent)",
     	"Cp": "Cp (Porod constant)"
     }
-    for key in names.keys():
-        if key in coeff.keys():
+    for key in sorted(coeff.keys()):
+        if key in names.keys():
             print("coefficient: %s = %s" % (names[key], coeff[key]))
 
     # plot the data on log vs log
@@ -350,6 +351,7 @@ def __test_Plengt():
     print("Plengt %s" % Plengt(1.1, .5))
     print("Plengt %s" % Plengt(0.1, 3))
     print("Plengt %s" % Plengt(0.1, 3.))
+    print("Plengt %s" % Plengt(numpy.array([0.01, 0.1, 0.2]), .1))
 
 
 def __demo():

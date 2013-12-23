@@ -9,13 +9,13 @@ import os, sys
 import threading
 
 try:
-    from PyQt4.QtCore import *  #@UnusedWildImport
-    from PyQt4.QtGui import *   #@UnusedWildImport
-    pyqtSignal = pyqtSignal
-except:
     from PySide.QtCore import *  #@UnusedWildImport
     from PySide.QtGui import *   #@UnusedWildImport
     pyqtSignal = Signal
+except:
+    from PyQt4.QtCore import *  #@UnusedWildImport
+    from PyQt4.QtGui import *   #@UnusedWildImport
+    pyqtSignal = pyqtSignal
 
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
 import jldesmear.api.toolbox  #@UnusedImport

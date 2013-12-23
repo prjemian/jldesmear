@@ -36,10 +36,10 @@ Changes:
 * [2005] add package installation support
 * [2006] release test data with package
 * [2006] rebrand package as JLdesmear (Jemian/Lake desmearing code)
+* [2008] start to use numpy.ndarray() instead of [float]
 
 TODO:
 
-#. switch code from [float] to numpy.ndarray
 #. add capability for GUI to write desmeared data to a file
 #. read data from CanSAS XML
 #. read data from HDF5/NeXus
