@@ -3,12 +3,12 @@
 Command-line program for Lake/Jemian desmearing
 ###############################################
 
-:mod:`api.traditional` is the main program to run desmearing.
+:mod:`jldesmear.api.traditional` is the main program to run desmearing.
 It provides the same command-line interface as its FORTRAN and C predecessors.
 The main command-line interface is started with a Python command such as::
 
-	import api
-	api.traditional.command_line_interface()
+	import jldesmear.api
+	jldesmear.api.traditional.command_line_interface()
 
 Example
 *******
@@ -39,6 +39,6 @@ Any output from these modules, if at all, is directly to the console.
 :mod:`api.traditional` documentation
 ************************************
 
-.. automodule:: api.traditional
+.. automodule:: jldesmear.api.traditional
     :members: 
     :synopsis: command-line program to run desmearing

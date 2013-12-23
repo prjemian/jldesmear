@@ -19,9 +19,9 @@ os.environ['UBUNTU_MENUPROXY'] = "1"    # work around a menubar bug in Ubuntu 11
 
 import threading
 
-import api.toolbox  #@UnusedImport
-import api.desmear  #@UnusedImport
-import api.info     #@UnusedImport
+import jldesmear.api.toolbox  #@UnusedImport
+import jldesmear.api.desmear  #@UnusedImport
+import jldesmear.api.info     #@UnusedImport
 
 from enthought.traits.api \
     import HasTraits, Instance, File, String, Float, Enum, Button, Range
@@ -102,7 +102,7 @@ class DesmearingGui(HasTraits):
     residuals_renderer = Instance(ScatterPlot)
     status_label = String('status:')
     status_msg = String
-    obj_dsm = Instance( api.desmear.Desmearing )
+    obj_dsm = Instance( jldesmear.api.desmear.Desmearing )
     btnRestartDsm = Button("(re)start")
     btnDesmear = Button("N times")
     btnDesmearOnce = Button("once")
@@ -114,7 +114,7 @@ class DesmearingGui(HasTraits):
     qFinal = Float(label="qFinal", desc="fit extrapolation constants for Q>=qFinal",)
     NumItr = Range(1,1000, 10, label="# iterations", desc="number of desmearing iterations",)
 
-    from api.extrapolation import discover_extrapolation_functions
+    from jldesmear.api.extrapolation import discover_extrapolation_functions
     extrap_keys = sorted(discover_extrapolation_functions().keys())
     extrapolation = Enum( 
                  *extrap_keys,
@@ -193,7 +193,11 @@ class DesmearingGui(HasTraits):
         if self.chiSqr_plot == None:
             self.chiSqr_plot = ChiSqr_plot()
 
-    def _infile_default(self): return os.path.join('..', '..', 'data', 'test1.smr')
+    def _infile_default(self):
+        path = os.path.dirname(__file__)
+        testfilename = os.path.join(path, '..', 'data', 'test1.smr')
+        return os.path.abspath(testfilename)
+
     def _l_o_default(self): return 0.08
     def _qFinal_default(self): return 0.08
     def _NumItr_default(self): return 10
@@ -222,7 +226,7 @@ class DesmearingGui(HasTraits):
 
     def _infile_changed(self):
         if os.path.exists(self.infile):
-            Qvec, smr, esd = api.toolbox.GetDat(self.infile)
+            Qvec, smr, esd = jldesmear.api.toolbox.GetDat(self.infile)
             p = self.sas_plot
             d = p.data
             d.set_data("x", Qvec)
@@ -289,11 +293,11 @@ class DesmearingGui(HasTraits):
             self.SetStatus("cannot desmear now, fit range beyond data range")
             return
 
-        params = api.info.Info()
+        params = jldesmear.api.info.Info()
         if params == None:
             raise Exception, "Could not create Info() structure ... serious!"
         self.toInfo(params)
-        self.obj_dsm = api.desmear.Desmearing(Qvec, smr, esd, params)
+        self.obj_dsm = jldesmear.api.desmear.Desmearing(Qvec, smr, esd, params)
         self.dsm_callback(self.obj_dsm)
         
     def toInfo(self, params):
@@ -314,7 +318,7 @@ class DesmearingGui(HasTraits):
     def dsm_callback(self, dsm):
         '''
         this function is called after every desmearing iteration
-        from :func:`api.desmear.Desmearing.traditional()`
+        from :func:`~jldesmear.api.desmear.Desmearing.traditional()`
     
         :param obj dsm: desmearing parameters object
         :return: should desmearing stop?

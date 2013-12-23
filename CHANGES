@@ -14,6 +14,9 @@ Change History
 Development: lake-python (trunk)
 ---------------------------------
 
+.. note:: subversion changesets are noted in square brackets
+   such as [2002] is change set 2002
+
 Changes:
 
 * refactored :mod:`api.desmear` into a class: :class:`api.desmear.Desmearing`
@@ -26,10 +29,13 @@ Changes:
 * added single and N desmearing iteration controls to GUI
 * update plots in the GUI after each iteration by running desmear calculation in a separate thread
 * provided ChiSqr v iteration plot (log-lin)
-* auto-discover all extrapolation functions
-* renamed packages and modules to reduce overuse of "lake"
-* moved content off first page of documentation
-* refactor all GUI code from Enthought Traits to PySide (or PyQt4)
+* [2000] auto-discover all extrapolation functions
+* [2000] renamed packages and modules to reduce overuse of "lake"
+* [2000] moved content off first page of documentation
+* [2002] start to refactor all GUI code from Enthought Traits to PySide (or PyQt4)
+* [2005] add package installation support
+* [2006] release test data with package
+* [2006] rebrand package as JLdesmear (Jemian/Lake desmearing code)
 
 TODO:
 

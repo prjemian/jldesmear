@@ -3,6 +3,6 @@
 Forward Smearing
 ----------------
 
-.. automodule:: api.smear
+.. automodule:: jldesmear.api.smear
     :members: 
-    :synopsis: api.smear is used by api.desmear to forward smear a test case.
+    :synopsis: jldesmear.api.smear is used by jldesmear.api.desmear to forward smear a test case.

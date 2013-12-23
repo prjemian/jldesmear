@@ -19,7 +19,7 @@ class Test(unittest.TestCase):
             return          # no input file so quit the program
 
         # override default constants for code development
-        params.infile = os.path.join('..', '..', 'data', 'test1.smr')
+        params.infile = os.path.join('..', 'data', 'test1.smr')
         params.outfile = "test.dsm"
         params.slitlength = 0.08
         params.sFinal = 0.08

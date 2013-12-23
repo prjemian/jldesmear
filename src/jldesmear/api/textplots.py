@@ -9,8 +9,8 @@ While the output may look rough, they work just about anywhere.
 
 Here is how the code may be called::
 
-    >>> x, y, dy = toolbox.GetDat(os.path.join('..', '..', 'data', 'test1.smr'))
-    >>> print("Data plot: ../../data/test1.smr")
+    >>> x, y, dy = toolbox.GetDat(os.path.join('..', 'data', 'test1.smr'))
+    >>> print("Data plot: ../data/test1.smr")
     >>> Screen().xyplot(x, y)
 
 Example, given *C(q)* and *S(q)*::

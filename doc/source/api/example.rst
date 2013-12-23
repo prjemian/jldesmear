@@ -7,16 +7,16 @@ Example using ``test1.smr`` data set
 Input Commands
 --------------
 
-.. see api.smear.Plengt() for an example of formatted math
+.. see :func:`jldesmear.api.smear.Plengt` for an example of formatted math
 
 .. needs graphviz
-.. .. inheritance-diagram:: api.traditional api.smear api.StatsReg api.textplots
+.. .. inheritance-diagram:: jldesmear.api.traditional jldesmear.api.smear jldesmear.api.StatsReg jldesmear.api.textplots
 
 Start the program from the ``data`` directory in the source tree.
 We'll use UNIX shell redirection to get everything in a text file::
 
-	cd data
-	python ../src/api/traditional.py < test1.inp > test1.out
+	cd src/jldesmear/data
+	python ../api/traditional.py < test1.inp > test1.out
 
 The program will print a header::
 
@@ -296,22 +296,22 @@ Data Files
 Command Input File (:file:`test1.inp`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../data/test1.inp
+.. literalinclude:: ../../../src/jldesmear/data/test1.inp
 
 Input Data File (:file:`test1.smr`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../data/test1.smr
+.. literalinclude:: ../../../src/jldesmear/data/test1.smr
 
 Output Data File (:file:`test1.dsm`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../data/test1.dsm
+.. literalinclude:: ../../../src/jldesmear/data/test1.dsm
 
 Complete Program Output (:file:`test1.out`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Too big for the documentation.  See the source code distribution.
 
-.. .. literalinclude:: ../../../data/test1.out
+.. .. literalinclude:: ../../data/test1.out
 

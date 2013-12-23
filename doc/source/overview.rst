@@ -31,7 +31,7 @@ effects, a power-law extrapolation of the intensity
 is made for all values beyond the range of available
 data.  This region is also integrated by the trapezoid
 rule.  The integration covers the region from ``l = 0``
-up to ``l = lo``. (see routine :mod:`api.smear`).
+up to ``l = lo``. (see routine :mod:`jldesmear.api.smear`).
 This technique allows the slit-length weighting function
 to be changed without regard to the limits of integration
 coded into this program.

@@ -6,8 +6,8 @@ import toolbox
 import os
 
 
-missing_datafile = os.path.join('..', '..', 'data', 'test1.txt')
-expected_datafile = os.path.join('..', '..', 'data', 'test1.smr')
+missing_datafile = os.path.join('..', 'data', 'test1.txt')
+expected_datafile = os.path.join('..', 'data', 'test1.smr')
 
 
 class Test(unittest.TestCase):

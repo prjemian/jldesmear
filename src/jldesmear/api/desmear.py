@@ -240,7 +240,7 @@ def __demo():
         return          # no input file so quit the program
 
     # override default constants for code development
-    params.infile = os.path.join('..', '..', 'data', 'test1.smr')
+    params.infile = os.path.join('..', 'data', 'test1.smr')
     params.outfile = "test.dsm"
     params.slitlength = 0.08           # s: slit length, as defined by Lake
     params.sFinal = 0.08               # fit extrapolation constants for q>=sFinal

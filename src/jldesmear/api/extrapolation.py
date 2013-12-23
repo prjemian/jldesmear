@@ -17,16 +17,19 @@ def discover_extrapolation_functions():
     '''
     return a dictionary of the available extrapolation functions
     
-    Extrapolation functions must be in a file named extrap_KEY.py
-    where KEY is the key name of the extrapolation function.
+    Extrapolation functions must be in a file named 
+    ``extrap_KEY.py``
+    where ``KEY`` is the key name of the extrapolation function.
     The file is placed in the source code tree in the same directory
-    as the file: ``extrapolation.py``.
+    as the module: :mod:`~jldesmear.api.extrapolation`.
     
     The file must contain:
     
-    * a subclass of :class:`Extrapolation`
-    * a variable called ``extrapolation_class`` set to the class 
-      (See the :file:`extrap_constant.py` for an example.)
+    .. index:: !extrapolation_class
+    
+    * a subclass of :class:`~jldesmear.api.extrapolation.Extrapolation`
+    * a variable called :const:`extrapolation_class` set to the class 
+      (See :mod:`~jldesmear.api.extrap_constant` for an example.)
     
     '''
     global functions
@@ -90,10 +93,10 @@ class Extrapolation:
     
     See the subclasses for examples how to implement a new extrapolation function.
     
-    * :mod:`api.extrap_constant`
-    * :mod:`api.extrap_linear`
-    * :mod:`api.extrap_powerlaw`
-    * :mod:`api.extrap_Porod`
+    * :mod:`~jldesmear.api.extrap_constant`
+    * :mod:`~jldesmear.api.extrap_linear`
+    * :mod:`~jldesmear.api.extrap_powerlaw`
+    * :mod:`~jldesmear.api.extrap_Porod`
     
     Basics:
     
@@ -104,7 +107,7 @@ class Extrapolation:
     * :meth:`fit_result()` : assigns fit coefficients to ``self.coefficients`` dictionary
     * :data:`extrapolation_class` : identifies the class for auto-discovery
       
-      example from :mod:`api.extrap_linear`::
+      example from :mod:`extrap_linear`::
       
           extrapolation_class = Linear
     

@@ -18,9 +18,9 @@ except:
     pyqtSignal = Signal
 
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
-import api.toolbox  #@UnusedImport
-import api.desmear  #@UnusedImport
-import api.info     #@UnusedImport
+import jldesmear.api.toolbox  #@UnusedImport
+import jldesmear.api.desmear  #@UnusedImport
+import jldesmear.api.info     #@UnusedImport
 
 
 class FileEntry(QFrame):

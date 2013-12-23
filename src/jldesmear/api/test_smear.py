@@ -8,7 +8,7 @@ import extrap_linear
 import os
 
 
-datafile = os.path.join('..', '..', 'data', 'test1.dsm')
+datafile = os.path.join('..', 'data', 'test1.dsm')
 
 
 class Test(unittest.TestCase):

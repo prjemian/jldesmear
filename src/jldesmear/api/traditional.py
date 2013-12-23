@@ -43,7 +43,7 @@ effects, a power-law extrapolation of the intensity
 is made for all values beyond the range of available
 data.  This region is also integrated by the trapezoid
 rule.  The integration covers the region from ``l = 0``
-up to ``l = lo``. (see module :mod:`api.smear`).
+up to ``l = lo``. (see module :mod:`smear`).
 This technique allows the slit-length weighting function
 to be changed without regard to the limits of integration
 coded into this program.
@@ -126,7 +126,7 @@ def GetInf(params):
 def callback (dsm):
     '''
     this function is called after every desmearing iteration
-    from :func:`api.desmear.Desmearing.traditional()`
+    from :func:`desmear.Desmearing.traditional()`
 
     :param obj dsm: Desmearing object
     :return: should desmearing stop?
@@ -144,7 +144,7 @@ def callback (dsm):
 def no_plotting_callback (dsm):
     '''
     this function is called after every desmearing iteration
-    from :func:`api.desmear.Desmearing.traditional()`
+    from :func:`desmear.Desmearing.traditional()`
 
     :param obj dsm: Desmearing object
     :return: should desmearing stop?
@@ -196,16 +196,21 @@ def command_line_interface ():
     # log output to "Lake.log"
     print(command_line_interface.__doc__)
 
-    params = info.Info()
+    params = info.Info()    # create structure for control parameters
     if params == None:
         return          # no input file so quit the program
 
-    params.infile = os.path.join('..', '..', 'data', 'test1.smr')
+    # define defaults (as used by the developer)
+    path = os.path.dirname(__file__)
+    testfilename = os.path.join(path, '..', 'data', 'test1.smr')
+    params.infile = testfilename
     params.outfile = "test.dsm"
     params.slitlength = 0.08
     params.sFinal = 0.08
     params.NumItr = 10
     params.extrapname = "linear"
+    
+    # TODO: add support to read parameters from *.inp file
 
     params = GetInf(params)
     if params == None:

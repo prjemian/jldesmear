@@ -3,12 +3,12 @@
 '''
 Forward smearing
 
-Smear *(q, I, dI)* data given to the routine :func:`smear.Smear()`
-using the slit-length weighting function :func:`smear.Plengt()`.
+Smear *(q, I, dI)* data given to the routine :func:`~jldesmear.api.smear.Smear()`
+using the slit-length weighting function :func:`~jldesmear.api.smear.Plengt()`.
 The integration used below goes only over the slit length
 (does not include either slit width or wavelength broadening).
 
-For now, :func:`smear.Plengt()` describes a rectangular slit
+For now, :func:`~jldesmear.api.smear.Plengt()` describes a rectangular slit
 and the integration extends up to the length of the slit.
 This could be changed if desired.
 
@@ -44,7 +44,9 @@ def Plengt (l, slitlength):
         \int_{-\infty}^{\infty} P_l(l) dl = 1
 
     It is defined for a rectangular slit of length ``2*slitlength``
-    and probability ``1/(2*slitlength)``.  It is zero elsewhere.::
+    (:math:`2l_o`)
+    and probability ``1/(2*slitlength)`` (:math:`1/2l_o`).  
+    It is zero elsewhere.::
     
                             P(l)
         /--------------------|--------------------\\
@@ -148,9 +150,9 @@ def prepare_extrapolation(q, C, dC, extrapname, sFinal):
 def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
     '''
     Smear the data of C(q) into S(q) using the slit-length
-    weighting function :func:`smear.Plengt()` and an extrapolation
+    weighting function :func:`~jldesmear.api.smear.Plengt()` and an extrapolation
     of the data to avoid truncation errors.  Assume that
-    :func:`smear.Plengt()` goes to zero for ``l > l_o`` (the slit length).
+    :func:`~jldesmear.api.smear.Plengt()` goes to zero for ``l > l_o`` (the slit length).
     
     Also assume that the slit length function is symmetrical
     about ``l = zero``.
@@ -159,7 +161,7 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
 
         S(q) = 2 \int_0^{l_o} P_l(l) \ C(\sqrt{q^2+l^2}) \ dl
     
-    This routine is written so that if :func:`smear.Plengt()` is changed
+    This routine is written so that if :func:`~jldesmear.api.smear.Plengt()` is changed
     (for example) to a Gaussian, that no further modification
     is necessary to the integration procedure.  That is,
     this routine will integrate the data out to "slitlength" (``l_o``).
@@ -260,7 +262,7 @@ def __test_integrate():
 def __test_Smear():
     '''test Smear()'''
     print("Testing Smear()")
-    q, C, dC = toolbox.GetDat(os.path.join('..', '..', 'data', 'test1.dsm'))
+    q, C, dC = toolbox.GetDat(os.path.join('..', 'data', 'test1.dsm'))
 
     title = "\nPorod plot, I * q^4 vs q: C=input data"
     NumPts = len(q)
