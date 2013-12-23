@@ -21,10 +21,15 @@ Changes:
 
 TODO:
 
-* learn how to number this list
-* switch code from [float] to numpy.ndarray or Traits Array()
-* add capability for GUI to write desmeared data to a file
-* resolve the Traits invisible MenuBar problems seen on Ubuntu
+#. switch code from [float] to numpy.ndarray
+#. add capability for GUI to write desmeared data to a file
+#. read data from CanSAS XML
+#. read data from HDF5/NeXus
+
+2013-12-22: lake-python-2011-09-traits
+------------------------------------------------
+
+Tag existing work and switch GUI to use PySide
 
 2011-08-25: lake-python-2011-08
 ------------------------------------------------

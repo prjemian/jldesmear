@@ -1,14 +1,10 @@
-.. lake-python documentation master file, created by
-   sphinx-quickstart on Thu Apr 14 14:49:25 2011.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-   
 .. $Id$
 
 Program Documentation: lake-python
 =======================================
 
-Desmear 1-D SAXS or SANS data according to the method of JA Lake as implemented by Pete Jemian.
+Desmear 1-D SAXS or SANS data according to the method 
+of JA Lake as implemented by Pete Jemian.
 
 This program applies the iterative desmearing technique of Lake
 to small-angle scattering data.  The way that the program works
@@ -49,12 +45,9 @@ Input data will be provided in an ASCII TEXT file
 as three columns *(Q, I, dI)* separated by white space.
 Units must be compatible.  (*I* and *dI* must have same units)
 
-*Q*
-	scattering vector (any units)
-*I*
-	measured SAS intensity
-*dI*
-	estimated uncertainties of *I* (usually standard deviation)
+:*Q*:	scattering vector (any units)
+:*I*:	measured SAS intensity
+:*dI*:	estimated uncertainties of *I* (usually standard deviation)
 	Note that *dI* **MUST** be provided and **MUST** not be zero.
 
 CITATION

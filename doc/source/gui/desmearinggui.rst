@@ -7,14 +7,16 @@ Graphical User Interface for Lake/Jemian desmearing
 Several classes are defined in the source code.
 This class is used to start the GUI:  
 :class:`gui.desmearinggui.DesmearingGui`
-The main GUI program is started with a Python command such as::
 
-	import desmearinggui
-	desmearinggui.DesmearingGui().configure_traits()
+.. TODO: update to new version
+  The main GUI program is started with a Python command such as::
+
+  	  import desmearinggui
+  	  desmearinggui.DesmearingGui().configure_traits()
 
 :mod:`gui.desmearinggui` documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: gui.desmearinggui
     :members: 
-    :synopsis: Uses Enthought's Traits+Chaco+Enable, best effort so far in Python
+    :synopsis: GUI for desmearing standalone code
