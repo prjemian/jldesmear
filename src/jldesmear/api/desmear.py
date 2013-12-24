@@ -21,6 +21,13 @@ import sys
 import numpy
 
 
+Weighting_Methods = {
+    'constant':   'weight = 1.0',
+    'ChiSqr':     'weight = CorrectedI / SmearedI',
+    'fast':       'weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))',
+}
+
+
 class Desmearing():
     ''' 
     desmear the 1-D SAS data *(q, I, dI)* by method of Jemian/Lake
@@ -183,12 +190,8 @@ class Desmearing():
         :ChiSqr:     weight = CorrectedI / SmearedI
         :fast:       weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))
         '''
-        weighting_methods = {
-            'constant':   'weight = 1.0',
-            'ChiSqr':     'weight = CorrectedI / SmearedI',
-            'fast':       'weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))',
-        }
-        choices = sorted(weighting_methods.keys())
+        global Weighting_Methods
+        choices = sorted(Weighting_Methods.keys())
         if LakeWeighting not in choices:
             msg = "LakeWeighting must be one of " + str(choices)
             msg += ", got "  + LakeWeighting
