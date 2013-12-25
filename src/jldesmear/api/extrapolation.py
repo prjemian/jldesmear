@@ -180,9 +180,9 @@ class Extrapolation:
 
         :param reg: statistics registers (created in fit())
         :type reg: StatsRegClass object
-        :param [float] x: independent axis
-        :param [float] y: dependent axis
-        :param [float] z: estimated uncertainties of y
+        :param numpy.ndarray x: independent axis
+        :param numpy.ndarray y: dependent axis
+        :param numpy.ndarray z: estimated uncertainties of y
         '''
         for i in range(len(x)):
             self.fit_add(reg, x[i], y[i], z[i])

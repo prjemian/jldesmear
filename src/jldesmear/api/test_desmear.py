@@ -5,7 +5,7 @@ import unittest
 import info
 import desmear
 import toolbox
-import os
+import os       #@UnusedImport
 
 arr_chiSqr = []
 
@@ -19,7 +19,7 @@ class Test(unittest.TestCase):
             return          # no input file so quit the program
 
         # override default constants for code development
-        params.infile = os.path.join('..', 'data', 'test1.smr')
+        params.infile = toolbox.GetTest1DataFilename('.smr')
         params.outfile = "test.dsm"
         params.slitlength = 0.08
         params.sFinal = 0.08

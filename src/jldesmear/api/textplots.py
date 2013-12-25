@@ -9,18 +9,17 @@ While the output may look rough, they work just about anywhere.
 
 Here is how the code may be called::
 
-    >>> x, y, dy = toolbox.GetDat(os.path.join('..', 'data', 'test1.smr'))
-    >>> print("Data plot: ../data/test1.smr")
+    >>> fn = toolbox.GetTest1DataFilename('.smr')
+    >>> x, y, dy = toolbox.GetDat(fn)
+    >>> print("Data plot: " + fn)
     >>> Screen().xyplot(x, y)
 
 Example, given *C(q)* and *S(q)*::
 
     KratkyPlot = textplots.Screen()
     title = "\\nKratky plot, I * q^2 vs q: S=smeared"
-    q2C, q2S = [0]*NumPts, [0]*NumPts
-    for i in range(NumPts):
-        q2C[i] = q[i]*q[i]*(C[i] - B)
-        q2S[i] = q[i]*q[i]*(S[i] - B)
+    q2C = q*q*(C - B)
+    q2S = q*q*(S - B)
     KratkyPlot.SetTitle(title)
     KratkyPlot.addtrace(lnq, q2S, "S")
     KratkyPlot.printplot()
@@ -67,7 +66,8 @@ Source code documentation
 
 import copy
 import toolbox
-import os
+import os       #@UnusedImport
+import numpy
 
 
 class Screen:
@@ -87,7 +87,7 @@ class Screen:
         self.comments = ''
 
     def make_buffer(self, rows = None, cols = None):
-        '''prepare a screen screen'''
+        '''prepare a screen buffer'''
         if rows == None:
             rows = self.MaxRow
         if cols == None:
@@ -175,25 +175,21 @@ class Screen:
 
     def __minmaxlist(self, x):
         '''
-        return the minimum and maximum of the array (list)
+        return the minimum and maximum of the array
 
-        :param x: array (list) to be examined
+        :param numpy.ndarray x: array to be examined
         '''
-        lo = hi = x[0]
-        for val in x:
-            if val < lo:
-                lo = val
-            elif val > hi:
-                hi = val
-        return lo, hi
+        return x.min(), x.max()
 
     def __minmax(self, lo, hi, value):
         '''
         return the minimum and maximum of the value
 
-        :param lo: current minimum or None if not set
-        :param hi: current maximum or None if not set
-        :param value: value to be tested
+        :param float lo: current minimum or None if not set
+        :param float hi: current maximum or None if not set
+        :param float value: value to be tested
+        :return: lo = min(lo,value), hi = max(hi, value)
+        :rtype: (float, float)
         '''
         if lo == None: lo = value
         if hi == None: hi = value
@@ -213,8 +209,8 @@ class Screen:
         '''
         convenience to plot *y(x)*
 
-        :param [float] x: abcissae
-        :param [float] y: ordinates
+        :param numpy.ndarray x: abcissae
+        :param numpy.ndarray y: ordinates
         '''
         if title == None:
             self.SetTitle("plot of y vs x, %d points" % len(x))
@@ -227,20 +223,22 @@ class Screen:
         '''
         convenience to plot *z* vs point number
 
-        :param [float] z: ordinates (standardized residuals)
+        :param numpy.ndarray z: ordinates (standardized residuals)
         '''
-        n = range(1, len(z)+1)
-        # generate pseudo-data for the +1 and -1 bars
-        npm = [0]*self.MaxCol
-        for i in range(self.MaxCol):
-            npm[i] = 1 + float(i)*len(z)/self.MaxCol
-        plus, minus = [1]*len(npm), [-1]*len(npm)
+        n = numpy.linspace(1, len(z), len(z))
+        # generate pseudo-data for the +1, -1, and 0 bars
+        npm = numpy.linspace(1, self.MaxCol, self.MaxCol) * len(z)/self.MaxCol
+        zeros = numpy.zeros_like(npm)
+        plus = numpy.ones_like(npm)
+        minus = -1 * plus
         if title == None:
             self.SetTitle("plot of standardized residuals vs index")
         else:
             self.SetTitle(title)
+
         self.addtrace(npm, plus, "=")
         self.addtrace(npm, minus, "=")
+        self.addtrace(npm, zeros, "~")
         self.addtrace(n, z, "+")
         self.printplot()
 
@@ -248,20 +246,17 @@ class Screen:
 def __demo():
     '''show the various routines'''
     print("Testing $Id$")
-    x, y, _ = toolbox.GetDat( os.path.join('..', '..', 'data', 'test1.smr') )
-    print("\nData plot: ../../data/test1.smr")
+    fn = toolbox.GetTest1DataFilename('.smr')
+    x, y, _ = toolbox.GetDat( fn )
+    print("\nData plot: " + fn)
     _ = Screen().xyplot(x, y)
 
-    title = "\nResiduals plot: ../../data/test1.smr"
+    title = "\nResiduals plot: " + fn
     # create test some data that looks sort of like residuals
-    summation = 0
-    for val in y:
-        summation += val
-    avg = summation / len(y)
-    z = [0]*len(x)
-    for i in range(len(x)):
-        z[i] = y[i] / avg
-    Screen().residualsplot(z, title)
+    avg = y.sum() / len(y)
+    z = y / avg
+    scr = Screen()
+    scr.residualsplot(z, title)
 
 
 if __name__ == "__main__":

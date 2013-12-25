@@ -11,6 +11,7 @@ so that they may be improved, as needed.
 '''
 
 
+import os
 import sys
 import math
 import string
@@ -123,33 +124,22 @@ def GetDat (infile):
     '''
     read three-column data from a wss (white-space-separated) file
     
+    Data appear as Q  I  dI with one data point per line.
+    A "#" may be used to comment out any line.
+    
     :param string infile: name of input data file
     :return: x, y, dy
-    :rtype: ([float], [float], [float])
+    :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray)
     '''
-    x = []
-    y = []
-    dy = []
     try:
-        for line in open(infile, "r").readlines():
-            if isDataLine(line):
-                sx, sy, sdy = line.strip().split()
-                try:
-                    fx  = float(sx)
-                    fy  = float(sy)
-                    fdy = float(sdy)
-                    x.append(fx)
-                    y.append(fy)
-                    dy.append(fdy)
-                except:
-                    continue
+        x, y, dy = numpy.loadtxt(infile, 
+                      dtype=numpy.float, 
+                      comments='#',
+                      unpack=True)
+        return x, y, dy
     except:
         message = "GetDat: error while opening or reading: " + infile
         raise RuntimeError, message
-    x  = numpy.array(x)
-    y  = numpy.array(y)
-    dy = numpy.array(dy)
-    return x, y, dy
 
 
 def SavDat (outfile, x, y, dy):
@@ -157,20 +147,20 @@ def SavDat (outfile, x, y, dy):
     save three column ASCII data in tab-separated file
 
     :param str outfile: name of output file 
-    :param [float] x: column 1 data array
-    :param [float] y: column 2 data array 
-    :param [float] dy: column 3 data array
+    :param numpy.ndarray x: column 1 data array
+    :param numpy.ndarray y: column 2 data array 
+    :param numpy.ndarray dy: column 3 data array
     '''
     try:
-        f = open (outfile, "w");
-        print("Saving data in file: %s\n" % outfile)
-        for i in range(len(x)):
-            f.write("%g\t%g\t%g\n" %(x[i], y[i], dy[i]))
-        f.close()
+        numpy.savetxt(outfile, 
+                      numpy.transpose([x, y, dy]),
+                      fmt='%g',
+                      delimiter='\t')
+        print("Saved data in file: %s\n" % outfile)
         return outfile
     except:
-        message = "SavDat: error while opening or writing: " + outfile
-        raise RuntimeError, message
+        print "SavDat: error while opening or writing: " + outfile
+        raise
 
 
 def Iswap (a, b):
@@ -181,13 +171,13 @@ iLo = iHi = 0       # for use by Bsearch
 
 def BSearch(z, x):
     '''
-    Binary search the array **x** for ``(iLo) <= z < x(iHi)``
+    Binary search the array **x** for ``x[iLo] <= z < x[iHi]``
     On exit, ``iLo`` and ``iHi`` will exactly bracket the datum
     and ``iTest`` will be the same as ``iLo``.
     If ``z`` is below [above] the range, ``iTest = -1 [NumPts+1]``.
 
     :param float z: value to find
-    :param [float] x: array to be searched
+    :param numpy.ndarray x: array to be searched
     :return: (True|False, iTest)  
     :rtype: (bool, int)
     '''
@@ -197,7 +187,8 @@ def BSearch(z, x):
     if (z < x[0]): return (False, iTest)
     NumPts = len(x)
     iTest = NumPts             # assume z > x[n] and test
-    if (z > x[-1]): return (False, iTest) 
+    if (z > x[-1]): return (False, iTest)
+#     return (True, x.searchsorted(z))
     if (iLo < 0 or iHi >= NumPts or iLo >= iHi):
         iLo = 0
         iHi = NumPts - 1
@@ -259,17 +250,22 @@ def find_first_index(x, target):
     '''
     find i such that x[i] >= target and x[i-1] < target
 
-    :param x: array to search
-    :type x: [float] | [int]
+    :param ndarray x: array to search
     :param float target: value to bracket
     :return: index of array x or None
-    :rtype: float | int
+    :rtype: int
     '''
-    # TODO: can numpy do this faster?
-    for i, v in enumerate(x):
-        if v >= target:
-            return i
+    i = x.searchsorted(target)
+    if i < len(x):
+        return i
     return None
+
+
+def GetTest1DataFilename(ext='.smr'):
+    '''find the test1 data in the package'''
+    path = os.path.dirname(__file__)
+    filename = os.path.join(path, '..', 'data', 'test1'+ext)
+    return os.path.abspath(filename)
 
 
 ########### SVN repository information ###################

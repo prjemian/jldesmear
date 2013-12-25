@@ -26,7 +26,7 @@ Source Code Documentation
 
 
 import math
-import os
+import os                        #@UnusedImport
 import sys
 import toolbox
 import extrapolation             #@UnusedImport
@@ -92,8 +92,8 @@ def FindIc (x, y, q, C, extrap):
     
     :param float x: l_now
     :param float y: q_now
-    :param [float] q: magnitude of scattering vector
-    :param [float] C: intensity values: I(q)
+    :param numpy.ndarray q: magnitude of scattering vector
+    :param numpy.ndarray C: intensity values: I(q)
     :param extrap: (Extrapolation object) functional form of fit
     :return: I(x,y)
     :rtype: float
@@ -128,9 +128,9 @@ def prepare_extrapolation(q, C, dC, extrapname, sFinal):
     '''
     Pick the extrapolation function for smearing
     
-    :param [float] q: magnitude of scattering vector
-    :param [float] C: array (list) such that data is C(q) +/- dC(q)
-    :param [float] dC: estimated uncertainties of C
+    :param numpy.ndarray q: magnitude of scattering vector
+    :param numpy.ndarray C: array (list) such that data is C(q) +/- dC(q)
+    :param numpy.ndarray dC: estimated uncertainties of C
     :param str extrapname: one of ``constant``, ``linear``, ``powerlaw``, or ``Porod``
     :param float sFinal: fit extrapolation to I(q) for q >= sFinal
     :return: function object of selected extrapolation
@@ -173,17 +173,17 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
     is necessary to the integration procedure.  That is,
     this routine will integrate the data out to "slitlength" (``l_o``).
     
-    :param [float] q: magnitude of scattering vector
-    :param [float] C: unsmeared data is C(q) +/- dC(q)
-    :param [float] dC: estimated uncertainties of C
+    :param numpy.ndarray q: magnitude of scattering vector
+    :param numpy.ndarray C: unsmeared data is C(q) +/- dC(q)
+    :param numpy.ndarray dC: estimated uncertainties of C
     :param extrapname: one of ``constant | linear | powerlaw | Porod``
     :type extrapname: string
     :param float sFinal: fit extrapolation to I(q) for q >= sFinal
     :param float slitlength: l_o, same units as q
     :param bool quiet: if True, then no printed output from this routine
     :return: tuple of (S, extrap)
-    :rtype: ([float], object)
-    :var [float] S: smeared version of C
+    :rtype: (numpy.ndarray, object)
+    :var numpy.ndarray S: smeared version of C
     '''
     # make the slit-length weighting function
     NumPts = len(q)
@@ -203,6 +203,7 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
     # TODO: optimize with any numpy/scipy methods?
     S = numpy.ndarray((NumPts,))     # slit-smeared intensity (to be the result)
     Ic = numpy.ndarray((NumPts,))    # integrand for the smearing integral
+    # TODO: can numpy do this faster?
     for i in range(NumPts):
         if not quiet:
             toolbox.Spinner(i)
@@ -217,8 +218,8 @@ def trapezoid_integration(x, y):
     '''
     integrate the area under the curve using trapezoid rule (from :meth:`numpy.trapz`)
 
-    :param [float] x: abcissae
-    :param [float] y: ordinates
+    :param numpy.ndarray x: abcissae
+    :param numpy.ndarray y: ordinates
     :return: area under the curve
     :rtype: float
     '''
@@ -229,8 +230,8 @@ def __test_FindIc():
     '''test FindIc()'''
     # TODO: optimize with any numpy/scipy methods?
     print("test of FindIc")
-    path = os.path.dirname(__file__)
-    q, C, dC = toolbox.GetDat(os.path.join(path, '..', 'data', 'test1.dsm'))
+    fn = toolbox.GetTest1DataFilename('.dsm')
+    q, C, dC = toolbox.GetDat(fn)
     start = toolbox.find_first_index(q, 0.08)
     print('q[%d:]=%s' % (start, q[start:-1]))
     extrap = extrap_linear.Linear()
@@ -267,8 +268,8 @@ def __test_integrate():
 def __test_Smear():
     '''test Smear()'''
     print("Testing Smear()")
-    path = os.path.dirname(__file__)
-    q, C, dC = toolbox.GetDat(os.path.join(path, '..', 'data', 'test1.dsm'))
+    fn = toolbox.GetTest1DataFilename('.dsm')
+    q, C, dC = toolbox.GetDat(fn)
 
     title = "\nPorod plot, I * q^4 vs q: C=input data"
     q4 = q*q*q*q
@@ -319,28 +320,21 @@ def __test_Smear():
     # plot the data on log vs log
     powerplot = textplots.Screen()
     title = "\npower law plot, ln(I) vs ln(q): C=input, S=smeared"
-    lnq, lnC, lnS = [0]*NumPts, [0]*NumPts, [0]*NumPts
-    for i in range(NumPts):
-        lnq[i] = math.log(q[i])
-        lnC[i] = math.log(C[i])
-        lnS[i] = math.log(S[i])
-    powerplot.addtrace(lnq, lnC, "C")
-    powerplot.addtrace(lnq, lnS, "S")
+    lnq = numpy.log(q)
+    powerplot.addtrace(lnq, numpy.log(C), "C")
+    powerplot.addtrace(lnq, numpy.log(S), "S")
     powerplot.SetTitle(title)
     powerplot.printplot()
 
     KratkyPlot = textplots.Screen()
     title = "\nKratky plot, I * q^2 vs q: S=smeared"
-    q2C, q2S = [0]*NumPts, [0]*NumPts
-    for i in range(NumPts):
-        q2C[i] = q[i]*q[i]*(C[i] - B)
-        q2S[i] = q[i]*q[i]*(S[i] - B)
+
     KratkyPlot.SetTitle(title)
-    KratkyPlot.addtrace(lnq, q2S, "S")
+    KratkyPlot.addtrace(lnq, q*q*(S - B), "S")
     KratkyPlot.printplot()
     title = "\nKratky plot, I * q^2 vs q: C=input, S=smeared"
     KratkyPlot.SetTitle(title)
-    KratkyPlot.addtrace(lnq, q2C, "C")
+    KratkyPlot.addtrace(lnq, q*q*(C - B), "C")
     KratkyPlot.printplot()
 
 

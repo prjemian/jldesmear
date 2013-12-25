@@ -5,10 +5,10 @@ import unittest
 import smear
 import toolbox
 import extrap_linear
-import os
+import os           #@UnusedImport
 
 
-datafile = os.path.join('..', 'data', 'test1.dsm')
+datafile = toolbox.GetTest1DataFilename('.dsm')
 
 
 class Test(unittest.TestCase):

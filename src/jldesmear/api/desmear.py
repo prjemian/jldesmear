@@ -16,7 +16,7 @@ import smear
 import textplots
 import toolbox
 import info
-import os
+import os                 #@UnusedImport
 import sys
 import numpy
 
@@ -40,9 +40,9 @@ class Desmearing():
     To start Lake's method, assume that the 0-th approximation 
     of the corrected intensity is the measured intensity.
 
-    :param [float] q: magnitude of scattering vector
-    :param [float] I: SAS data I(q) +/- dI(q)
-    :param [float] dI: estimated uncertainties of I(q)
+    :param numpy.ndarray q: magnitude of scattering vector
+    :param numpy.ndarray I: SAS data I(q) +/- dI(q)
+    :param numpy.ndarray dI: estimated uncertainties of I(q)
     :param obj params: Info object with desmearing parameters
     
     .. note:: This equation shows the iterative feedback based 
@@ -230,8 +230,8 @@ def __demo():
     if params == None:
         return          # no input file so quit the program
 
-    # override default constants for code development
-    params.infile = os.path.join('..', 'data', 'test1.smr')
+    # define the parameters for the test data
+    params.infile = toolbox.GetTest1DataFilename('.smr')
     params.outfile = "test.dsm"
     params.slitlength = 0.08           # s: slit length, as defined by Lake
     params.sFinal = 0.08               # fit extrapolation constants for q>=sFinal
@@ -249,7 +249,9 @@ def __demo():
     
     dsm = Desmearing(q, E, dE, params)
     dsm.traditional()
+
     toolbox.SavDat(params.outfile, dsm.q, dsm.C, dsm.dC)
+
     lnq = numpy.log(q)
     lnE = numpy.log(E)
     lnC = numpy.log(dsm.C)

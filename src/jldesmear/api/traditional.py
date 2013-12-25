@@ -78,7 +78,8 @@ import info
 import desmear
 import extrapolation    #@UnusedImport
 import textplots
-import os
+import os               #@UnusedImport
+import numpy
 
 
 INFINITE_ITERATIONS = 0
@@ -164,19 +165,14 @@ def plot_results (q, E, C):
     '''
     plot the results of the desmearing
     
-    :param [float] q: magnitude of scattering vector
-    :param [float] E: experimental (smeared) data
-    :param [float] C: corrected (desmeared) data
+    :param numpy.ndarray q: magnitude of scattering vector
+    :param numpy.ndarray E: experimental (smeared) data
+    :param numpy.ndarray C: corrected (desmeared) data
     '''
-    n = len(q)
-    lnq, lnE, lnC = [0]*n, [0]*n, [0]*n
-    for i in range(n):
-        lnq[i] = math.log(q[i])
-        lnE[i] = math.log(E[i])
-        lnC[i] = math.log(C[i])
+    lnq = numpy.log(q)
     plot = textplots.Screen()
-    plot.addtrace(lnq, lnE, "S")
-    plot.addtrace(lnq, lnC, "D")
+    plot.addtrace(lnq, numpy.log(E), "S")
+    plot.addtrace(lnq, numpy.log(C), "D")
     plot.SetTitle("\nSAS log-log plot, final, S=input, D=desmeared")
     plot.printplot()
 
@@ -201,9 +197,7 @@ def command_line_interface ():
         return          # no input file so quit the program
 
     # define defaults (as used by the developer)
-    path = os.path.dirname(__file__)
-    testfilename = os.path.join(path, '..', 'data', 'test1.smr')
-    params.infile = testfilename
+    params.infile = toolbox.GetTest1DataFilename('.smr')
     params.outfile = "test.dsm"
     params.slitlength = 0.08
     params.sFinal = 0.08

@@ -3,11 +3,11 @@
 
 import unittest
 import toolbox
-import os
+import os           #@UnusedImport
 
 
-missing_datafile = os.path.join('..', 'data', 'test1.txt')
-expected_datafile = os.path.join('..', 'data', 'test1.smr')
+missing_datafile = toolbox.GetTest1DataFilename('.txt')
+expected_datafile = toolbox.GetTest1DataFilename('.smr')
 
 
 class Test(unittest.TestCase):

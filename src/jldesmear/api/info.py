@@ -35,7 +35,8 @@ class Info():
     
     def __str__(self):
         ''' canonical string representation '''
-        s = [repr(self)]
+        s = []
+        #s.append( repr(self) )
         s.append( 'infile: %s' % self.infile )
         s.append( 'outfile: %s' % self.outfile )
         s.append( 'slitlength: %g' % self.slitlength )
@@ -45,7 +46,7 @@ class Info():
         s.append( 'LakeWeighting: %s' % self.LakeWeighting )
         s.append( 'extrap: %s' % str(self.extrap) )
         s.append( 'quiet: %s' % self.quiet )
-        s.append( 'callback: %s' % str(self.callback) )
+        #s.append( 'callback: %s' % str(self.callback) )
         return "\n".join(s)
 
     def moreIterationsOk(self, iteration_count):
