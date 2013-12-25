@@ -34,6 +34,7 @@ import extrap_linear             #@UnusedImport
 import textplots
 import pprint
 import numpy
+from scipy.interpolate import interp1d
 
 
 def Plengt (l, slitlength):
@@ -188,9 +189,13 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
     # make the slit-length weighting function
     NumPts = len(q)
     q0 = q[0]
-    qRange = q[-1] - q0
+    qMax = q[-1]
+    qRange = qMax - q0
     x = slitlength * (q - q0) / qRange      # use "x" rather than "l" to avoid typos
     w = Plengt(x, slitlength)               # w = P_l(l) or P_l(x)
+
+    # prepare for interpolation of existing data, log(I)
+    interp = interp1d(q, numpy.log(C))
 
     # select and fit the extrapolation
     try:
@@ -199,17 +204,25 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
         message = "prepare_extrapolation had a problem: " + str(sys.exc_info)
         raise Exception, message
 
-    # calculate the slit-smearing
-    # TODO: optimize with any numpy/scipy methods?
     S = numpy.ndarray((NumPts,))     # slit-smeared intensity (to be the result)
-    Ic = numpy.ndarray((NumPts,))    # integrand for the smearing integral
-    # TODO: can numpy do this faster?
-    for i in range(NumPts):
-        if not quiet:
-            toolbox.Spinner(i)
-        qNow = q[i]
-        for k in range(NumPts):
-            Ic[k] = w[k] * FindIc (qNow, x[k], q, C, extrap)
+
+    for i, qNow in enumerate(q):
+        if not quiet: toolbox.Spinner(i)
+        u = numpy.sqrt(qNow*qNow + x*x) # circular-symmetric
+
+        # divide integrand into u<=qMax and u>qMax
+        # interpolate from existing data
+        u_in = numpy.array([uNow for uNow in u if uNow <= qMax])
+        Ic_in = numpy.exp(interp(u_in))
+        
+        # extrapolate from model beyond range of available data
+        u_ex = numpy.array([uNow for uNow in u if uNow > qMax])
+        # TODO: let extrapolations support ndarrays
+        Ic_ex = [extrap.calc(uNow) for uNow in u_ex]
+        
+        # join the two parts of the integrand
+        Ic = w * numpy.concatenate((Ic_in, Ic_ex))
+        
         S[i] = 2.0 * trapezoid_integration(x, Ic)   #x2: symmetrical about zero
     return S, extrap
 
@@ -277,7 +290,7 @@ def __test_Smear():
     textplots.Screen().xyplot(q, q4I, title)
 
     try:
-        S, extrap = Smear(q, C, dC, "constant", .08, .08)
+        S, extrap = Smear(q, C, dC, "constant", .08, .08, quiet=True)
     except Exception:
         print("Smearing failed")
         raise

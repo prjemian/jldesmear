@@ -16,6 +16,7 @@ import sys
 import math
 import string
 import numpy
+import scipy    #@UnusedImport
 
 
 def AskQuestion(question, answer):
