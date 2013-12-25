@@ -6,7 +6,7 @@ traditional command-line interface: Iterative desmearing technique of Lake to sm
 
 
 import os, sys
-sys.path.insert(0, os.path.abspath(os.path.join('.')))
+sys.path.insert(0, os.path.abspath(os.path.join('..')))
 
 
 def desmear_cli():
