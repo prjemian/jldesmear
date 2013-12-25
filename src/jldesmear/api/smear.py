@@ -86,45 +86,6 @@ def Plengt (l, slitlength):
     return result
 
 
-def FindIc (x, y, q, C, extrap):
-    '''
-    Determine the "corrected" intensity at *u = SQRT (x*x + y*y)*
-    Note that only positive values of *u* will be searched!
-    
-    :param float x: l_now
-    :param float y: q_now
-    :param numpy.ndarray q: magnitude of scattering vector
-    :param numpy.ndarray C: intensity values: I(q)
-    :param extrap: (Extrapolation object) functional form of fit
-    :return: I(x,y)
-    :rtype: float
-    '''
-    # TODO: can numpy do this faster?
-    u = math.sqrt(x*x + y*y)                    # circularly symmetric
-    (result, iTest) = toolbox.BSearch (u, q)    # find index
-    if not result:
-        if iTest == -1:                 # u < q range
-            # u < q[0]: cannot interpolate or extrapolate
-            message = "FindIc(): u < q[0]: cannot interpolate or extrapolate"
-            raise Exception, message
-    #iLo = iTest - 1;        # why the offset?
-    iLo = iTest;
-    iHi = iLo + 1;
-    if iTest < len(q)-1:                # u within q range
-        if u == q[iLo]:
-            value = C[iLo]              # exact value
-        else:
-            try:
-                value = toolbox.log_interpolation(u, 
-                            q[iLo],C[iLo], q[iHi],C[iHi])
-            except ValueError:          # fallback (if negative intensities)
-                value = toolbox.linear_interpolation(u, 
-                            q[iLo],C[iLo], q[iHi],C[iHi])
-    else:                               # u > q range
-        value = extrap.calc(u)          # functional extrapolation
-    return value
-
-
 def prepare_extrapolation(q, C, dC, extrapname, sFinal):
     '''
     Pick the extrapolation function for smearing
@@ -239,38 +200,6 @@ def trapezoid_integration(x, y):
     return numpy.trapz(y, x)
 
 
-def __test_FindIc():
-    '''test FindIc()'''
-    # TODO: optimize with any numpy/scipy methods?
-    print("test of FindIc")
-    fn = toolbox.GetTest1DataFilename('.dsm')
-    q, C, dC = toolbox.GetDat(fn)
-    start = toolbox.find_first_index(q, 0.08)
-    print('q[%d:]=%s' % (start, q[start:-1]))
-    extrap = extrap_linear.Linear()
-    extrap.fit(q[start:-1], C[start:-1], dC[start:-1])
-
-    num_tests = 200
-    x = numpy.zeros((num_tests,))
-    y = numpy.zeros((num_tests,))
-    i1 = 170
-    i2 = i1+5
-    print("qNow\tInow (test of FindIc())")
-    for i in range(num_tests):
-        qNow = q[i1] + i*(q[i2]-q[i1])/num_tests
-        Inow = FindIc(0, qNow, q, C, extrap)
-        print("%g\t%g" % (qNow, Inow))
-        x[i] = qNow
-        y[i] = Inow
-
-    title = "\nplot of interpolated data, Ic(q), *=data, O=interpolates"
-    xy = textplots.Screen()
-    xy.addtrace(x, y, "O")
-    xy.addtrace(q[i1:i2+1], C[i1:i2+1], "*")
-    xy.SetTitle(title)
-    xy.printplot()
-
-
 def __test_integrate():
     '''test trapezoid_integration()'''
     print("Testing trapezoid_integration()")
@@ -365,7 +294,6 @@ def __demo():
     '''show the various routines'''
     print("Testing $Id$")
     __test_Plengt()
-    __test_FindIc()
     __test_integrate()
     __test_Smear()
 

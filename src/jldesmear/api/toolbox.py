@@ -168,45 +168,6 @@ def Iswap (a, b):
     ''':return: (tuple) of (b, a)'''
     return b, a
 
-iLo = iHi = 0       # for use by Bsearch
-
-def BSearch(z, x):
-    '''
-    Binary search the array **x** for ``x[iLo] <= z < x[iHi]``
-    On exit, ``iLo`` and ``iHi`` will exactly bracket the datum
-    and ``iTest`` will be the same as ``iLo``.
-    If ``z`` is below [above] the range, ``iTest = -1 [NumPts+1]``.
-
-    :param float z: value to find
-    :param numpy.ndarray x: array to be searched
-    :return: (True|False, iTest)  
-    :rtype: (bool, int)
-    '''
-    # TODO: can numpy do this faster?
-    global iLo, iHi
-    iTest = -1                 # assume that z < x[1] and test
-    if (z < x[0]): return (False, iTest)
-    NumPts = len(x)
-    iTest = NumPts             # assume z > x[n] and test
-    if (z > x[-1]): return (False, iTest)
-#     return (True, x.searchsorted(z))
-    if (iLo < 0 or iHi >= NumPts or iLo >= iHi):
-        iLo = 0
-        iHi = NumPts - 1
-    while (z < x[iLo]):
-        iLo /= 2
-    while (z > x[iHi]):         # expand up?
-        iHi = (iHi + 1 + NumPts) / 2
-    iTest = iHi
-    while (iHi - iLo > 1):
-        iTest = (iLo + iHi) / 2
-        if (z >= x[iTest]):
-            iLo = iTest
-        else:
-            iHi = iTest
-    iTest = (iLo + iHi) / 2
-    return (True, iTest)
-
 
 def strtrim (txt):
     ''' 
@@ -214,37 +175,6 @@ def strtrim (txt):
     (compatibility method for legacy code only)
     '''
     return txt.strip()
-
-
-def linear_interpolation(x,x1,y1,x2,y2):
-    '''
-    linear interpolation
-
-    :param float x: lookup value
-    :param float x1: x at point 1
-    :param float y1: y at point 1
-    :param float x2: x at point 2
-    :param float y2: y at point 2
-    :return: y(x): linear interpolation from (x1,y1) and (x2,y2)
-    :rtype: float
-    '''
-    return  (y1 + (y2-y1) * (x-x1) / (x2-x1))
-
-
-def log_interpolation(x,x1,y1,x2,y2):
-    '''
-    logarithmic (log vs linear) interpolation
-
-    :param float x: lookup value
-    :param float x1: x at point 1
-    :param float y1: y at point 1
-    :param float x2: x at point 2
-    :param float y2: y at point 2
-    :return: y(x): logarithmic interpolation from (x1,y1) and (x2,y2)
-    :rtype: float
-    '''
-    b = linear_interpolation(x,x1,math.log(y1),x2,math.log(y2))
-    return  math.exp(b)
 
 
 def find_first_index(x, target):

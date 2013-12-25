@@ -38,24 +38,6 @@ class Test(unittest.TestCase):
         self.assertFalse('m' in coeff)
         self.assertAlmostEquals( coeff['B'], 38.589860526315789 )
 
-    def test_Ic(self):
-        q, C, dC = toolbox.GetDat(datafile)
-        start = toolbox.find_first_index(q, 0.08)
-        extrap = extrap_linear.Linear()
-        extrap.fit(q[start:-1], C[start:-1], dC[start:-1])
-        dataset = {}
-        dataset[ 0.0283713 ] = 94.583700
-        dataset[ 0.0291575 ] = 87.97486733043597
-        dataset[ 0.0299437 ] = 65.745746276917316
-        dataset[ 0.0307299 ] = 71.932648088208083
-        dataset[ 0.0315161 ] = 81.720936087794271
-        dataset[ 0.0323023 ] = 59.724180246127695
-        dataset[ 0.0330649 ] = 34.700520014318151
-        dataset[ 0.08 ] = 38.461301529649695
-        dataset[ 0.09 ] = 32.131663454229546
-        for qNow, expected in dataset.items():
-            self.assertAlmostEquals( smear.FindIc(0, qNow, q, C, extrap), expected)
-
     def test_trapezoid_integration(self):
         dataset = []
         dataset.append( ((1,2,3), (0., 1., 0.), 1.0) )
