@@ -51,45 +51,99 @@ class FileEntryBox(QGroupBox):
         self.setLayout(layout)
 
     def onOpenFile(self, **kw):
-        '''Choose a text file with 3-column smeared SAS data'''
+        '''Choose file for input'''
         filters = ';;'.join([
+                             'Input parameters (*.inp)',
+                             'cansas1d:1.1 (*.xml)',
+                             'HDF5/NeXus ( *.hdf *.hdf5 *.h5 *.nx *.nxs)',
                              'smeared SAS (*.smr)',
                              'any file (*.* *)',
                              ])
-        fileName = QFileDialog().getOpenFileName(self, filter=filters)[0]
+        fileName, filefilter = QFileDialog().getOpenFileName(self, filter=filters)
         if len(fileName) > 0:
             self.entry.setText(fileName)
             if self.callback is not None:
-                self.callback(fileName)
+                self.callback(fileName, filefilter)
         return fileName
 
 
-class MainFrame(QFrame):
+class JLdesmearGui(QMainWindow):
 
     def __init__(self, parent=None):
-        super(MainFrame, self).__init__(parent)
+        super(JLdesmearGui, self).__init__(parent)
         self.parent = parent
+        
+        self.dirty = False
 
-        self.fileentry = FileEntryBox(self, 
-            title='Input (smeared) data file', 
-            tip='select a smeared SAS data file to be desmeared',
-            callback=self.openFileCallback)
-        panel = self.create_Big_Panel(self)
+        self.mf = self._init_Main_Frame(self)
+        #self.setGeometry(75, 50, 500, 300)
+        self.setCentralWidget(self.mf)
+        
+        self._init_actions()
+        self._init_menus()
+        self.setStatus()
+
+    def closeEvent(self, *args):
+        '''received a request to close application, shall we allow it?'''
+        if self.dirty:
+            pass
+        else:
+            self.close()
+
+    def _init_actions(self):
+        '''define the actions for the GUI'''
+        # TODO: needs Edit menu actions
+        # TODO: needs Help menu actions
+        
+        self.action_open = QAction(self.tr('&Open'), None)
+        self.action_open.setShortcut(QKeySequence.Open)
+        self.action_open.setStatusTip(self.tr('Open a file'))
+        self.action_open.triggered.connect(self.onOpenFile)
+        
+        self.action_exit = QAction(self.tr('E&xit'), None)
+        self.action_exit.setShortcut(QKeySequence.Quit)
+        self.action_exit.setStatusTip(self.tr('Exit the application'))
+        self.action_exit.triggered.connect(self.closeEvent)
+        
+    def _init_menus(self):
+        '''define the menus for the GUI'''
+        fileMenu = self.menuBar().addMenu(self.tr('&File'))
+        fileMenu.addAction(self.action_open)
+        fileMenu.addSeparator()
+        fileMenu.addAction(self.action_exit)
+        
+        # TODO: needs Edit menu
+        
+        helpMenu = self.menuBar().addMenu(self.tr('Help'))
+        helpMenu.addSeparator()
+        #helpMenu.addAction(self.about_dialog)
+    
+    def _init_Main_Frame(self, parent):
+        fr = QFrame(parent)
 
         layout = QVBoxLayout()
+        fr.setLayout(layout)
+
+        self.fileentry = FileEntryBox(fr, 
+            title='Input parameters file', 
+            tip='select a file with desmearing parameters',
+            callback=self.openFileCallback)
+        panel = self._init_Big_Panel(fr)
+
         layout.addWidget(self.fileentry)
         layout.addWidget(panel)
         layout.setStretch(0, 0)
         layout.setStretch(1, 1)
-        self.setLayout(layout)
-    
-    def create_Big_Panel(self, parent):
+
+        return fr
+
+    def _init_Big_Panel(self, parent):
         '''contains parameter entries and plots'''
         fr = QFrame(parent)
         
-        parms = self.create_Parms_Panel(fr)
+        parms = self._init_Parms_Panel(fr)
         parms.setFrameStyle(QFrame.StyledPanel)
-        plots = self.create_Plots_Panel(fr)
+        plots = self._init_Plots_Panel(fr)
         plots.setFrameStyle(QFrame.StyledPanel)
 
         splitter = QSplitter(fr)
@@ -103,16 +157,16 @@ class MainFrame(QFrame):
         
         return fr
     
-    def create_Parms_Panel(self, parent):
+    def _init_Parms_Panel(self, parent):
         '''contains parameter entries and controls'''
         fr = QFrame(parent)
         
         layout = QVBoxLayout()
         fr.setLayout(layout)
 
-        adjustables = self.create_Adjustables_Panel(fr)
-        controls = self.create_Controls_Panel(fr)
-        console = self.create_Console_Panel(fr)
+        adjustables = self._init_Adjustables_Panel(fr)
+        controls = self._init_Controls_Panel(fr)
+        console = self._init_Console_Panel(fr)
 
         layout.addWidget(adjustables)
         layout.addWidget(controls)
@@ -120,7 +174,7 @@ class MainFrame(QFrame):
         
         return fr
     
-    def create_Adjustables_Panel(self, parent):
+    def _init_Adjustables_Panel(self, parent):
         '''contains adjustable parameters'''
         box = QGroupBox('Adjustable parameters', parent)
 
@@ -171,7 +225,7 @@ class MainFrame(QFrame):
         
         return box
 
-    def create_Controls_Panel(self, parent):
+    def _init_Controls_Panel(self, parent):
         '''contains controls'''
         def squareWidget(w):
             w.setMinimumWidth(w.sizeHint().height())
@@ -202,7 +256,7 @@ class MainFrame(QFrame):
 
         return box
     
-    def create_Console_Panel(self, parent):
+    def _init_Console_Panel(self, parent):
         '''contains console output'''
         fr = QGroupBox('Console', parent)
 
@@ -213,15 +267,15 @@ class MainFrame(QFrame):
         
         return fr
     
-    def create_Plots_Panel(self, parent):
+    def _init_Plots_Panel(self, parent):
         '''contains plots'''
         fr = QFrame(parent)
 
         layout = QHBoxLayout()
         fr.setLayout(layout)
         
-        data_plots = self.create_Data_Plots_Panel(fr)
-        self.chisqr_plot = self.create_ChiSqr_Plot_Panel(fr)
+        data_plots = self._init_Data_Plots_Panel(fr)
+        self.chisqr_plot = self._init_ChiSqr_Plot_Panel(fr)
 
         splitter = QSplitter(fr)
         splitter.setOrientation(Qt.Horizontal)
@@ -231,15 +285,15 @@ class MainFrame(QFrame):
         
         return fr
     
-    def create_Data_Plots_Panel(self, parent):
+    def _init_Data_Plots_Panel(self, parent):
         '''contains I(Q) and z(Q) plots'''
         fr = QFrame(parent)
 
         layout = QVBoxLayout()
         fr.setLayout(layout)
         
-        self.sas_plot = self.create_Sas_Plot_Panel(fr)
-        self.z_plot = self.create_Residuals_Plot_Panel(fr)
+        self.sas_plot = self._init_Sas_Plot_Panel(fr)
+        self.z_plot = self._init_Residuals_Plot_Panel(fr)
 
         splitter = QSplitter(fr)
         splitter.setOrientation(Qt.Vertical)
@@ -249,7 +303,7 @@ class MainFrame(QFrame):
         
         return fr
     
-    def create_Sas_Plot_Panel(self, parent):
+    def _init_Sas_Plot_Panel(self, parent):
         '''contains I(Q) plot'''
         fr = QGroupBox('~I(Q) and I(Q)', parent)
 
@@ -260,7 +314,7 @@ class MainFrame(QFrame):
         
         return fr
     
-    def create_Residuals_Plot_Panel(self, parent):
+    def _init_Residuals_Plot_Panel(self, parent):
         '''contains z(Q) plot'''
         fr = QGroupBox('z(Q)', parent)
 
@@ -271,7 +325,7 @@ class MainFrame(QFrame):
         
         return fr
     
-    def create_ChiSqr_Plot_Panel(self, parent):
+    def _init_ChiSqr_Plot_Panel(self, parent):
         '''contains ChiSqr vs. iteration plot'''
         fr = QGroupBox('ChiSqr vs. iteration', parent)
 
@@ -281,15 +335,18 @@ class MainFrame(QFrame):
         # TODO: ChiSqr v. iteration
         
         return fr
-    
-    def setStatus(self, msg):
-        self.parent.setStatus(msg)
+
+    def setStatus(self, message = 'Ready'):
+        '''setup the status bar for the GUI or set a new status message'''
+        self.statusBar().showMessage(self.tr(message))
 
     def onOpenFile(self):
         '''Choose a text file with 3-column smeared SAS data'''
         self.fileentry.onOpenFile()
     
-    def openFileCallback(self, fileName):
+    def openFileCallback(self, fileName, filefilter):
+        # TODO: find out what kind of file was opened
+        # Hint is in the filefilter but don't trust it.
         self.setStatus('selected file: ' + fileName)
         self.loadFile(fileName)
         self.dirty = False
@@ -298,62 +355,6 @@ class MainFrame(QFrame):
         '''Open a file with 3-column smeared SAS data'''
         if os.path.exists(filename):
             self.setStatus('did not open file: ' + filename)
-
-
-class JLdesmearGui(QMainWindow):
-
-    def __init__(self, parent=None):
-        super(JLdesmearGui, self).__init__(parent)
-        self.parent = parent
-        
-        self.dirty = False
-
-        self.fr = MainFrame(self)
-        #self.setGeometry(75, 50, 500, 300)
-        self.setCentralWidget(self.fr)
-        
-        self.createActions()
-        self.createMenus()
-        self.setStatus()
-
-    def closeEvent(self, *args):
-        '''received a request to close application, shall we allow it?'''
-        if self.dirty:
-            pass
-        else:
-            self.close()
-
-    def createActions(self):
-        '''define the actions for the GUI'''
-        # TODO: needs Edit menu actions
-        # TODO: needs Help menu actions
-        
-        self.action_open = QAction(self.tr('&Open'), None)
-        self.action_open.setShortcut(QKeySequence.Open)
-        self.action_open.setStatusTip(self.tr('Open a file with motor PVs'))
-        self.action_open.triggered.connect(self.fr.onOpenFile)
-        
-        self.action_exit = QAction(self.tr('E&xit'), None)
-        self.action_exit.setShortcut(QKeySequence.Quit)
-        self.action_exit.setStatusTip(self.tr('Exit the application'))
-        self.action_exit.triggered.connect(self.closeEvent)
-        
-    def createMenus(self):
-        '''define the menus for the GUI'''
-        fileMenu = self.menuBar().addMenu(self.tr('&File'))
-        fileMenu.addAction(self.action_open)
-        fileMenu.addSeparator()
-        fileMenu.addAction(self.action_exit)
-        
-        # TODO: needs Edit menu
-        
-        helpMenu = self.menuBar().addMenu(self.tr('Help'))
-        helpMenu.addSeparator()
-        #helpMenu.addAction(self.about_dialog)
-
-    def setStatus(self, message = 'Ready'):
-        '''setup the status bar for the GUI or set a new status message'''
-        self.statusBar().showMessage(self.tr(message))
 
 
 class IterativeDesmear(threading.Thread):
