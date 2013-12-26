@@ -8,7 +8,8 @@ Extrapolate as:  I(q) = B + m * q
 import extrapolation
 import toolbox
 import pprint
-import os
+import os       #@UnusedImport
+import numpy    #@UnusedImport
 
 
 class Linear(extrapolation.Extrapolation):

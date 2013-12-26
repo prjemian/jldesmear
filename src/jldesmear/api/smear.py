@@ -116,6 +116,8 @@ def prepare_extrapolation(q, C, dC, extrapname, sFinal):
     return extrap
 
 
+# TODO: refactor Smear into a class
+
 def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
     '''
     Smear the data of C(q) into S(q) using the slit-length
@@ -169,42 +171,38 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
 
     for i, qNow in enumerate(q):
         if not quiet: toolbox.Spinner(i)
-        u = numpy.sqrt(qNow*qNow + x*x) # circular-symmetric
+        Ic = w * get_Ic(qNow, sFinal, qMax, x, interp, extrap)
+        S[i] = 2 * numpy.trapz(Ic, x)  # symmetrical about zero
 
-        # divide integrand into u<=qMax and u>qMax
-        # interpolate from existing data
-        u_in = numpy.array([uNow for uNow in u if uNow <= qMax])
-        Ic_in = numpy.exp(interp(u_in))
-        
-        # extrapolate from model beyond range of available data
-        u_ex = numpy.array([uNow for uNow in u if uNow > qMax])
-        # TODO: let extrapolations support ndarrays
-        Ic_ex = [extrap.calc(uNow) for uNow in u_ex]
-        
-        # join the two parts of the integrand
-        Ic = w * numpy.concatenate((Ic_in, Ic_ex))
-        
-        S[i] = 2.0 * trapezoid_integration(x, Ic)   #x2: symmetrical about zero
     return S, extrap
 
+def get_Ic(qNow, sFinal, qMax, x, interp, extrap):
+    '''return the corrected intensity based on circular symmetry'''
+    u = numpy.sqrt(qNow*qNow + x*x) # circular-symmetric
 
-def trapezoid_integration(x, y):
-    '''
-    integrate the area under the curve using trapezoid rule (from :meth:`numpy.trapz`)
+    # divide integrand into different regions
+    # interpolate from existing data
+    u_in = numpy.extract(u <= sFinal, u)
+    Ic_in = numpy.exp(interp(u_in))
+    
+    condition = numpy.multiply(sFinal < u, u <= qMax)
+    u_mid = numpy.extract(condition, u)
+    if u_mid.size < 2:
+        Ic_mid = numpy.exp(interp(u_mid))
+    else:
+        # make smooth transition between sFinal < q < qMax
+        #weight = (u_mid - u_mid.min()) / (u_mid.max() - u_mid.min())
+        weight = numpy.linspace(0, 1.0, u_mid.size)
+        Ic_mid_in = numpy.exp(interp(u_mid))
+        Ic_mid_ex = extrap.calc(u_mid)
+        Ic_mid = (1-weight) * Ic_mid_in + weight * Ic_mid_ex
 
-    :param numpy.ndarray x: abcissae
-    :param numpy.ndarray y: ordinates
-    :return: area under the curve
-    :rtype: float
-    '''
-    return numpy.trapz(y, x)
-
-
-def __test_integrate():
-    '''test trapezoid_integration()'''
-    print("Testing trapezoid_integration()")
-    print("%g ?= %g" % (2.0, trapezoid_integration( (1,2,3,4), (0., 1., 1., 0.) )))
-    print("%g ?= %g" % (1.0, trapezoid_integration( (1,2,3), (0., 1., 0.) )))
+    # extrapolate from model beyond range of available data
+    u_ex = numpy.extract(qMax < u, u)
+    Ic_ex = extrap.calc(u_ex)
+    
+    # join the parts of the integrand
+    return numpy.concatenate((Ic_in, Ic_mid, Ic_ex))
 
 
 def __test_Smear():
@@ -294,7 +292,6 @@ def __demo():
     '''show the various routines'''
     print("Testing $Id$")
     __test_Plengt()
-    __test_integrate()
     __test_Smear()
 
 

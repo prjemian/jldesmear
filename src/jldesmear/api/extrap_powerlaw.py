@@ -9,7 +9,8 @@ import extrapolation
 import toolbox
 import math
 import pprint
-import os
+import os       #@UnusedImport
+import numpy    #@UnusedImport
 
 
 class Power(extrapolation.Extrapolation):
@@ -38,7 +39,12 @@ class Power(extrapolation.Extrapolation):
         '''
         A = self.coefficients['A']
         p = self.coefficients['p']
-        result = A * math.pow(q, p)
+        if isinstance(q, numpy.ndarray):
+            expo = p * numpy.ones_like(q)
+            basis = numpy.power(q, expo)
+        else:
+            basis = math.pow(q, p)
+        result = A * basis
         return result
 
     def fit_add(self, reg, x, y, z):

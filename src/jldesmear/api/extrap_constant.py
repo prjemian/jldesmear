@@ -8,7 +8,8 @@ Extrapolate as:  I(q) = B
 import extrapolation
 import toolbox
 import pprint
-import os
+import os       #@UnusedImport
+import numpy    #@UnusedImport
 
 
 class Constant(extrapolation.Extrapolation):
@@ -33,7 +34,11 @@ class Constant(extrapolation.Extrapolation):
         :return: value of extrapolation function at *q*
         :rtype: float
         '''
-        return self.coefficients['B']
+        if isinstance(q, numpy.ndarray):
+            basis = numpy.ones_like(q)
+        else:
+            basis = 1.0
+        return self.coefficients['B'] * basis
 
     def fit_result(self, reg):
         ''' 

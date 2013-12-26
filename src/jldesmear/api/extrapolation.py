@@ -23,6 +23,9 @@ def discover_extrapolation_functions():
     The file is placed in the source code tree in the same directory
     as the module: :mod:`~jldesmear.api.extrapolation`.
     
+    The :meth:`calc` method should be capable of handling
+    ``q`` as a ``numpy.ndarray`` or as a ``float``.
+    
     The file must contain:
     
     .. index:: !extrapolation_class

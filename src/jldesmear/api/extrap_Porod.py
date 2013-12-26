@@ -9,7 +9,8 @@ import extrapolation
 import toolbox
 import math
 import pprint
-import os
+import os       #@UnusedImport
+import numpy    #@UnusedImport
 
 
 class Porod(extrapolation.Extrapolation):
@@ -38,7 +39,7 @@ class Porod(extrapolation.Extrapolation):
         '''
         Cp = self.coefficients['Cp']
         B = self.coefficients['B']
-        result = B + Cp * math.pow(q, -4)
+        result = B + Cp / (q*q*q*q)
         return result
 
     def fit_add(self, reg, x, y, z):
