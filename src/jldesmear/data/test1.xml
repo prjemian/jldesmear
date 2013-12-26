@@ -4,8 +4,12 @@
 <!--
   This file contains the test1 data, both smeared & desmeared,
   as pulled from the test1.smr and test1.dsm files.
+  
   Default desmearing parameters are recorded in:
-  /root:SASroot/smr:SASentry/parameters:SASnote
+  /root:SASroot/test1:SASentry/parameters:SASnote
+  
+  An example output from the C program is given in:
+  /root:SASroot/test1:SASentry/example_desmearing_output:SASnote
  -->
 <SASroot version="1.1"
 		xmlns="urn:cansas1d:1.1"
@@ -13,10 +17,10 @@
 		xsi:schemaLocation="urn:cansas1d:1.1 http://www.cansas.org/formats/1.1/cansas1d.xsd"
 		>
   <!--canSAS XML created by canSAS1d/1.0 XML formatter-->
-  <SASentry name="smr">
+  <SASentry name="test1">
     <Title>test1 dataset for tests of desmearing software</Title>
     <Run>test1</Run>
-    <SASdata>
+    <SASdata name="smr">
       <Idata>
         <Q unit="1/A">0.000371484</Q>
         <I unit="1/cm">211554</I>
@@ -1268,44 +1272,7 @@
         <Idev unit="1/cm">1.35581</Idev>
       </Idata>
     </SASdata>
-    <SASsample>
-      <ID>test1</ID>
-      <thickness unit="mm">1</thickness>
-      <details/>
-    </SASsample>
-    <SASinstrument>
-      <name/>
-      <SASsource>
-        <radiation/>
-        <wavelength unit="A">1</wavelength>
-      </SASsource>
-      <SAScollimation/>
-      <SASdetector>
-        <name/>
-        <SDD unit="m">1</SDD>
-      </SASdetector>
-    </SASinstrument>
-    <SASprocess>
-      <name>canSAS1d/1.0 XML formatter</name>
-      <date>2013-12-26 17:23:10</date>
-      <SASprocessnote name="svnid">Id: index.php 87 2009-09-03 01:38:04Z prjemian</SASprocessnote>
-      <SASprocessnote name="titleStr">formatting of text data into canSAS XML 1D standard</SASprocessnote>
-    </SASprocess>
-    <SASnote name="parameters">
-      <!-- desmearing parameters -->
-      <input_data>test1.smr</input_data>
-      <output_data>test1.dsm</output_data>
-      <slit_length>0.08</slit_length>
-      <extrapolation_form>linear</extrapolation_form>
-      <start_extrapolation>0.08</start_extrapolation>
-      <num_iterations>20</num_iterations>
-      <feedback_method>fast</feedback_method>
-    </SASnote>
-  </SASentry>
-  <SASentry name="dsm">
-    <Title>desmeared test1 dataset for tests of desmearing software</Title>
-    <Run>test1</Run>
-    <SASdata>
+    <SASdata name="dsm">
       <Idata>
         <Q unit="1/A">0.000371484</Q>
         <I unit="1/cm">2.68503e+07</I>
@@ -2563,7 +2530,7 @@
       <details/>
     </SASsample>
     <SASinstrument>
-      <name/>
+      <name>ignore_this</name>
       <SASsource>
         <radiation/>
         <wavelength unit="A">1</wavelength>
@@ -2576,11 +2543,21 @@
     </SASinstrument>
     <SASprocess>
       <name>canSAS1d/1.0 XML formatter</name>
-      <date>2013-12-26 17:25:21</date>
+      <date>2013-12-26 17:23:10</date>
       <SASprocessnote name="svnid">Id: index.php 87 2009-09-03 01:38:04Z prjemian</SASprocessnote>
       <SASprocessnote name="titleStr">formatting of text data into canSAS XML 1D standard</SASprocessnote>
     </SASprocess>
-    <SASnote name="example_output">
+    <SASnote name="parameters">
+      <!-- desmearing parameters -->
+      <input_data>test1.smr</input_data>
+      <output_data>test1.dsm</output_data>
+      <slit_length>0.08</slit_length>
+      <extrapolation_form>linear</extrapolation_form>
+      <start_extrapolation>0.08</start_extrapolation>
+      <num_iterations>20</num_iterations>
+      <feedback_method>fast</feedback_method>
+    </SASnote>
+    <SASnote name="example_desmearing_output">
     SAS data desmearing, by Pete R. Jemian
     Based on the iterative technique of JA Lake and PR Jemian.
     P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
