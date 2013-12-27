@@ -13,7 +13,7 @@ so that they may be improved, as needed.
 
 import os
 import sys
-import math
+import math     #@UnusedImport
 import string
 import numpy
 import scipy    #@UnusedImport

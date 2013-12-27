@@ -4,8 +4,8 @@
 import unittest
 import smear
 import toolbox
-import extrap_linear
-import os           #@UnusedImport
+import extrap_linear    #@UnusedImport
+import os               #@UnusedImport
 
 
 datafile = toolbox.GetTest1DataFilename('.dsm')
@@ -37,14 +37,6 @@ class Test(unittest.TestCase):
         self.assertTrue('B' in coeff)
         self.assertFalse('m' in coeff)
         self.assertAlmostEquals( coeff['B'], 38.589860526315789 )
-
-    def test_trapezoid_integration(self):
-        dataset = []
-        dataset.append( ((1,2,3), (0., 1., 0.), 1.0) )
-        dataset.append( ((1,2,3,4), (0., 1., 1., 0.), 2.0) )
-        for test_set in dataset:
-            x, y, area = test_set
-            self.assertAlmostEquals( smear.trapezoid_integration(x, y), area)
 
     def test_Plengt(self):
         dataset = {}

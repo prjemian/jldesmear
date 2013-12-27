@@ -72,7 +72,7 @@ Source Code Documentation
 '''
 
 
-import math
+import math             #@UnusedImport
 import toolbox
 import info
 import desmear
@@ -80,6 +80,7 @@ import extrapolation    #@UnusedImport
 import textplots
 import os               #@UnusedImport
 import numpy
+import jldesmear
 
 
 INFINITE_ITERATIONS = 0
@@ -180,16 +181,17 @@ def plot_results (q, E, C):
 def command_line_interface ():
     '''
     SAS data desmearing, by Pete R. Jemian
-    Based on the iterative technique of JA Lake and PR Jemian.
+    Based on the iterative technique of PR Jemian and JA Lake.
     P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
     J.A. Lake; ACTA CRYST 23 (1967) 191-194.
     
     ::
     
         $Id$
-        desmear using the same FORTRAN & C command line interface
+        Desmear using the same command line interface as the FORTRAN & C predecessors.
     '''
     # log output to "Lake.log"
+    print(jldesmear.__project__ + ' command line interface')
     print(command_line_interface.__doc__)
 
     params = info.Info()    # create structure for control parameters
@@ -204,7 +206,7 @@ def command_line_interface ():
     params.NumItr = 10
     params.extrapname = "linear"
     
-    # TODO: add support to read parameters from *.inp file
+    # TODO: add support to read parameters from *.inp file (it's in the GUI now)
 
     params = GetInf(params)
     if params == None:
