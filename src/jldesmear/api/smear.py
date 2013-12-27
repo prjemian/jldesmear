@@ -118,7 +118,7 @@ def prepare_extrapolation(q, C, dC, extrapname, sFinal):
 
 # TODO: refactor Smear into a class
 
-def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
+def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False, weighted_transition=True):
     '''
     Smear the data of C(q) into S(q) using the slit-length
     weighting function :func:`~jldesmear.api.smear.Plengt()` and an extrapolation
@@ -145,6 +145,7 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
     :param float sFinal: fit extrapolation to I(q) for q >= sFinal
     :param float slitlength: l_o, same units as q
     :param bool quiet: if True, then no printed output from this routine
+    :param bool weighted_transition: if True, make a weighted transition between sFinal <= q < qMax
     :return: tuple of (S, extrap)
     :rtype: (numpy.ndarray, object)
     :var numpy.ndarray S: smeared version of C
@@ -171,12 +172,12 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False):
 
     for i, qNow in enumerate(q):
         if not quiet: toolbox.Spinner(i)
-        Ic = w * get_Ic(qNow, sFinal, qMax, x, interp, extrap)
+        Ic = w * get_Ic(qNow, sFinal, qMax, x, interp, extrap, weighted_transition)
         S[i] = 2 * numpy.trapz(Ic, x)  # symmetrical about zero
 
     return S, extrap
 
-def get_Ic(qNow, sFinal, qMax, x, interp, extrap):
+def get_Ic(qNow, sFinal, qMax, x, interp, extrap, weighted_transition=True):
     '''return the corrected intensity based on circular symmetry'''
     u = numpy.sqrt(qNow*qNow + x*x) # circular-symmetric
 
@@ -187,7 +188,7 @@ def get_Ic(qNow, sFinal, qMax, x, interp, extrap):
     
     condition = numpy.multiply(sFinal < u, u <= qMax)
     u_mid = numpy.extract(condition, u)
-    if u_mid.size < 2:
+    if u_mid.size < 2 or not weighted_transition:
         Ic_mid = numpy.exp(interp(u_mid))
     else:
         # make smooth transition between sFinal < q < qMax
