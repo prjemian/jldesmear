@@ -153,8 +153,6 @@ class JLdesmearGui(QMainWindow):
         self.b_restart.clicked.connect(self.init_session)
         self.b_clear_console.clicked.connect(self.do_Clear_Console)
         self.b_clear_plots.clicked.connect(self.do_Clear_Plots)
-
-        # TODO: save results
         
     def _init_menus(self):
         '''define the menus for the GUI'''
@@ -250,7 +248,6 @@ class JLdesmearGui(QMainWindow):
         layout.addWidget(self.slitlength, row, 1)
         self.slitlength.setText('0.1')
 
-        # TODO: need setter/getter methods
         row += 1
         tip = 'functional form of extrapolation for desmearing'
         functions = discover_extrapolations()
@@ -269,7 +266,6 @@ class JLdesmearGui(QMainWindow):
         layout.addWidget(self.qFinal, row, 1)
         self.qFinal.setText('0.1')
 
-        # TODO: need setter/getter methods
         row += 1
         tip = 'functional form of desmearing feedback, always use "fast"'
         self.feedback = QComboBox()
@@ -468,9 +464,9 @@ class JLdesmearGui(QMainWindow):
         if 'fileio_class' not in dir(info):
             raise RuntimeError, 'programmer trouble: something replaced the params'
         outfile = self.dsm.params.filename
-        outfile = 'junk.inp'        # developer
+        outfile = 'junk.inp'        # FIXME: developer
         info.fileio_class.save(outfile)
-        #self.dirty = False
+        self.dirty = False
 
     def onSaveDsmFile(self):
         '''save desmeared data to a file'''
@@ -479,7 +475,7 @@ class JLdesmearGui(QMainWindow):
         if 'fileio_class' not in dir(info):
             raise RuntimeError, 'programmer trouble: something replaced the params'
         outfile = self.dsm.params.outfile
-        outfile = 'junk.dsm'        # developer
+        outfile = 'junk.dsm'        # FIXME: developer
         info.fileio_class.save_DSM(outfile, self.dsm)
         #self.dirty = False
 
