@@ -103,7 +103,7 @@ def GetInf(params):
     params.slitlength = toolbox.AskDouble (
                             "What is the slit length (x-axis units)?", 
                             params.slitlength)
-    extrap_funcs = extrapolation.discover_extrapolation_functions()
+    extrap_funcs = extrapolation.discover_extrapolations()
     msg = ['Extrapolation forms to avoid truncation-error.',]
     for key, extrap in sorted(extrap_funcs.items()):
         msg.append(' '*4 + key + ' = ' + extrap().__doc__)

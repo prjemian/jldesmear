@@ -114,8 +114,8 @@ class DesmearingGui(HasTraits):
     qFinal = Float(label="qFinal", desc="fit extrapolation constants for Q>=qFinal",)
     NumItr = Range(1,1000, 10, label="# iterations", desc="number of desmearing iterations",)
 
-    from jldesmear.api.extrapolation import discover_extrapolation_functions
-    extrap_keys = sorted(discover_extrapolation_functions().keys())
+    from jldesmear.api.extrapolation import discover_extrapolations
+    extrap_keys = sorted(discover_extrapolations().keys())
     extrapolation = Enum( 
                  *extrap_keys,
                  label="Extrapolation", 

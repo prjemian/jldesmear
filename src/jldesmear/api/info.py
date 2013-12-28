@@ -22,7 +22,7 @@ INFINITE_ITERATIONS = 'INFINITE_ITERATIONS'
 class Info():
     ''' parameters used by the desmearing methods '''
     
-    parameterfile = ""              # file containing these terms
+    filename = ""                   # file containing these terms
     infile = ""                     # input data
     outfile = ""                    # output data
     slitlength = 1.0                # slit length (l_o) as defined by Lake
@@ -39,7 +39,7 @@ class Info():
         s = []
         #s.append( repr(self) )
         if len(self.parameterfile):
-            s.append( 'parameterfile: %s' % self.parameterfile )
+            s.append( 'parameterfile: %s' % self.filename )
         s.append( 'infile: %s' % self.infile )
         s.append( 'outfile: %s' % self.outfile )
         s.append( 'slitlength: %g' % self.slitlength )

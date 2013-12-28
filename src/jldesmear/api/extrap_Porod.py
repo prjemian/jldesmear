@@ -76,9 +76,6 @@ class Porod(extrapolation.Extrapolation):
         self.coefficients['B']  = slope
 
 
-extrapolation_class = Porod
-
-
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")

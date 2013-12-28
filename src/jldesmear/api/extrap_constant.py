@@ -53,9 +53,6 @@ class Constant(extrapolation.Extrapolation):
         self.coefficients['B']  = reg.Mean()[1]
 
 
-extrapolation_class = Constant
-
-
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")

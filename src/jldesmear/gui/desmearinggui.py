@@ -7,8 +7,6 @@ Lake desmearing GUI using PySide (or PyQt4) and Matplotlib
 
 import os, sys
 import threading
-import jldesmear
-from jldesmear.api import toolbox
 import matplotlib
 matplotlib.use('Qt4Agg')
 
@@ -26,9 +24,12 @@ except:
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
+from jldesmear.api import toolbox
 from jldesmear.api.desmear import Weighting_Methods, Desmearing
-from jldesmear.api.extrapolation import discover_extrapolation_functions
+from jldesmear.api.extrapolation import discover_extrapolations
 from jldesmear.api.info import Info
+from jldesmear.fileio.fileio import makeFilters
+import jldesmear.fileio.command_input
 
 
 class FileEntryBox(QGroupBox):
@@ -61,13 +62,14 @@ class FileEntryBox(QGroupBox):
 
     def onOpenFile(self, **kw):
         '''Choose file for input'''
-        filters = ';;'.join([
-                             'Input parameters (*.inp)',
-                             'cansas1d:1.1 (*.xml)',
-                             'HDF5/NeXus ( *.hdf *.hdf5 *.h5 *.nx *.nxs)',
-                             'smeared SAS (*.smr)',
-                             'any file (*.* *)',
-                             ])
+#         filters = ';;'.join([
+#                              'Input parameters (*.inp)',
+#                              'cansas1d:1.1 (*.xml)',
+#                              'HDF5/NeXus (*.hdf *.hdf5 *.h5 *.nx *.nxs)',
+#                              'smeared SAS (*.smr)',
+#                              'any file (*.* *)',
+#                              ])
+        filters = makeFilters()
         fileName, filefilter = QFileDialog().getOpenFileName(self, filter=filters)
         if len(fileName) > 0:
             self.entry.setText(fileName)
@@ -98,38 +100,21 @@ class JLdesmearGui(QMainWindow):
         self._init_Developer()
     
     def _init_Developer(self):
-        def get_buf_item(key, item=0):
-            return buf[key].split()[item]
         ext = '.inp'
         fn = toolbox.GetTest1DataFilename(ext)
         if not fn.endswith(ext): return
         
         # read a .inp file
-        '''
-        test1.smr
-        test1.dsm
-        0.08
-        linear
-        0.08
-        20
-        fast
-        '''
-        owd = os.getcwd()
-        self.fileentry.entry.setText(fn)
-        buf = open(os.path.abspath(fn), 'r').readlines()
-        path = os.path.dirname(fn)
-        os.chdir(path)
+        cmd_inp = jldesmear.fileio.command_input.CommandInput()
+        cmd_inp.read(fn)
         
-        self.setInputDataFile(os.path.abspath(os.path.join(path, get_buf_item(0))))
-        self.setOutputDataFile(os.path.abspath(os.path.join(path, get_buf_item(1))))
-        self.setSlitLength(get_buf_item(2))
-        self.setExtrapolationMethod(get_buf_item(3))
-        self.setQFinal(get_buf_item(4))
-        self.setNumIterations(get_buf_item(5))
-        self.setFeedbackMethod(get_buf_item(6))
-        
-        os.chdir(owd)
-        
+        self.setInputDataFile(cmd_inp.info.infile)
+        self.setOutputDataFile(cmd_inp.info.outfile)
+        self.setSlitLength(cmd_inp.info.slitlength)
+        self.setExtrapolationMethod(cmd_inp.info.extrapname)
+        self.setQFinal(cmd_inp.info.sFinal)
+        self.setNumIterations(cmd_inp.info.NumItr)
+        self.setFeedbackMethod(cmd_inp.info.LakeWeighting)
 
     def closeEvent(self, *args):
         '''received a request to close application, shall we allow it?'''
@@ -157,7 +142,8 @@ class JLdesmearGui(QMainWindow):
         self.b_do_once.clicked.connect(self.do_1_iteration)
         self.b_restart.clicked.connect(self.init_session)
         self.b_clear_console.clicked.connect(self.do_Clear_Console)
-        
+        self.b_clear_plots.clicked.connect(self.do_Clear_Plots)
+
         # TODO: save results
         
     def _init_menus(self):
@@ -254,7 +240,7 @@ class JLdesmearGui(QMainWindow):
         # TODO: need setter/getter methods
         row += 1
         tip = 'functional form of extrapolation for desmearing'
-        functions = discover_extrapolation_functions()
+        functions = discover_extrapolations()
         self.extrapolation = QComboBox()
         self.extrapolation.insertItems(999, sorted(functions.keys()))
         self.extrapolation.setToolTip(tip)
@@ -344,7 +330,7 @@ class JLdesmearGui(QMainWindow):
         '''contains plots'''
         fr = QFrame(parent)
 
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
         fr.setLayout(layout)
 
         splitter = QSplitter(fr)
@@ -352,6 +338,9 @@ class JLdesmearGui(QMainWindow):
         splitter.addWidget(self._init_Data_Plots_Panel(fr))
         splitter.addWidget(self._init_ChiSqr_Plot_Panel(fr)) 
         layout.addWidget(splitter)
+        
+        self.b_clear_plots = QPushButton('clear all plots')
+        layout.addWidget(self.b_clear_plots)
         
         return fr
     
@@ -473,6 +462,7 @@ class JLdesmearGui(QMainWindow):
     
     def updatePlots(self, dsm):
         '''update the plots with new data'''
+        # TODO: this is very slow
         # plot E(q)
         self.sas_plot.clf(keep_observers=True)
         axis = self.sas_plot.add_subplot(111)
@@ -481,6 +471,7 @@ class JLdesmearGui(QMainWindow):
         axis.plot(dsm.q, dsm.C, color='red')
         axis.set_xscale('log')
         axis.set_yscale('log')
+        axis.autoscale_view(tight=True)
         self.sas_plot.canvas.draw()
         
         # plot z(q)
@@ -488,6 +479,7 @@ class JLdesmearGui(QMainWindow):
         axis = self.z_plot.add_subplot(111)
         axis.plot(dsm.q, dsm.z, 'o')
         axis.set_xscale('log')
+        axis.autoscale_view(tight=True)
         self.z_plot.canvas.draw()
         
         self.chisqr_plot.clf(keep_observers=True)
@@ -495,6 +487,7 @@ class JLdesmearGui(QMainWindow):
         x = range(len(dsm.ChiSqr))
         axis.plot(x, dsm.ChiSqr, 'o-')
         axis.set_yscale('log')
+        axis.autoscale_view(tight=True)
         self.chisqr_plot.canvas.draw()
     
     def do_1_iteration(self, *args, **kws):
@@ -513,6 +506,12 @@ class JLdesmearGui(QMainWindow):
     def do_Clear_Console(self):
         # TODO: first, a confirm dialog
         self.console.setText('<console cleared>')
+            
+    def do_Clear_Plots(self):
+        # TODO: first, a confirm dialog
+        for plot in (self.sas_plot, self.z_plot, self.chisqr_plot):
+            plot.clf(keep_observers=True)
+            plot.canvas.draw()
     
     def selectQComboBoxItemByText(self, obj, text):
         '''select a QComboBox object by text value'''

@@ -8,12 +8,10 @@ import StatsReg
 import os
 
 
-#__metaclass__ = type # new style classes
-
-
 functions = None
 
-def discover_extrapolation_functions():
+
+def discover_extrapolations():
     '''
     return a dictionary of the available extrapolation functions
     
@@ -27,12 +25,8 @@ def discover_extrapolation_functions():
     ``q`` as a ``numpy.ndarray`` or as a ``float``.
     
     The file must contain:
-    
-    .. index:: !extrapolation_class
-    
+
     * a subclass of :class:`~jldesmear.api.extrapolation.Extrapolation`
-    * a variable called :const:`extrapolation_class` set to the class 
-      (See :mod:`~jldesmear.api.extrap_constant` for an example.)
     
     '''
     global functions
@@ -43,21 +37,23 @@ def discover_extrapolation_functions():
         functions = {}
         for item in os.listdir('.'):
             if item.startswith('extrap_') and item.endswith('.py'):
-                basename = os.path.splitext(item)[0]
-                key = basename[len('extrap_'):]
-                exec 'import ' + basename
-                module = locals()[basename]
-                try:
-                    extrapolation_class = module.extrapolation_class
-                except:
-                    msg = 'Must define the ``extrapolation_class`` term in file: ' + item
-                    raise RuntimeError, msg
-                functions[key] = extrapolation_class
+                modulename = os.path.splitext(item)[0]
+                extrapname = modulename[len('extrap_'):]
+                exec 'import ' + modulename
+                contents = locals()[modulename].__dict__
+                for key, value in contents.items():
+                    if isinstance(value, type) and 'extrapolation_kind' in dir(value):
+                        if extrapname in functions:
+                            msg = 'Duplicate extrapolation method defined: ' + key 
+                            msg += ' in ' + modulename
+                            raise RuntimeError, msg
+                        functions[extrapname] = value
+                        continue
         os.chdir(owd)
     return functions
 
 
-class Extrapolation:
+class Extrapolation(object):
     '''
     superclass of functions for extrapolation of SAS data past available range
     
@@ -108,13 +104,9 @@ class Extrapolation:
     * :meth:`__str__()` : string representation
     * :meth:`calc()` : determines :math:`I(q)` from ``q`` and ``self.coefficients`` dictionary
     * :meth:`fit_result()` : assigns fit coefficients to ``self.coefficients`` dictionary
-    * :data:`extrapolation_class` : identifies the class for auto-discovery
-      
-      example from :mod:`extrap_linear`::
-      
-          extrapolation_class = Linear
-    
     '''
+
+    extrapolation_kind = 'Extrapolation'      # internal signature to recognize subclasses
 
     def __init__(self):
         '''
@@ -262,9 +254,13 @@ class Extrapolation:
         self.coefficients = coefficients
 
 
+discover_extrapolations()
+
+
 def main():
-    func_dict = discover_extrapolation_functions()
-    print func_dict
+    func_dict = discover_extrapolations()
+    for k, v in func_dict.items():
+        print k + ': ', v
 
 
 if __name__ == "__main__":

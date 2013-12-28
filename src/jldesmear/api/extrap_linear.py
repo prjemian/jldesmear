@@ -55,9 +55,6 @@ class Linear(extrapolation.Extrapolation):
         self.coefficients['m']  = slope
 
 
-extrapolation_class = Linear
-
-
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")

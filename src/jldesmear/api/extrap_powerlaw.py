@@ -77,9 +77,6 @@ class Power(extrapolation.Extrapolation):
         self.coefficients['p']  = p
 
 
-extrapolation_class = Power
-
-
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")

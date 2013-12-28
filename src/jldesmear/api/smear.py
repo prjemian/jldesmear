@@ -107,7 +107,7 @@ def prepare_extrapolation(q, C, dC, extrapname, sFinal):
     if len(q) - start < 2:
         raise Exception, "not enough data to fit"
 
-    functions = extrapolation.discover_extrapolation_functions()
+    functions = extrapolation.discover_extrapolations()
     if extrapname not in functions.keys():
         msg = "did not identify extrapolation function: " + extrapname
         raise RuntimeError, msg
