@@ -83,6 +83,9 @@ class FileIO(object):
     
     def read_SMR(self, filename):
         raise NotImplementedError, "must implement read_SMR() method in each subclass"
+    
+    def save_DSM(self, filename):
+        raise NotImplementedError, "must implement save_DSM() method in each subclass"
 
 
 discover_support()  # automatically initialize

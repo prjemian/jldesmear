@@ -5,7 +5,7 @@
 
 import os
 from fileio import FileIO
-from jldesmear.api.info import Info
+import jldesmear.api.info
 from jldesmear.api.extrapolation import discover_extrapolations
 import jldesmear.api.toolbox
 
@@ -74,7 +74,7 @@ class CommandInput(FileIO):
         if not filename.endswith(ext): return None
         if not os.path.exists(filename): return None
 
-        self.info = Info()
+        self.info = jldesmear.api.info.Info()
 
         # read a .inp file
         self.info.parameterfile = filename
@@ -87,6 +87,11 @@ class CommandInput(FileIO):
             raise RuntimeError, msg
         
         functions = discover_extrapolations()
+
+        self.info.fileio_class = self
+        self.info.filename = filename
+        self.info.quiet = True
+        self.info.callback = None
         
         self.info.infile = os.path.abspath(os.path.join(path, get_buf_item(0)))
         self.info.outfile = os.path.abspath(os.path.join(path, get_buf_item(1)))
@@ -96,9 +101,6 @@ class CommandInput(FileIO):
         self.info.NumItr = int(get_buf_item(5))
         self.info.LakeWeighting = get_buf_item(6)
         self.info.extrap = functions[self.info.extrapname]
-        self.info.quiet = True
-        self.info.callback = None
-        self.info.filename = filename
 
         os.chdir(owd)
         
@@ -146,6 +148,10 @@ class CommandInput(FileIO):
         if (self.info.sFinal > q[-1]):
             raise RuntimeWarning, "Fit range out of data range"
         return q, E, dE
+    
+    def save_DSM(self, filename, dsm):
+        '''Save the desmeared data to a 3-column ASCII file'''
+        jldesmear.api.toolbox.SavDat(filename, dsm.q, dsm.C, dsm.dC)
 
 
 # class AnyFile(FileIO):

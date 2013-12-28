@@ -34,6 +34,8 @@ class Info():
     quiet = True                    # suppress progress indicator (spinner) output during smearing
     callback = None                 # function object to call after each desmearing iteration
     
+    fileio_class = None             # file format support class
+
     def __str__(self):
         ''' canonical string representation '''
         s = []

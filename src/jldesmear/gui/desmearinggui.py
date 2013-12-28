@@ -135,7 +135,13 @@ class JLdesmearGui(QMainWindow):
         self.action_open.triggered.connect(self.onOpenFile)
 
         self.action_save = QAction(self.tr('&Save'), None)
+        self.action_save.setShortcut(QKeySequence.Save)
+        self.action_save.setStatusTip(self.tr('Save parameters to a file'))
+        self.action_save.triggered.connect(self.onSaveFile)
+
         self.action_saveDSM = QAction(self.tr('Save &DSM'), None)
+        self.action_saveDSM.setStatusTip(self.tr('Save desmeared data to a file'))
+        self.action_saveDSM.triggered.connect(self.onSaveDsmFile)
         
         self.action_exit = QAction(self.tr('E&xit'), None)
         self.action_exit.setShortcut(QKeySequence.Quit)
@@ -159,9 +165,6 @@ class JLdesmearGui(QMainWindow):
         fileMenu.addAction(self.action_saveDSM)
         fileMenu.addSeparator()
         fileMenu.addAction(self.action_exit)
-        
-        # TODO: needs File:Save INP
-        # TODO: needs File:Save DSM
         
         # TODO: needs Edit menu
         
@@ -424,14 +427,16 @@ class JLdesmearGui(QMainWindow):
         self.console.setTextCursor(cursor)
 
     def onOpenFile(self):
-        '''Choose a text file with 3-column smeared SAS data'''
+        '''Choose a file with SAS desmearing parameters'''
         self.fileentry.selectFile()
     
     def openFileCallback(self, filename, filefilter):
+        '''open a Command Input file with SAS desmearing parameters'''
         ext = os.path.splitext(filename)[1]
         xref = jldesmear.fileio.fileio.ext_xref
         if ext in xref and xref[ext] == 'CommandInput':
             self.setStatus('selected file: ' + filename)
+            self.dsm = None
             
             # read a .inp file
             cls = jldesmear.fileio.fileio.formats[xref[ext]]
@@ -451,17 +456,33 @@ class JLdesmearGui(QMainWindow):
             self.dsm = Desmearing(q, E, dE, cmd_inp.info)
             self.updatePlots(self.dsm)
             self.dirty = False
-            self.dsm = None
             
             self.init_session()
 
             self.setStatus('loaded file: ' + filename)
-
-    def loadFile(self, filename):
-        '''Open a file with 3-column smeared SAS data'''
-        if os.path.exists(filename):
-            self.setStatus('did not open file: ' + filename)
     
+    def onSaveFile(self):
+        '''save desmearing parameters to a file'''
+        if self.dsm is None: return
+        info = self.dsm.params
+        if 'fileio_class' not in dir(info):
+            raise RuntimeError, 'programmer trouble: something replaced the params'
+        outfile = self.dsm.params.filename
+        outfile = 'junk.inp'        # developer
+        info.fileio_class.save(outfile)
+        #self.dirty = False
+
+    def onSaveDsmFile(self):
+        '''save desmeared data to a file'''
+        if self.dsm is None: return
+        info = self.dsm.params
+        if 'fileio_class' not in dir(info):
+            raise RuntimeError, 'programmer trouble: something replaced the params'
+        outfile = self.dsm.params.outfile
+        outfile = 'junk.dsm'        # developer
+        info.fileio_class.save_DSM(outfile, self.dsm)
+        #self.dirty = False
+
     def init_session(self):
         '''setup a new desmearing session using existing parameters and plot the data'''
         def session_callback(dsm):
@@ -474,7 +495,10 @@ class JLdesmearGui(QMainWindow):
             else:
                 print msg
 
-        params = Info()
+        if self.dsm is None or self.dsm.params is None:
+            params = Info()
+        else:
+            params = self.dsm.params
 
         params.infile = self.getInputDataFile()
         params.outfile = self.getOutputDataFile()
