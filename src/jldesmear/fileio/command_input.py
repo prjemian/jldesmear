@@ -7,6 +7,7 @@ import os
 from fileio import FileIO
 from jldesmear.api.info import Info
 from jldesmear.api.extrapolation import discover_extrapolations
+import jldesmear.api.toolbox
 
 
 class CommandInput(FileIO):
@@ -97,6 +98,7 @@ class CommandInput(FileIO):
         self.info.extrap = functions[self.info.extrapname]
         self.info.quiet = True
         self.info.callback = None
+        self.info.filename = filename
 
         os.chdir(owd)
         
@@ -129,26 +131,43 @@ class CommandInput(FileIO):
         f.close()
 
         os.chdir(owd)
-
-
-class AnyFile(FileIO):
-
-    description = 'any file'
-    extensions = ['*.*', ]
     
-    # TODO: this should not read any files
-    # Rather, files read by this class should be checked
-    # to see if they can be read by another support.
+    def read_SMR(self, filename = None):
+        '''Open a file with 3-column smeared SAS data'''
+        #path = os.path.abspath(os.path.dirname(filename))
+        #owd = os.getcwd()
+        #os.chdir(path)
+        filename = filename or self.info.infile
+        if not os.path.exists(filename): return
+        #os.chdir(owd)
+        q, E, dE = jldesmear.api.toolbox.GetDat(filename)
+        if (len(q) == 0):
+            raise Exception, "no data points!"
+        if (self.info.sFinal > q[-1]):
+            raise RuntimeWarning, "Fit range out of data range"
+        return q, E, dE
+
+
+# class AnyFile(FileIO):
+# 
+#     description = 'any file'
+#     extensions = ['*.*', ]
+#     
+#     # TODO: this should not read any files
+#     # Rather, files read by this class should be checked
+#     # to see if they can be read by another support.
 
 
 def main():
     from jldesmear.api import toolbox
     ext = '.inp'
     fn = toolbox.GetTest1DataFilename(ext)
-    info = CommandInput()
-    parms = info.read(fn)
+    cmdInp = CommandInput()
+    parms = cmdInp.read(fn)
     print str(parms)
-    info.save('junk.inp')
+    cmdInp.save('junk.inp')
+    q, E, dE = cmdInp.read_SMR()
+    print q.size, q.min(), q.max()
 
 
 if __name__ == "__main__":

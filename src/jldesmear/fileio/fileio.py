@@ -7,7 +7,8 @@ superclass of modules supporting different file formats
 import os
 
 
-formats = None
+formats = None      # dict: file format support classes, by format class name
+ext_xref = None     # dict: cross-reference from extension to format class name
 
 
 def discover_support():
@@ -17,7 +18,7 @@ def discover_support():
     Support modules must be in a file in 
     the ``jldesmear.fileio`` package in the source tree.
     '''
-    global formats
+    global formats, ext_xref
     if formats is None:
         owd = os.getcwd()
         path = os.path.dirname(os.path.abspath(__file__))
@@ -41,6 +42,13 @@ def discover_support():
                         formats[key] = value
                         continue
         os.chdir(owd)
+        
+        ext_xref = {}
+        for fmt in formats:
+            obj = formats[fmt]()
+            for item in obj.extensions:
+                ext = os.path.splitext(item)[1]
+                ext_xref[ext] = fmt
     return formats
 
 
@@ -72,6 +80,9 @@ class FileIO(object):
     
     def save(self, filename):
         raise NotImplementedError, "must implement save() method in each subclass"
+    
+    def read_SMR(self, filename):
+        raise NotImplementedError, "must implement read_SMR() method in each subclass"
 
 
 discover_support()  # automatically initialize
@@ -83,6 +94,9 @@ def main():
     for key, cls in formats.items():
         obj = cls()
         print key, str(obj)
+    import pprint
+    pprint.pprint(formats)
+    pprint.pprint(ext_xref)
     print makeFilters()
 
 

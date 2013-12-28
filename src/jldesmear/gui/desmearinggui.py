@@ -28,8 +28,7 @@ from jldesmear.api import toolbox
 from jldesmear.api.desmear import Weighting_Methods, Desmearing
 from jldesmear.api.extrapolation import discover_extrapolations
 from jldesmear.api.info import Info
-from jldesmear.fileio.fileio import makeFilters
-import jldesmear.fileio.command_input
+import jldesmear.fileio.fileio #import makeFilters, ext_xref, formats
 
 
 class FileEntryBox(QGroupBox):
@@ -47,7 +46,7 @@ class FileEntryBox(QGroupBox):
         self.entry = QLineEdit('')
         self.entry.setToolTip('full path of selected file')
         b_icon = QPushButton('&Open ...')
-        b_icon.clicked[bool].connect(self.onOpenFile)
+        b_icon.clicked[bool].connect(self.selectFile)
         style = b_icon.style()
         icon = style.standardIcon(QStyle.SP_FileIcon)
         b_icon.setIcon(icon)
@@ -60,7 +59,7 @@ class FileEntryBox(QGroupBox):
         layout.setStretch(1, 0)
         self.setLayout(layout)
 
-    def onOpenFile(self, **kw):
+    def selectFile(self, **kw):
         '''Choose file for input'''
 #         filters = ';;'.join([
 #                              'Input parameters (*.inp)',
@@ -69,7 +68,7 @@ class FileEntryBox(QGroupBox):
 #                              'smeared SAS (*.smr)',
 #                              'any file (*.* *)',
 #                              ])
-        filters = makeFilters()
+        filters = jldesmear.fileio.fileio.makeFilters()
         fileName, filefilter = QFileDialog().getOpenFileName(self, filter=filters)
         if len(fileName) > 0:
             self.entry.setText(fileName)
@@ -81,6 +80,7 @@ class FileEntryBox(QGroupBox):
 class JLdesmearGui(QMainWindow):
 
     def __init__(self, parent=None):
+        import jldesmear
         super(JLdesmearGui, self).__init__(parent)
         self.parent = parent
         self.setWindowTitle(jldesmear.__project__ + ' GUI')
@@ -97,9 +97,10 @@ class JLdesmearGui(QMainWindow):
         self._init_menus()
         self.setStatus()
         
-        self._init_Developer()
+        #self._init_Developer()
     
     def _init_Developer(self):
+        import jldesmear.fileio.command_input
         ext = '.inp'
         fn = toolbox.GetTest1DataFilename(ext)
         if not fn.endswith(ext): return
@@ -132,6 +133,9 @@ class JLdesmearGui(QMainWindow):
         self.action_open.setShortcut(QKeySequence.Open)
         self.action_open.setStatusTip(self.tr('Open a file'))
         self.action_open.triggered.connect(self.onOpenFile)
+
+        self.action_save = QAction(self.tr('&Save'), None)
+        self.action_saveDSM = QAction(self.tr('Save &DSM'), None)
         
         self.action_exit = QAction(self.tr('E&xit'), None)
         self.action_exit.setShortcut(QKeySequence.Quit)
@@ -151,7 +155,13 @@ class JLdesmearGui(QMainWindow):
         fileMenu = self.menuBar().addMenu(self.tr('&File'))
         fileMenu.addAction(self.action_open)
         fileMenu.addSeparator()
+        fileMenu.addAction(self.action_save)
+        fileMenu.addAction(self.action_saveDSM)
+        fileMenu.addSeparator()
         fileMenu.addAction(self.action_exit)
+        
+        # TODO: needs File:Save INP
+        # TODO: needs File:Save DSM
         
         # TODO: needs Edit menu
         
@@ -166,7 +176,7 @@ class JLdesmearGui(QMainWindow):
         fr.setLayout(layout)
 
         self.fileentry = FileEntryBox(fr, 
-            title='Input parameters file', 
+            title='Command Input parameters file', 
             tip='select a file with desmearing parameters',
             callback=self.openFileCallback)
         panel = self._init_Big_Panel(fr)
@@ -288,21 +298,25 @@ class JLdesmearGui(QMainWindow):
         box.setLayout(layout)
         
         tip = 'desmear N iterations'
-        self.b_do_N = QPushButton('N')
+        self.b_do_N = QPushButton('N')  # TODO: use ">>" icon instead
         self.b_do_N.setToolTip(tip)
         layout.addWidget(self.b_do_N)
         squareWidget(self.b_do_N)
         
         tip = 'desmear one iteration'
-        self.b_do_once = QPushButton('1')
+        self.b_do_once = QPushButton('1')  # TODO: use ">" icon instead
         self.b_do_once.setToolTip(tip)
         layout.addWidget(self.b_do_once)
         squareWidget(self.b_do_once)
         
+        # TODO: need a pause button "||"
+        # TODO: need a stop button (black square)
+        # TODO: need an eject button: clears all settings and removes all data
+        
         layout.addStretch(50)
         
         tip = 're(start) by clearing all results and reloading data'
-        self.b_restart = QPushButton('!')
+        self.b_restart = QPushButton('!')  # TODO: use recirculate icon (circle with an arrow head) instead
         self.b_restart.setToolTip(tip)
         layout.addWidget(self.b_restart)
         squareWidget(self.b_restart)
@@ -411,15 +425,37 @@ class JLdesmearGui(QMainWindow):
 
     def onOpenFile(self):
         '''Choose a text file with 3-column smeared SAS data'''
-        self.fileentry.onOpenFile()
+        self.fileentry.selectFile()
     
-    def openFileCallback(self, fileName, filefilter):
-        # TODO: find out what kind of file was opened
-        # Hint is in the filefilter but don't trust it.
-        self.setStatus('selected file: ' + fileName)
-        self.loadFile(fileName)
-        self.dirty = False
-        self.dsm = None
+    def openFileCallback(self, filename, filefilter):
+        ext = os.path.splitext(filename)[1]
+        xref = jldesmear.fileio.fileio.ext_xref
+        if ext in xref and xref[ext] == 'CommandInput':
+            self.setStatus('selected file: ' + filename)
+            
+            # read a .inp file
+            cls = jldesmear.fileio.fileio.formats[xref[ext]]
+            cmd_inp = cls()
+            cmd_inp.read(filename)
+            
+            self.setInputDataFile(cmd_inp.info.infile)
+            self.setOutputDataFile(cmd_inp.info.outfile)
+            self.setSlitLength(cmd_inp.info.slitlength)
+            self.setExtrapolationMethod(cmd_inp.info.extrapname)
+            self.setQFinal(cmd_inp.info.sFinal)
+            self.setNumIterations(cmd_inp.info.NumItr)
+            self.setFeedbackMethod(cmd_inp.info.LakeWeighting)
+            
+            # load the SAS data
+            q, E, dE = cmd_inp.read_SMR(cmd_inp.info.infile)
+            self.dsm = Desmearing(q, E, dE, cmd_inp.info)
+            self.updatePlots(self.dsm)
+            self.dirty = False
+            self.dsm = None
+            
+            self.init_session()
+
+            self.setStatus('loaded file: ' + filename)
 
     def loadFile(self, filename):
         '''Open a file with 3-column smeared SAS data'''
