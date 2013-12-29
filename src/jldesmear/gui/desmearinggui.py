@@ -11,16 +11,18 @@ import matplotlib
 matplotlib.use('Qt4Agg')
 
 try:
-    from PySide import __version__ as pyqt_version
     from PySide.QtCore import *  #@UnusedWildImport
     from PySide.QtGui import *   #@UnusedWildImport
     pyqtSignal = Signal
+    import PySide
     pyqt_name = "PySide"
+    pyqt_version = PySide.__version__
 except:
-    from PyQt4 import __version__ as pyqt_version
     from PyQt4.QtCore import *  #@UnusedWildImport
     from PyQt4.QtGui import *   #@UnusedWildImport
+    import PyQt4
     pyqtSignal = pyqtSignal
+    pyqt_version = PyQt4.__version__
     pyqt_name = "PyQt4"
 matplotlib.rcParams['backend.qt4'] = pyqt_name
 
@@ -98,7 +100,6 @@ class JLdesmearGui(QMainWindow):
         self.status = None
 
         self.mf = self._init_Main_Frame(self)
-        #self.setGeometry(75, 50, 500, 300)
         self.setCentralWidget(self.mf)
         
         self._init_actions()
