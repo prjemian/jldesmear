@@ -11,15 +11,18 @@ import matplotlib
 matplotlib.use('Qt4Agg')
 
 try:
+    from PySide import __version__ as pyqt_version
     from PySide.QtCore import *  #@UnusedWildImport
     from PySide.QtGui import *   #@UnusedWildImport
     pyqtSignal = Signal
-    matplotlib.rcParams['backend.qt4'] = "PySide"
+    pyqt_name = "PySide"
 except:
+    from PyQt4 import __version__ as pyqt_version
     from PyQt4.QtCore import *  #@UnusedWildImport
     from PyQt4.QtGui import *   #@UnusedWildImport
     pyqtSignal = pyqtSignal
-    matplotlib.rcParams['backend.qt4'] = "PyQt4"
+    pyqt_name = "PyQt4"
+matplotlib.rcParams['backend.qt4'] = pyqt_name
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
@@ -49,7 +52,7 @@ class FileEntryBox(QGroupBox):
         self.entry.setStatusTip(tip)
 
         tip = 'Open a file ...'
-        b_icon = QPushButton('&Open ...')
+        b_icon = QPushButton('')
         b_icon.clicked[bool].connect(self.selectFile)
         style = b_icon.style()
         icon = style.standardIcon(QStyle.SP_FileIcon)
@@ -111,32 +114,25 @@ class JLdesmearGui(QMainWindow):
 
     def _init_actions(self):
         '''define the actions for the GUI'''
-        # TODO: needs Edit menu actions
-        # TODO: needs Help menu actions
+        def _setup(label, shortcut, tip, handler):
+            action = QAction(label, None)
+            if shortcut is not None:
+                action.setShortcut(shortcut)
+            action.setStatusTip(tip)
+            action.triggered.connect(handler)
+            return action
         
-        self.action_open = QAction(self.tr('&Open ...'), None)
-        self.action_open.setShortcut(QKeySequence.Open)
-        self.action_open.setStatusTip(self.tr('Open a file'))
-        self.action_open.triggered.connect(self.onOpenFile)
+        self.action_new = _setup('&New ...', QKeySequence.New, 'Start a new project', self.onNewProject)
+        self.action_open = _setup('&Open ...', QKeySequence.Open, 'Open a file', self.onOpen)
+        self.action_save = _setup('&Save', QKeySequence.Save, 'Save parameters to a file', self.onSaveFile)
+        self.action_saveas = _setup('Save &As ...', QKeySequence.SaveAs, 'Save parameters to a new file', self.onSaveAsFile)
+        self.action_saveDSM = _setup('Save &DSM', None, 'Save desmeared data to a file', self.onSaveDsmFile)
+        self.action_exit = _setup('E&xit', QKeySequence.Quit, 'Exit the application', self.closeEvent)
 
-        self.action_save = QAction(self.tr('&Save'), None)
-        self.action_save.setShortcut(QKeySequence.Save)
-        self.action_save.setStatusTip(self.tr('Save parameters to a file'))
-        self.action_save.triggered.connect(self.onSaveFile)
+        # TODO: needs Edit menu actions if menu items are created
 
-        self.action_saveas = QAction(self.tr('Save &As ...'), None)
-        self.action_saveas.setShortcut(QKeySequence.SaveAs)
-        self.action_saveas.setStatusTip(self.tr('Save parameters to a new file'))
-        self.action_saveas.triggered.connect(self.onSaveAsFile)
-
-        self.action_saveDSM = QAction(self.tr('Save &DSM'), None)
-        self.action_saveDSM.setStatusTip(self.tr('Save desmeared data to a file'))
-        self.action_saveDSM.triggered.connect(self.onSaveDsmFile)
-        
-        self.action_exit = QAction(self.tr('E&xit'), None)
-        self.action_exit.setShortcut(QKeySequence.Quit)
-        self.action_exit.setStatusTip(self.tr('Exit the application'))
-        self.action_exit.triggered.connect(self.closeEvent)
+        self.action_about = _setup('About ...', None, 'Describe the application', self.doAboutBox)
+        self.action_aboutQt = _setup('About Qt', None, 'Describe the Qt support', self.doAboutQtBox)
         
         self.b_stop.clicked.connect(self.do_stop)
         self.b_pause.clicked.connect(self.do_pause)
@@ -149,7 +145,9 @@ class JLdesmearGui(QMainWindow):
         
     def _init_menus(self):
         '''define the menus for the GUI'''
-        fileMenu = self.menuBar().addMenu(self.tr('&File'))
+        fileMenu = self.menuBar().addMenu('&File')
+        fileMenu.addAction(self.action_new)
+        fileMenu.addSeparator()
         fileMenu.addAction(self.action_open)
         fileMenu.addSeparator()
         fileMenu.addAction(self.action_save)
@@ -159,11 +157,13 @@ class JLdesmearGui(QMainWindow):
         fileMenu.addSeparator()
         fileMenu.addAction(self.action_exit)
         
-        # TODO: needs Edit menu
+        editMenu = self.menuBar().addMenu('&Edit')
+        editMenu.addSeparator()
         
-        helpMenu = self.menuBar().addMenu(self.tr('Help'))
+        helpMenu = self.menuBar().addMenu('&Help')
+        helpMenu.addAction(self.action_about)
         helpMenu.addSeparator()
-        # TODO: helpMenu.addAction(self.about_dialog)
+        helpMenu.addAction(self.action_aboutQt)
     
     def _init_Main_Frame(self, parent):
         fr = QFrame(parent)
@@ -291,7 +291,7 @@ class JLdesmearGui(QMainWindow):
         return box
 
     def _init_Controls_Panel(self, parent):
-        '''contains controls'''
+        '''widgets to control desmearing'''
         def iconButton(tip, pixmap):
             btn = QPushButton()
             btn.setToolTip(tip)
@@ -377,54 +377,44 @@ class JLdesmearGui(QMainWindow):
 
         splitter = QSplitter(fr)
         splitter.setOrientation(Qt.Vertical)
-        splitter.addWidget(self._init_Sas_Plot_Panel(fr))
+        splitter.addWidget(self._init_Sas_Plot_Panel(fr)) 
         splitter.addWidget(self._init_Residuals_Plot_Panel(fr)) 
         layout.addWidget(splitter)
         
         return fr
-    
-    def _create_and_add_plot(self, fr, layout):
+
+    def plot_panel(self, parent, title):
+        '''generic creation of a plot panel in a titled box (QGroupBox)'''
+        fr = QGroupBox(title, parent)
+
+        layout = QHBoxLayout()
+        fr.setLayout(layout)
+        
         figure = matplotlib.figure.Figure()
         canvas = FigureCanvas(figure)
         canvas.setParent(fr)
         layout.addWidget(canvas)
-        return figure
+  
+        return fr, figure
 
     def _init_Sas_Plot_Panel(self, parent):
         '''contains I(Q) plot'''
-        fr = QGroupBox('~I(Q) and I(Q)', parent)
-
-        layout = QHBoxLayout()
-        fr.setLayout(layout)
-        
-        self.sas_plot = self._create_and_add_plot(fr, layout)
-  
+        fr, self.sas_plot = self.plot_panel(parent, '~I(Q) and I(Q)')
         return fr
     
     def _init_Residuals_Plot_Panel(self, parent):
         '''contains z(Q) plot'''
-        fr = QGroupBox('z(Q)', parent)
-
-        layout = QHBoxLayout()
-        fr.setLayout(layout)
-        
-        self.z_plot = self._create_and_add_plot(fr, layout)
-        
+        fr, self.z_plot = self.plot_panel(parent, 'z(Q)')
         return fr
     
     def _init_ChiSqr_Plot_Panel(self, parent):
         '''contains ChiSqr vs. iteration plot'''
-        fr = QGroupBox('ChiSqr vs. iteration', parent)
-
-        layout = QHBoxLayout()
-        fr.setLayout(layout)
-        
-        self.chisqr_plot = self._create_and_add_plot(fr, layout)
-        
+        fr, self.chisqr_plot = self.plot_panel(parent, 'ChiSqr vs. iteration')
         return fr
 
     def setStatus(self, message = 'Ready', duration_ms=-1):
         '''setup the status bar for the GUI or set a new status message'''
+        # TODO: add logging
         if self.status is None:
             self.status = self.statusBar()
             self.status.setSizeGripEnabled(True)
@@ -441,7 +431,7 @@ class JLdesmearGui(QMainWindow):
         cursor = self.console.textCursor()
         self.console.setTextCursor(cursor)
 
-    def onOpenFile(self):
+    def onOpen(self):
         '''Choose a file with SAS desmearing parameters'''
         self.fileentry.selectFile()
     
@@ -475,6 +465,11 @@ class JLdesmearGui(QMainWindow):
             self.init_session()
 
             self.setStatus('loaded file: ' + filename)
+    
+    def onNewProject(self):
+        '''start a new project'''
+        self.setStatus('start a new project')
+        self.setStatus('method not defined yet', 10000)
     
     def onSaveFile(self):
         '''save desmearing parameters to a file'''
@@ -591,10 +586,12 @@ class JLdesmearGui(QMainWindow):
     def do_pause(self, *args, **kws):
         '''pause button was pressed by the user'''
         self.setStatus('pause button was pressed')
+        self.setStatus('method not defined yet', 10000)
     
     def do_stop(self, *args, **kws):
         '''stop button was pressed by the user'''
         self.setStatus('stop button was pressed')
+        self.setStatus('method not defined yet', 10000)
     
     def do_1_iteration(self, *args, **kws):
         '''1 button (iterate once) was pressed by the user'''
@@ -613,17 +610,33 @@ class JLdesmearGui(QMainWindow):
             
     def do_Clear_Console(self):
         question = 'Really clear the console?'
-        if self.confirmation('clear console text', question):
+        if self.dirty and self.confirmation('clear console text', question):
             self.console.setText('<console cleared>')
             self.setStatus('console cleared')
             
     def do_Clear_Plots(self):
         question = 'Really clear all plot data?'
-        if self.confirmation('clear plot data', question):
+        if self.dirty and self.confirmation('clear plot data', question):
             for plot in (self.sas_plot, self.z_plot, self.chisqr_plot):
                 plot.clf(keep_observers=True)
                 plot.canvas.draw()
             self.setStatus('plot data was cleared')
+
+    def doAboutBox(self, *args, **kws):
+        '''show the about box'''
+        self.setStatus('describe this application')
+        title = u'about ' +  jldesmear.__project__
+        support = [pyqt_name + ' version: ' + pyqt_version,]
+        support.append('Matplotlib version: ' + matplotlib.__version__)
+        support.append('Numpy version: ' + matplotlib.__version__numpy__)
+        text = jldesmear.__about__() + '\n'*2 + '\n'.join(support)
+        QMessageBox.about(self, title, text)
+
+    def doAboutQtBox(self, *args, **kws):
+        '''show the about box'''
+        self.setStatus('describe this application')
+        title = u'about Qt'
+        QMessageBox.aboutQt(self, title)
     
     def confirmation(self, title, text, cancel_default=True):
         '''request confirmation from user before an action, return True if Ok'''
