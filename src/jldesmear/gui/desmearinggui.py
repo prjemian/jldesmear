@@ -43,14 +43,19 @@ class FileEntryBox(QGroupBox):
         self.callback = callback
         self.setTitle(title)
         
+        tip = 'full path of selected file'
         self.entry = QLineEdit('')
-        self.entry.setToolTip('full path of selected file')
+        self.entry.setToolTip(tip)
+        self.entry.setStatusTip(tip)
+
+        tip = 'Open a file ...'
         b_icon = QPushButton('&Open ...')
         b_icon.clicked[bool].connect(self.selectFile)
         style = b_icon.style()
         icon = style.standardIcon(QStyle.SP_FileIcon)
         b_icon.setIcon(icon)
         b_icon.setToolTip(tip)
+        b_icon.setStatusTip(tip)
 
         layout = QHBoxLayout()
         layout.addWidget(self.entry)
@@ -87,6 +92,7 @@ class JLdesmearGui(QMainWindow):
         self.dirty = False
         self.dsm = None
         self.console = None
+        self.status = None
 
         self.mf = self._init_Main_Frame(self)
         #self.setGeometry(75, 50, 500, 300)
@@ -108,7 +114,7 @@ class JLdesmearGui(QMainWindow):
         # TODO: needs Edit menu actions
         # TODO: needs Help menu actions
         
-        self.action_open = QAction(self.tr('&Open'), None)
+        self.action_open = QAction(self.tr('&Open ...'), None)
         self.action_open.setShortcut(QKeySequence.Open)
         self.action_open.setStatusTip(self.tr('Open a file'))
         self.action_open.triggered.connect(self.onOpenFile)
@@ -117,6 +123,11 @@ class JLdesmearGui(QMainWindow):
         self.action_save.setShortcut(QKeySequence.Save)
         self.action_save.setStatusTip(self.tr('Save parameters to a file'))
         self.action_save.triggered.connect(self.onSaveFile)
+
+        self.action_saveas = QAction(self.tr('Save &As ...'), None)
+        self.action_saveas.setShortcut(QKeySequence.SaveAs)
+        self.action_saveas.setStatusTip(self.tr('Save parameters to a new file'))
+        self.action_saveas.triggered.connect(self.onSaveAsFile)
 
         self.action_saveDSM = QAction(self.tr('Save &DSM'), None)
         self.action_saveDSM.setStatusTip(self.tr('Save desmeared data to a file'))
@@ -127,9 +138,12 @@ class JLdesmearGui(QMainWindow):
         self.action_exit.setStatusTip(self.tr('Exit the application'))
         self.action_exit.triggered.connect(self.closeEvent)
         
+        self.b_stop.clicked.connect(self.do_stop)
+        self.b_pause.clicked.connect(self.do_pause)
         self.b_do_N.clicked.connect(self.do_N_iterations)
         self.b_do_once.clicked.connect(self.do_1_iteration)
         self.b_restart.clicked.connect(self.init_session)
+        
         self.b_clear_console.clicked.connect(self.do_Clear_Console)
         self.b_clear_plots.clicked.connect(self.do_Clear_Plots)
         
@@ -139,6 +153,8 @@ class JLdesmearGui(QMainWindow):
         fileMenu.addAction(self.action_open)
         fileMenu.addSeparator()
         fileMenu.addAction(self.action_save)
+        fileMenu.addAction(self.action_saveas)
+        fileMenu.addSeparator()
         fileMenu.addAction(self.action_saveDSM)
         fileMenu.addSeparator()
         fileMenu.addAction(self.action_exit)
@@ -147,7 +163,7 @@ class JLdesmearGui(QMainWindow):
         
         helpMenu = self.menuBar().addMenu(self.tr('Help'))
         helpMenu.addSeparator()
-        #helpMenu.addAction(self.about_dialog)
+        # TODO: helpMenu.addAction(self.about_dialog)
     
     def _init_Main_Frame(self, parent):
         fr = QFrame(parent)
@@ -160,6 +176,9 @@ class JLdesmearGui(QMainWindow):
             tip='select a file with desmearing parameters',
             callback=self.openFileCallback)
         panel = self._init_Big_Panel(fr)
+        
+        # TODO: need entry for input data file
+        # TODO: need entry for output data file
         
         # TODO: need a box with widgets that depend on the type of self.fileentry
         '''
@@ -223,6 +242,7 @@ class JLdesmearGui(QMainWindow):
         tip = 'desmearing slit length, l_o'
         self.slitlength = QLineEdit()
         self.slitlength.setToolTip(tip)
+        self.slitlength.setStatusTip(tip)
         layout.addWidget(QLabel('l_o'), row, 0)
         layout.addWidget(self.slitlength, row, 1)
         self.slitlength.setText('0.1')
@@ -233,6 +253,7 @@ class JLdesmearGui(QMainWindow):
         self.extrapolation = QComboBox()
         self.extrapolation.insertItems(999, sorted(functions.keys()))
         self.extrapolation.setToolTip(tip)
+        self.extrapolation.setStatusTip(tip)
         layout.addWidget(QLabel('extrap'), row, 0)
         layout.addWidget(self.extrapolation, row, 1)
         self.setExtrapolationMethod('constant')
@@ -241,6 +262,7 @@ class JLdesmearGui(QMainWindow):
         tip = 'evaluate extrapolation constants based on data for q > q_F'
         self.qFinal = QLineEdit()
         self.qFinal.setToolTip(tip)
+        self.qFinal.setStatusTip(tip)
         layout.addWidget(QLabel('q_F'), row, 0)
         layout.addWidget(self.qFinal, row, 1)
         self.qFinal.setText('0.1')
@@ -251,6 +273,7 @@ class JLdesmearGui(QMainWindow):
         self.feedback.insertItems(999, sorted(Weighting_Methods.keys()))
         self.feedback.setCurrentIndex(2)
         self.feedback.setToolTip(tip)
+        self.feedback.setStatusTip(tip)
         layout.addWidget(QLabel('feedback'), row, 0)
         layout.addWidget(self.feedback, row, 1)
         self.setFeedbackMethod('fast')
@@ -260,6 +283,7 @@ class JLdesmearGui(QMainWindow):
         self.num_iterations = QSpinBox()
         self.num_iterations.setRange(2, 1000)
         self.num_iterations.setToolTip(tip)
+        self.num_iterations.setStatusTip(tip)
         layout.addWidget(QLabel('N_i'), row, 0)
         layout.addWidget(self.num_iterations, row, 1)
         self.num_iterations.setValue(10)
@@ -268,36 +292,38 @@ class JLdesmearGui(QMainWindow):
 
     def _init_Controls_Panel(self, parent):
         '''contains controls'''
-        def squareWidget(w):
-            w.setMinimumWidth(w.sizeHint().height())
+        def iconButton(tip, pixmap):
+            btn = QPushButton()
+            btn.setToolTip(tip)
+            btn.setStatusTip(tip)
+            btn.setIcon(btn.style().standardIcon(pixmap))
+            return btn
         box = QGroupBox('Desmearing controls', parent)
 
         layout = QHBoxLayout()
         box.setLayout(layout)
         
-        tip = 'desmear N iterations'
-        self.b_do_N = QPushButton('N')  # TODO: use ">>" icon instead
-        self.b_do_N.setToolTip(tip)
-        layout.addWidget(self.b_do_N)
-        squareWidget(self.b_do_N)
+        tip = 'stop iterations'
+        self.b_stop = iconButton(tip, QStyle.SP_MediaStop)
+        layout.addWidget(self.b_stop)
+        
+        tip = 'pause iterations'
+        self.b_pause = iconButton(tip, QStyle.SP_MediaPause)
+        layout.addWidget(self.b_pause)
         
         tip = 'desmear one iteration'
-        self.b_do_once = QPushButton('1')  # TODO: use ">" icon instead
-        self.b_do_once.setToolTip(tip)
+        self.b_do_once = iconButton(tip, QStyle.SP_MediaPlay)
         layout.addWidget(self.b_do_once)
-        squareWidget(self.b_do_once)
         
-        # TODO: need a pause button "||"
-        # TODO: need a stop button (black square)
-        # TODO: need an eject button: clears all settings and removes all data
+        tip = 'desmear N iterations'
+        self.b_do_N = iconButton(tip, QStyle.SP_MediaSeekForward)
+        layout.addWidget(self.b_do_N)
         
         layout.addStretch(50)
         
         tip = 're(start) by clearing all results and reloading data'
-        self.b_restart = QPushButton('!')  # TODO: use recirculate icon (circle with an arrow head) instead
-        self.b_restart.setToolTip(tip)
+        self.b_restart = iconButton(tip, QStyle.SP_BrowserReload)
         layout.addWidget(self.b_restart)
-        squareWidget(self.b_restart)
 
         return box
     
@@ -313,7 +339,10 @@ class JLdesmearGui(QMainWindow):
         self.console.ensureCursorVisible()
         layout.addWidget(self.console)
         
+        tip = 'remove all content from the console window'
         self.b_clear_console = QPushButton('clear all console text')
+        self.b_clear_console.setToolTip(tip)
+        self.b_clear_console.setStatusTip(tip)
         layout.addWidget(self.b_clear_console)
         
         return fr
@@ -331,7 +360,10 @@ class JLdesmearGui(QMainWindow):
         splitter.addWidget(self._init_ChiSqr_Plot_Panel(fr)) 
         layout.addWidget(splitter)
         
+        tip = 'remove all data from the plots'
         self.b_clear_plots = QPushButton('clear all plots')
+        self.b_clear_plots.setToolTip(tip)
+        self.b_clear_plots.setStatusTip(tip)
         layout.addWidget(self.b_clear_plots)
         
         return fr
@@ -391,9 +423,17 @@ class JLdesmearGui(QMainWindow):
         
         return fr
 
-    def setStatus(self, message = 'Ready'):
+    def setStatus(self, message = 'Ready', duration_ms=-1):
         '''setup the status bar for the GUI or set a new status message'''
-        self.statusBar().showMessage(self.tr(message))
+        if self.status is None:
+            self.status = self.statusBar()
+            self.status.setSizeGripEnabled(True)
+            self.status_label = QLabel('normal message')
+            self.status.addPermanentWidget(self.status_label)
+        if duration_ms < 0:
+            self.status_label.setText(message)
+        else:
+            self.statusBar().showMessage(message, duration_ms)
     
     def appendConsole(self, msg):
         '''write more text to the console widget'''
@@ -442,14 +482,26 @@ class JLdesmearGui(QMainWindow):
         info = self.dsm.params
         if 'fileio_class' not in dir(info):
             raise RuntimeError, 'programmer trouble: something replaced the params'
-#         #this is for SaveAs ...
-#         dlog = QFileDialog()
-#         path = os.path.dirname(outfile)
-#         dlog.setDirectory(path)
-#         dlog.selectFile(os.path.split(outfile)[1])
-#         outfile, filefilter = dlog.getSaveFileName()
         info.fileio_class.save(self.dsm.params.filename)
+        self.setStatus('saved file: ' + self.dsm.params.filename)
         self.dirty = False
+
+    
+    def onSaveAsFile(self):
+        '''save desmearing parameters to a new file'''
+        if self.dsm is None: return
+        info = self.dsm.params
+        if 'fileio_class' not in dir(info):
+            raise RuntimeError, 'programmer trouble: something replaced the params'
+        path = os.path.dirname(self.dsm.params.filename)
+        dlog = QFileDialog()
+        dlog.setDirectory(path)
+        filefilter = str(self.dsm.params.fileio_class)
+        outfile, filefilter = dlog.getSaveFileName(dir=self.dsm.params.filename, filter=filefilter)
+        if len(outfile) > 0:
+            info.fileio_class.save(outfile)
+            self.dirty = False
+            self.setStatus('saved file: ' + outfile)
 
     def onSaveDsmFile(self):
         '''save desmeared data to a file'''
@@ -457,11 +509,14 @@ class JLdesmearGui(QMainWindow):
         info = self.dsm.params
         if 'fileio_class' not in dir(info):
             raise RuntimeError, 'programmer trouble: something replaced the params'
-        outfile = self.dsm.params.outfile
-        outfile = 'junk.dsm'        # FIXME: developer
-        # TODO: confirm the output file with a dialog
-        info.fileio_class.save_DSM(outfile, self.dsm)
-        #self.dirty = False
+        path = os.path.dirname(self.dsm.params.outfile)
+        dlog = QFileDialog()
+        dlog.setDirectory(path)
+        outfile = dlog.getSaveFileName(dir=self.dsm.params.outfile)[0]
+        if len(outfile) > 0:
+            info.fileio_class.save_DSM(outfile, self.dsm)
+            #self.dirty = False
+            self.setStatus('saved data file: ' + outfile)
 
     def init_session(self):
         '''setup a new desmearing session using existing parameters and plot the data'''
@@ -472,15 +527,18 @@ class JLdesmearGui(QMainWindow):
             if self.console is not None:
                 self.appendConsole(msg)
                 self.updatePlots(self.dsm)
-            else:
-                print msg
+            self.setStatus(msg)
 
         if self.dsm is None or self.dsm.params is None:
             params = Info()
         else:
             params = self.dsm.params
 
-        params.infile = self.getInputDataFile()
+        try:
+            params.infile = self.getInputDataFile()
+        except AttributeError:
+            self.setStatus('no data to clear from plots')
+            return
         params.outfile = self.getOutputDataFile()
         params.slitlength = self.getSlitLength()
         params.sFinal = self.getQFinal()
@@ -530,29 +588,60 @@ class JLdesmearGui(QMainWindow):
         axis.autoscale_view(tight=True)
         self.chisqr_plot.canvas.draw()
     
+    def do_pause(self, *args, **kws):
+        '''pause button was pressed by the user'''
+        self.setStatus('pause button was pressed')
+    
+    def do_stop(self, *args, **kws):
+        '''stop button was pressed by the user'''
+        self.setStatus('stop button was pressed')
+    
     def do_1_iteration(self, *args, **kws):
         '''1 button (iterate once) was pressed by the user'''
         if self.dsm:
+            self.setStatus('desmear one iteration')
             IterativeDesmear(self.dsm, 1).start()
             self.dirty = True
     
     def do_N_iterations(self, *args, **kws):
         '''N button (iterate N times) was pressed by the user'''
         if self.dsm:
+            self.setStatus('desmear N iterations')
             N = self.getNumIterations()
             IterativeDesmear(self.dsm, N).start()
             self.dirty = True
             
     def do_Clear_Console(self):
-        # TODO: first, a confirm dialog
-        self.console.setText('<console cleared>')
+        question = 'Really clear the console?'
+        if self.confirmation('clear console text', question):
+            self.console.setText('<console cleared>')
+            self.setStatus('console cleared')
             
     def do_Clear_Plots(self):
-        # TODO: first, a confirm dialog
-        for plot in (self.sas_plot, self.z_plot, self.chisqr_plot):
-            plot.clf(keep_observers=True)
-            plot.canvas.draw()
+        question = 'Really clear all plot data?'
+        if self.confirmation('clear plot data', question):
+            for plot in (self.sas_plot, self.z_plot, self.chisqr_plot):
+                plot.clf(keep_observers=True)
+                plot.canvas.draw()
+            self.setStatus('plot data was cleared')
     
+    def confirmation(self, title, text, cancel_default=True):
+        '''request confirmation from user before an action, return True if Ok'''
+        flags = QMessageBox.Ok
+        flags |= QMessageBox.Cancel
+        
+        if cancel_default:
+            default_button = QMessageBox.Cancel
+        else:
+            default_button = QMessageBox.Ok
+
+        result = QMessageBox.question(self, title, text, flags, default_button)
+        if result == QMessageBox.Ok:
+            self.setStatus('Ok selected', 2000)
+        elif result == QMessageBox.Cancel:
+            self.setStatus('Cancel selected', 2000)
+        return result == QMessageBox.Ok
+
     def selectQComboBoxItemByText(self, obj, text):
         '''select a QComboBox object by text value'''
         if not isinstance(obj, QComboBox):
