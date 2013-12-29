@@ -11,6 +11,36 @@ formats = None      # dict: file format support classes, by format class name
 ext_xref = None     # dict: cross-reference from extension to format class name
 
 
+class FileIO(object):
+    '''superclass of file format support'''
+    
+    fileio_kind = 'FileIO'  # internal signature to recognize subclasses
+    description = None
+    extensions = []
+    info = None             # instance of jldesmear.api.info.Info
+    
+    def __str__(self):
+        if self.description is None:
+            txt = ''
+        else:
+            txt = self.description + ' ('
+            txt += ' '.join(self.extensions)
+            txt += ')'
+        return txt
+    
+    def read(self, filename):
+        raise NotImplementedError, "must implement read() method in each subclass"
+    
+    def save(self, filename):
+        raise NotImplementedError, "must implement save() method in each subclass"
+    
+    def read_SMR(self, filename):
+        raise NotImplementedError, "must implement read_SMR() method in each subclass"
+    
+    def save_DSM(self, filename):
+        raise NotImplementedError, "must implement save_DSM() method in each subclass"
+
+
 def discover_support():
     '''
     return a dictionary of the available file formats
@@ -59,35 +89,6 @@ def makeFilters():
     return filters
 
 
-class FileIO(object):
-    
-    fileio_kind = 'FileIO'  # internal signature to recognize subclasses
-    description = None
-    extensions = []
-    info = None             # instance of jldesmear.api.info.Info
-    
-    def __str__(self):
-        if self.description is None:
-            txt = ''
-        else:
-            txt = self.description + ' ('
-            txt += ' '.join(self.extensions)
-            txt += ')'
-        return txt
-    
-    def read(self, filename):
-        raise NotImplementedError, "must implement read() method in each subclass"
-    
-    def save(self, filename):
-        raise NotImplementedError, "must implement save() method in each subclass"
-    
-    def read_SMR(self, filename):
-        raise NotImplementedError, "must implement read_SMR() method in each subclass"
-    
-    def save_DSM(self, filename):
-        raise NotImplementedError, "must implement save_DSM() method in each subclass"
-
-
 discover_support()  # automatically initialize
 
 
@@ -105,3 +106,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+########### SVN repository information ###################
+# $Date$
+# $Author$
+# $Revision$
+# $URL$
+# $Id$
+########### SVN repository information ###################

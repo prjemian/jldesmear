@@ -80,7 +80,6 @@ class FileEntryBox(QGroupBox):
 class JLdesmearGui(QMainWindow):
 
     def __init__(self, parent=None):
-        import jldesmear
         super(JLdesmearGui, self).__init__(parent)
         self.parent = parent
         self.setWindowTitle(jldesmear.__project__ + ' GUI')
@@ -96,26 +95,6 @@ class JLdesmearGui(QMainWindow):
         self._init_actions()
         self._init_menus()
         self.setStatus()
-        
-        #self._init_Developer()
-    
-    def _init_Developer(self):
-        import jldesmear.fileio.command_input
-        ext = '.inp'
-        fn = toolbox.GetTest1DataFilename(ext)
-        if not fn.endswith(ext): return
-        
-        # read a .inp file
-        cmd_inp = jldesmear.fileio.command_input.CommandInput()
-        cmd_inp.read(fn)
-        
-        self.setInputDataFile(cmd_inp.info.infile)
-        self.setOutputDataFile(cmd_inp.info.outfile)
-        self.setSlitLength(cmd_inp.info.slitlength)
-        self.setExtrapolationMethod(cmd_inp.info.extrapname)
-        self.setQFinal(cmd_inp.info.sFinal)
-        self.setNumIterations(cmd_inp.info.NumItr)
-        self.setFeedbackMethod(cmd_inp.info.LakeWeighting)
 
     def closeEvent(self, *args):
         '''received a request to close application, shall we allow it?'''
@@ -463,9 +442,13 @@ class JLdesmearGui(QMainWindow):
         info = self.dsm.params
         if 'fileio_class' not in dir(info):
             raise RuntimeError, 'programmer trouble: something replaced the params'
-        outfile = self.dsm.params.filename
-        outfile = 'junk.inp'        # FIXME: developer
-        info.fileio_class.save(outfile)
+#         #this is for SaveAs ...
+#         dlog = QFileDialog()
+#         path = os.path.dirname(outfile)
+#         dlog.setDirectory(path)
+#         dlog.selectFile(os.path.split(outfile)[1])
+#         outfile, filefilter = dlog.getSaveFileName()
+        info.fileio_class.save(self.dsm.params.filename)
         self.dirty = False
 
     def onSaveDsmFile(self):
@@ -476,6 +459,7 @@ class JLdesmearGui(QMainWindow):
             raise RuntimeError, 'programmer trouble: something replaced the params'
         outfile = self.dsm.params.outfile
         outfile = 'junk.dsm'        # FIXME: developer
+        # TODO: confirm the output file with a dialog
         info.fileio_class.save_DSM(outfile, self.dsm)
         #self.dirty = False
 

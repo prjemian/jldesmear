@@ -18,7 +18,7 @@ import jldesmear
 requires = ['Sphinx>=0.6']
 
 packages = {}
-for pkg in ('jldesmear', 'jldesmear/api', 'jldesmear/gui'):
+for pkg in ('jldesmear', 'jldesmear/api', 'jldesmear/fileio', 'jldesmear/gui',):
     packages[pkg]       = os.path.join('src', pkg)
 
 console_scripts = []
