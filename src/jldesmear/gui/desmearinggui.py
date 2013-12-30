@@ -22,8 +22,8 @@ except:
     from PyQt4.QtGui import *   #@UnusedWildImport
     pyqtSignal = pyqtSignal
     pyqt_name = "PyQt4"
-    import PyQt4.pyqtconfig
-    pyqt_version = PyQt4.pyqtconfig.Configuration().pyqt_version_str
+    from PyQt4.pyqtconfig import Configuration
+    pyqt_version = Configuration().pyqt_version_str
 matplotlib.rcParams['backend.qt4'] = pyqt_name
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
@@ -79,7 +79,14 @@ class FileEntryBox(QGroupBox):
 #                              'any file (*.* *)',
 #                              ])
         filters = jldesmear.fileio.fileio.makeFilters()
-        fileName, filefilter = QFileDialog().getOpenFileName(self, filter=filters)
+        answers = QFileDialog().getOpenFileName(self, filter=filters)
+        # getOpenFileName() returns different items in PySide and PyQt4
+        if pyqt_name == 'PySide':
+            fileName = answers[0]
+            filefilter = answers[1]
+        elif pyqt_name == 'PyQt4':
+            fileName = unicode(answers)
+            filefilter = ''
         if len(fileName) > 0:
             self.entry.setText(fileName)
             if self.callback is not None:
@@ -106,10 +113,14 @@ class JLdesmearGui(QMainWindow):
         self._init_menus()
         self.setStatus()
 
-    def closeEvent(self, *args):
-        '''received a request to close application, shall we allow it?'''
-        if self.dirty:
-            pass
+    def exitEvent(self, *args):
+        '''received a request to exit application, shall we allow it?'''
+        if not self.dirty:
+            title = 'Unsaved Changes'
+            text = 'There are parameters which have changed since the file was last saved.'
+            text += ' Is it still OK to quit?'
+            if self.confirmation(title, text):
+                self.close()
         else:
             self.close()
 
@@ -128,7 +139,7 @@ class JLdesmearGui(QMainWindow):
         self.action_save = _setup('&Save', QKeySequence.Save, 'Save parameters to a file', self.onSaveFile)
         self.action_saveas = _setup('Save &As ...', QKeySequence.SaveAs, 'Save parameters to a new file', self.onSaveAsFile)
         self.action_saveDSM = _setup('Save &DSM', None, 'Save desmeared data to a file', self.onSaveDsmFile)
-        self.action_exit = _setup('E&xit', QKeySequence.Quit, 'Exit the application', self.closeEvent)
+        self.action_exit = _setup('E&xit', QKeySequence.Quit, 'Exit the application', self.exitEvent)
 
         # TODO: needs Edit menu actions if menu items are created
 
@@ -175,7 +186,7 @@ class JLdesmearGui(QMainWindow):
         self.fileentry = FileEntryBox(fr, 
             title='Command Input parameters file', 
             tip='select a file with desmearing parameters',
-            callback=self.openFileCallback)
+            callback=self.onOpenCallback)
         panel = self._init_Big_Panel(fr)
         
         # TODO: need entry for input data file
@@ -429,17 +440,25 @@ class JLdesmearGui(QMainWindow):
     def appendConsole(self, msg):
         '''write more text to the console widget'''
         self.console.append(msg)
-        cursor = self.console.textCursor()
-        self.console.setTextCursor(cursor)
+        ''' in PyQt4, the append reports this console message:
+
+            QObject::connect: Cannot queue arguments of type 'QTextCursor'
+            (Make sure 'QTextCursor' is registered using qRegisterMetaType().)
+            
+            self.console is a QTextEdit widget
+        '''
+        # TODO: how to scroll to last line
+        pass
 
     def onOpen(self):
         '''Choose a file with SAS desmearing parameters'''
         self.fileentry.selectFile()
     
-    def openFileCallback(self, filename, filefilter):
+    def onOpenCallback(self, filename, filefilter=''):
         '''open a Command Input file with SAS desmearing parameters'''
         ext = os.path.splitext(filename)[1]
         xref = jldesmear.fileio.fileio.ext_xref
+        # do not use the filefilter term
         if ext in xref and xref[ext] == 'CommandInput':
             self.setStatus('selected file: ' + filename)
             self.dsm = None
@@ -539,8 +558,8 @@ class JLdesmearGui(QMainWindow):
         params.slitlength = self.getSlitLength()
         params.sFinal = self.getQFinal()
         params.NumItr = self.getNumIterations()
-        params.extrapname = self.getExtrapolationMethod()
-        params.LakeWeighting = self.getFeedbackMethod()
+        params.extrapname = unicode(self.getExtrapolationMethod())
+        params.LakeWeighting = unicode(self.getFeedbackMethod())
         params.extrap = self.getExtrapolationMethod()
         params.quiet = True
         params.callback = session_callback
