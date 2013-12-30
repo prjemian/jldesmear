@@ -20,10 +20,10 @@ try:
 except:
     from PyQt4.QtCore import *  #@UnusedWildImport
     from PyQt4.QtGui import *   #@UnusedWildImport
-    import PyQt4
     pyqtSignal = pyqtSignal
-    pyqt_version = PyQt4.__version__
     pyqt_name = "PyQt4"
+    import PyQt4.pyqtconfig
+    pyqt_version = PyQt4.pyqtconfig.Configuration().pyqt_version_str
 matplotlib.rcParams['backend.qt4'] = pyqt_name
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
