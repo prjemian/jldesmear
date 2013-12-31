@@ -1,0 +1,27 @@
+.. $Id$
+
+Alumina data used in "Beyond Rg" SAXS training at APS
+=====================================================
+
+from the IgorPro wavenote:
+
+:DATAFILE: 0625a_setup.dat
+:EPOCH: 993497401
+:SCAN_N: 4
+:SECONDS: 3076325950
+:DATE: Mon, Jun 25, 2001
+:COMMENT: Air Blank
+:SpecCommand: uascan  ar 11.4278 11.4213 1.4211 0.0002  37 360 0 125 1.2 150 5
+:SpecComment: Air Blank
+:SpecScan: spec4
+:USAXSDataFolder: root:USAXS:'S4_Air Blank'
+:RawFolder: root:raw:'0625a_setup':spec4:
+:UserSampleName: 'S4_Air Blank'
+:Wname: BL_R_Int
+:Wavelength: 1.2418
+:SlitLength: 0.03865
+:NumberOfSteps: 150
+:SDDistance: 360
+:BeamCenter: 11.417
+:MaximumIntensity: 9.1737e-10
+:FWHM: 4.5663
