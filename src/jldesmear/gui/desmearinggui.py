@@ -867,7 +867,8 @@ class PacktFigureCanvas(FigureCanvas):
            
            This does not stop program execution.
            It is an indication that some subtlety
-           has been missed.
+           has been missed.  No error is reported on
+           MS Windows 7 using Enthought Python Distribution.
         '''
     
     def create_dataset(self, label, **kws):
