@@ -106,6 +106,7 @@ class JLdesmearGui(QMainWindow):
         self.dsm = None
         self.console = None
         self.status = None
+        self.busy = False
         self.custom_signal = CustomSignalDef()
 
         self.mf = self._init_Main_Frame(self)
@@ -409,9 +410,9 @@ class JLdesmearGui(QMainWindow):
         title = '~I(Q) and I(Q)'
         fr = PlotPanel(parent, title)
         
-        fr.create_dataset('~I',  color='black')
-        fr.create_dataset('~Ic', color='blue')
-        fr.create_dataset('Ic',  color='red')
+        fr.create_dataset('~I',  color='green')
+        fr.create_dataset('~Ic', color='red')
+        fr.create_dataset('Ic',  color='blue')
         
         fr.set_marker_linestyle('~I', marker='o')
         fr.set_marker_linestyle('~Ic', linestyle='-')
@@ -638,22 +639,36 @@ class JLdesmearGui(QMainWindow):
         '''stop button was pressed by the user'''
         self.dsm.stop_iteration = True
         #self.setStatus('stop button was pressed')
-        self.setStatus('stop desmearing', 10000)
+        self.setStatus('stopping desmearing computations', 10000)
     
     def do_1_iteration(self, *args, **kws):
         '''1 button (iterate once) was pressed by the user'''
+        if self.busy:
+            text = 'Desmearing computation is working.'
+            text += '  Wait before pressing this button.'
+            QMessageBox.information(self, "Busy!", text)
+            return
         if self.dsm:
+            self.busy = True
             self.setStatus('desmear one iteration')
             IterativeDesmear(self.dsm, 1).start()
             self.dirty = True
+            self.busy = False
     
     def do_N_iterations(self, *args, **kws):
         '''N button (iterate N times) was pressed by the user'''
+        if self.busy:
+            text = 'Desmearing computation is working.'
+            text += '  Wait before pressing this button.'
+            QMessageBox.information(self, "Busy!", text)
+            return
         if self.dsm:
-            self.setStatus('desmear N iterations')
+            self.busy = True
+            self.setStatus('desmearing N iterations')
             N = self.getNumIterations()
             IterativeDesmear(self.dsm, N).start()
             self.dirty = True
+            self.busy = False
             
     def do_Clear_Console(self):
         question = 'Really clear the console?'
