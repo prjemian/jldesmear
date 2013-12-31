@@ -1,0 +1,20 @@
+.. $Id$
+
+The PS120 data set
+==================
+
+The sample is nominal 640 nm polystyrene spheres 
+with ~8 nm polydispersity (1.3%) as modeled using 
+the Irena tool suite for IgorPro.
+
+In this case, 120 refers to the data being collected 
+in a 120 second fly scan duration.
+
+The "ps120" data set was measured as a fly scan on the 
+APS 15ID USAXS instrument in 2013-12 as part of the 
+development of fly scanning capability.  The data set
+has ~1500 data points and can be used as a performance test
+for the desmearing.
+
+The desmeared data file (ps120.dsm) is included 
+here as an example computed from this code.
