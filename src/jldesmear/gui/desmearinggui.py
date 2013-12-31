@@ -373,7 +373,7 @@ class JLdesmearGui(QMainWindow):
         splitter = QSplitter(fr)
         splitter.setOrientation(Qt.Horizontal)
         splitter.addWidget(self._init_Data_Plots_Panel(fr))
-        splitter.addWidget(self._init_ChiSqr_Plot_Panel(fr)) 
+        splitter.addWidget(self._init_Fig_ChiSqr_Panel(fr)) 
         layout.addWidget(splitter)
         
         tip = 'remove all data from the plots'
@@ -393,8 +393,8 @@ class JLdesmearGui(QMainWindow):
 
         splitter = QSplitter(fr)
         splitter.setOrientation(Qt.Vertical)
-        splitter.addWidget(self._init_Sas_Plot_Panel(fr)) 
-        splitter.addWidget(self._init_Residuals_Plot_Panel(fr)) 
+        splitter.addWidget(self._init_Fig_Sas_Panel(fr)) 
+        splitter.addWidget(self._init_Fig_Residuals_Panel(fr)) 
         layout.addWidget(splitter)
         
         return fr
@@ -411,19 +411,19 @@ class JLdesmearGui(QMainWindow):
   
         return fr, figure
 
-    def _init_Sas_Plot_Panel(self, parent):
+    def _init_Fig_Sas_Panel(self, parent):
         '''contains I(Q) plot'''
-        fr, self.sas_plot = self.plot_panel(parent, '~I(Q) and I(Q)')
+        fr, self.fig_sas = self.plot_panel(parent, '~I(Q) and I(Q)')
         return fr
     
-    def _init_Residuals_Plot_Panel(self, parent):
+    def _init_Fig_Residuals_Panel(self, parent):
         '''contains z(Q) plot'''
-        fr, self.z_plot = self.plot_panel(parent, 'z(Q)')
+        fr, self.fig_z = self.plot_panel(parent, 'z(Q)')
         return fr
     
-    def _init_ChiSqr_Plot_Panel(self, parent):
+    def _init_Fig_ChiSqr_Panel(self, parent):
         '''contains ChiSqr vs. iteration plot'''
-        fr, self.chisqr_plot = self.plot_panel(parent, 'ChiSqr vs. iteration')
+        fr, self.fig_chisqr = self.plot_panel(parent, 'ChiSqr vs. iteration')
         return fr
 
     def setStatus(self, message = 'Ready', duration_ms=-1):
@@ -587,32 +587,39 @@ class JLdesmearGui(QMainWindow):
         # FIXME: plotting is very slow
         
         # plot E(q)
-        self.sas_plot.clf()
-        axis = self.sas_plot.add_subplot(111)
+        self.fig_sas.clf()
+        axis = self.fig_sas.add_subplot(111)
         axis.plot(dsm.q, dsm.I, color='black')
         axis.plot(dsm.q, dsm.S, color='blue')
         axis.plot(dsm.q, dsm.C, color='red')
         axis.set_xscale('log')
         axis.set_yscale('log')
         axis.autoscale_view(tight=True)
-        self.sas_plot.canvas.draw()
+        self.fig_sas.canvas.draw()
          
         # plot z(q)
-        self.z_plot.clf()
-        axis = self.z_plot.add_subplot(111)
+        self.fig_z.clf()
+        axis = self.fig_z.add_subplot(111)
         axis.plot(dsm.q, dsm.z, 'o')
         axis.set_xscale('log')
         axis.autoscale_view(tight=True)
-        self.z_plot.canvas.draw()
+#         if self.fig_z.axis is None:
+#             self.fig_z.axis = self.fig_z.add_subplot(111)
+#             self.fig_z.plot['z'], = self.fig_z.axis.plot(dsm.q, dsm.z, 'o')
+#             self.fig_z.axis.set_xscale('log')
+#             self.fig_z.axis.autoscale_view(tight=True)
+#         else:
+#             self.fig_z.plot['z'].set_data(dsm.q, dsm.z)
+        self.fig_z.canvas.draw()
          
         # plot ChiSqr vs. iteration
-        self.chisqr_plot.clf()
+        self.fig_chisqr.clf()
         x = range(len(dsm.ChiSqr))
-        axis = self.chisqr_plot.add_subplot(111)
+        axis = self.fig_chisqr.add_subplot(111)
         axis.plot(x, dsm.ChiSqr, 'o-')
         axis.set_yscale('log')
         axis.autoscale_view(tight=True)
-        self.chisqr_plot.canvas.draw()
+        self.fig_chisqr.canvas.draw()
     
     def do_pause(self, *args, **kws):
         '''pause button was pressed by the user'''
@@ -649,7 +656,7 @@ class JLdesmearGui(QMainWindow):
     def do_Clear_Plots(self):
         question = 'Really clear all plot data?'
         if self.dirty and self.confirmation('clear plot data', question):
-            for plot in (self.sas_plot, self.z_plot, self.chisqr_plot):
+            for plot in (self.fig_sas, self.fig_z, self.fig_chisqr):
                 plot.clf(keep_observers=True)
                 plot.canvas.draw()
             self.setStatus('plot data was cleared')
@@ -802,7 +809,8 @@ class JL_Plot(matplotlib.figure.Figure):
         matplotlib.figure.Figure.__init__(self)
         canvas = FigureCanvas(self)
         canvas.setParent(parent)
-        #self.axis = self.add_subplot(111)
+        self.axis = None
+        self.plot = {}
 
 
 def main():
