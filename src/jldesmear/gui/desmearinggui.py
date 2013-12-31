@@ -30,10 +30,11 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
 from jldesmear.api import toolbox
-from jldesmear.api.desmear import Weighting_Methods, Desmearing
+from jldesmear.api.desmear import Weighting_Methods
 from jldesmear.api.extrapolation import discover_extrapolations
 from jldesmear.api.info import Info
 import jldesmear.fileio.fileio #import makeFilters, ext_xref, formats
+import jldesmear.api.desmear
 
 
 class FileEntryBox(QGroupBox):
@@ -105,6 +106,7 @@ class JLdesmearGui(QMainWindow):
         self.dsm = None
         self.console = None
         self.status = None
+        self.custom_signal = CustomSignalDef()
 
         self.mf = self._init_Main_Frame(self)
         self.setCentralWidget(self.mf)
@@ -147,13 +149,15 @@ class JLdesmearGui(QMainWindow):
         self.action_aboutQt = _setup('About Qt', None, 'Describe the Qt support', self.doAboutQtBox)
         
         self.b_stop.clicked.connect(self.do_stop)
-        self.b_pause.clicked.connect(self.do_pause)
+        #self.b_pause.clicked.connect(self.do_pause)
         self.b_do_N.clicked.connect(self.do_N_iterations)
         self.b_do_once.clicked.connect(self.do_1_iteration)
         self.b_restart.clicked.connect(self.init_session)
         
         self.b_clear_console.clicked.connect(self.do_Clear_Console)
         self.b_clear_plots.clicked.connect(self.do_Clear_Plots)
+        
+        self.custom_signal.updatePlot.connect(self.updatePlots)
         
     def _init_menus(self):
         '''define the menus for the GUI'''
@@ -319,9 +323,9 @@ class JLdesmearGui(QMainWindow):
         self.b_stop = iconButton(tip, QStyle.SP_MediaStop)
         layout.addWidget(self.b_stop)
         
-        tip = 'pause iterations'
-        self.b_pause = iconButton(tip, QStyle.SP_MediaPause)
-        layout.addWidget(self.b_pause)
+        #tip = 'pause iterations'
+        #self.b_pause = iconButton(tip, QStyle.SP_MediaPause)
+        #layout.addWidget(self.b_pause)
         
         tip = 'desmear one iteration'
         self.b_do_once = iconButton(tip, QStyle.SP_MediaPlay)
@@ -402,10 +406,8 @@ class JLdesmearGui(QMainWindow):
         layout = QHBoxLayout()
         fr.setLayout(layout)
         
-        figure = matplotlib.figure.Figure()
-        canvas = FigureCanvas(figure)
-        canvas.setParent(fr)
-        layout.addWidget(canvas)
+        figure = JL_Plot(fr)
+        layout.addWidget(figure.canvas)
   
         return fr, figure
 
@@ -439,16 +441,9 @@ class JLdesmearGui(QMainWindow):
     
     def appendConsole(self, msg):
         '''write more text to the console widget'''
+        cursor = self.console.textCursor()
         self.console.append(msg)
-        ''' in PyQt4, the append reports this console message:
-
-            QObject::connect: Cannot queue arguments of type 'QTextCursor'
-            (Make sure 'QTextCursor' is registered using qRegisterMetaType().)
-            
-            self.console is a QTextEdit widget
-        '''
-        # TODO: how to scroll to last line
-        pass
+        cursor.movePosition(cursor.End)
 
     def onOpen(self):
         '''Choose a file with SAS desmearing parameters'''
@@ -479,7 +474,8 @@ class JLdesmearGui(QMainWindow):
             # load the SAS data
             q, E, dE = cmd_inp.read_SMR(cmd_inp.info.infile)
             self.dsm = Desmearing(q, E, dE, cmd_inp.info)
-            self.updatePlots(self.dsm)
+
+            self.updatePlots()
             self.dirty = False
             
             self.init_session()
@@ -541,7 +537,7 @@ class JLdesmearGui(QMainWindow):
             msg += "  " + str(dsm.params.extrap)
             if self.console is not None:
                 self.appendConsole(msg)
-                self.updatePlots(self.dsm)
+                self.custom_signal.updatePlot.emit()
             self.setStatus(msg)
 
         if self.dsm is None or self.dsm.params is None:
@@ -566,18 +562,32 @@ class JLdesmearGui(QMainWindow):
         
         self.appendConsole('reading SAS data from ' + params.infile)
         q, E, dE = toolbox.GetDat(params.infile)
+        self.appendConsole('number of points read: ' + str(len(q)))
+        self.appendConsole('Qmin: ' + str(q.min()))
+        self.appendConsole('Qmax: ' + str(q.max()))
         
-        # TODO: verify parameters are within range of data before continuing!
+        # verify parameters are within range of data before continuing!
+        if params.sFinal <= q.min() or params.sFinal >= q.max():
+            title = 'Wrong choice of q_F'
+            text = 'Must choose a value for q_F '
+            text += 'between ' + str(q.min()) + ' and ' + str(q.max())
+            text += '.\n' + 'Then re-initialize desmearing.'
+            QMessageBox.warning(self, title, text, QMessageBox.Ok)
+            return
 
         self.appendConsole('Preparing for desmearing')
         self.dsm = Desmearing(q, E, dE, params)
-        self.updatePlots(self.dsm)
+
+        self.updatePlots()
     
-    def updatePlots(self, dsm):
+    def updatePlots(self):
         '''update the plots with new data'''
-        # TODO: this is very slow
+        if self.dsm is None: return
+        dsm = self.dsm
+        # FIXME: plotting is very slow
+        
         # plot E(q)
-        self.sas_plot.clf(keep_observers=True)
+        self.sas_plot.clf()
         axis = self.sas_plot.add_subplot(111)
         axis.plot(dsm.q, dsm.I, color='black')
         axis.plot(dsm.q, dsm.S, color='blue')
@@ -586,18 +596,19 @@ class JLdesmearGui(QMainWindow):
         axis.set_yscale('log')
         axis.autoscale_view(tight=True)
         self.sas_plot.canvas.draw()
-        
+         
         # plot z(q)
-        self.z_plot.clf(keep_observers=True)
+        self.z_plot.clf()
         axis = self.z_plot.add_subplot(111)
         axis.plot(dsm.q, dsm.z, 'o')
         axis.set_xscale('log')
         axis.autoscale_view(tight=True)
         self.z_plot.canvas.draw()
-        
-        self.chisqr_plot.clf(keep_observers=True)
-        axis = self.chisqr_plot.add_subplot(111)
+         
+        # plot ChiSqr vs. iteration
+        self.chisqr_plot.clf()
         x = range(len(dsm.ChiSqr))
+        axis = self.chisqr_plot.add_subplot(111)
         axis.plot(x, dsm.ChiSqr, 'o-')
         axis.set_yscale('log')
         axis.autoscale_view(tight=True)
@@ -610,8 +621,9 @@ class JLdesmearGui(QMainWindow):
     
     def do_stop(self, *args, **kws):
         '''stop button was pressed by the user'''
-        self.setStatus('stop button was pressed')
-        self.setStatus('method not defined yet', 10000)
+        self.dsm.stop_iteration = True
+        #self.setStatus('stop button was pressed')
+        self.setStatus('stop desmearing', 10000)
     
     def do_1_iteration(self, *args, **kws):
         '''1 button (iterate once) was pressed by the user'''
@@ -739,6 +751,22 @@ class JLdesmearGui(QMainWindow):
         return self.feedback.currentText()
 
 
+class CustomSignalDef(QObject):
+    '''
+    Define the signals used to communicate between the 
+    desmearing thread and the PySide (main Qt4 GUI) thread.
+    '''
+    # see: http://www.pyside.org/docs/pyside/PySide/QtCore/Signal.html
+    # see: http://zetcode.com/gui/pysidetutorial/eventsandsignals/
+
+    updatePlot = pyqtSignal()
+
+
+class Desmearing(jldesmear.api.desmear.Desmearing):
+    
+    stop_iteration = False  # flag allowing UI to stop
+
+
 class IterativeDesmear(threading.Thread):
     ''' 
     Run ``n`` iterations of the desmearing operation in a separate thread.
@@ -761,7 +789,20 @@ class IterativeDesmear(threading.Thread):
 
     def run(self):
         for _ in range(self.n):
-            self.dsm.iterate_and_callback()
+            if not self.dsm.stop_iteration:
+                self.dsm.iterate_and_callback()
+        self.dsm.stop_iteration = False
+
+
+class JL_Plot(matplotlib.figure.Figure):
+    
+    # see: http://packtlib.packtpub.com/library/9781847197900/ch06lvl1sec03#
+    
+    def __init__(self, parent):
+        matplotlib.figure.Figure.__init__(self)
+        canvas = FigureCanvas(self)
+        canvas.setParent(parent)
+        #self.axis = self.add_subplot(111)
 
 
 def main():
