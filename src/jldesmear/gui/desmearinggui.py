@@ -369,11 +369,13 @@ class JLdesmearGui(QMainWindow):
 
         layout = QVBoxLayout()
         fr.setLayout(layout)
+        
+        self.plot_chisqr = self._init_ChiSqr_Panel(fr)
 
         splitter = QSplitter(fr)
         splitter.setOrientation(Qt.Horizontal)
         splitter.addWidget(self._init_Data_Plots_Panel(fr))
-        splitter.addWidget(self._init_Fig_ChiSqr_Panel(fr)) 
+        splitter.addWidget(self.plot_chisqr) 
         layout.addWidget(splitter)
         
         tip = 'remove all data from the plots'
@@ -390,40 +392,59 @@ class JLdesmearGui(QMainWindow):
 
         layout = QVBoxLayout()
         fr.setLayout(layout)
+        
+        self.plot_sas = self._init_Sas_Panel(fr)
+        self.plot_z = self._init_Residuals_Panel(fr)
 
         splitter = QSplitter(fr)
         splitter.setOrientation(Qt.Vertical)
-        splitter.addWidget(self._init_Fig_Sas_Panel(fr)) 
-        splitter.addWidget(self._init_Fig_Residuals_Panel(fr)) 
+        splitter.addWidget(self.plot_sas) 
+        splitter.addWidget(self.plot_z) 
         layout.addWidget(splitter)
         
         return fr
 
-    def plot_panel(self, parent, title):
-        '''generic creation of a plot panel in a titled box (QGroupBox)'''
-        fr = QGroupBox(title, parent)
-
-        layout = QHBoxLayout()
-        fr.setLayout(layout)
-        
-        figure = JL_Plot(fr)
-        layout.addWidget(figure.canvas)
-  
-        return fr, figure
-
-    def _init_Fig_Sas_Panel(self, parent):
+    def _init_Sas_Panel(self, parent):
         '''contains I(Q) plot'''
-        fr, self.fig_sas = self.plot_panel(parent, '~I(Q) and I(Q)')
+        title = '~I(Q) and I(Q)'
+        fr = PlotPanel(parent, title)
+        
+        fr.create_dataset('~I',  color='black')
+        fr.create_dataset('~Ic', color='blue')
+        fr.create_dataset('Ic',  color='red')
+        
+        fr.set_marker_linestyle('~I', marker='o')
+        fr.set_marker_linestyle('~Ic', linestyle='-')
+        fr.set_marker_linestyle('Ic', linestyle='-')
+        
+        fr.set_xscale('log')
+        fr.set_yscale('log')
+        fr.legend(loc='lower left')
+        
         return fr
     
-    def _init_Fig_Residuals_Panel(self, parent):
+    def _init_Residuals_Panel(self, parent):
         '''contains z(Q) plot'''
-        fr, self.fig_z = self.plot_panel(parent, 'z(Q)')
+        title = 'z(Q)'
+
+        fr = PlotPanel(parent, title)
+
+        fr.create_dataset('z')
+        fr.set_marker_linestyle('z', marker='o')
+        fr.set_xscale('log')
+        
         return fr
     
-    def _init_Fig_ChiSqr_Panel(self, parent):
+    def _init_ChiSqr_Panel(self, parent):
         '''contains ChiSqr vs. iteration plot'''
-        fr, self.fig_chisqr = self.plot_panel(parent, 'ChiSqr vs. iteration')
+        title = 'ChiSqr vs. iteration'
+
+        fr = PlotPanel(parent, title)
+
+        fr.create_dataset('ChiSqr')
+        fr.set_marker_linestyle('ChiSqr', marker='o', linestyle='-')
+        fr.set_yscale('log')
+
         return fr
 
     def setStatus(self, message = 'Ready', duration_ms=-1):
@@ -584,42 +605,29 @@ class JLdesmearGui(QMainWindow):
         '''update the plots with new data'''
         if self.dsm is None: return
         dsm = self.dsm
-        # FIXME: plotting is very slow
         
         # plot E(q)
-        self.fig_sas.clf()
-        axis = self.fig_sas.add_subplot(111)
-        axis.plot(dsm.q, dsm.I, color='black')
-        axis.plot(dsm.q, dsm.S, color='blue')
-        axis.plot(dsm.q, dsm.C, color='red')
-        axis.set_xscale('log')
-        axis.set_yscale('log')
-        axis.autoscale_view(tight=True)
-        self.fig_sas.canvas.draw()
-         
+        self.plot_sas.update_dataset(dsm.q, dsm.I, '~I')
+        self.plot_sas.update_dataset(dsm.q, dsm.S, '~Ic')
+        self.plot_sas.update_dataset(dsm.q, dsm.C, 'Ic')
+        #self.plot_sas.axis.autoscale_view(tight=True)
+        self.plot_sas.relim()
+        self.plot_sas.autoscale_view()
+        self.plot_sas.draw()
+
         # plot z(q)
-        self.fig_z.clf()
-        axis = self.fig_z.add_subplot(111)
-        axis.plot(dsm.q, dsm.z, 'o')
-        axis.set_xscale('log')
-        axis.autoscale_view(tight=True)
-#         if self.fig_z.axis is None:
-#             self.fig_z.axis = self.fig_z.add_subplot(111)
-#             self.fig_z.plot['z'], = self.fig_z.axis.plot(dsm.q, dsm.z, 'o')
-#             self.fig_z.axis.set_xscale('log')
-#             self.fig_z.axis.autoscale_view(tight=True)
-#         else:
-#             self.fig_z.plot['z'].set_data(dsm.q, dsm.z)
-        self.fig_z.canvas.draw()
-         
+        self.plot_z.update_dataset(dsm.q, dsm.z, 'z')
+        self.plot_z.relim()
+        self.plot_z.autoscale_view(tight=True)
+        self.plot_z.draw()
+
         # plot ChiSqr vs. iteration
-        self.fig_chisqr.clf()
-        x = range(len(dsm.ChiSqr))
-        axis = self.fig_chisqr.add_subplot(111)
-        axis.plot(x, dsm.ChiSqr, 'o-')
-        axis.set_yscale('log')
-        axis.autoscale_view(tight=True)
-        self.fig_chisqr.canvas.draw()
+        iterations = range(len(dsm.ChiSqr))
+        self.plot_chisqr.update_dataset(iterations, dsm.ChiSqr, 'ChiSqr')
+        self.plot_chisqr.relim()
+        self.plot_chisqr.autoscale_view(tight=True)
+        self.plot_chisqr.draw()
+        
     
     def do_pause(self, *args, **kws):
         '''pause button was pressed by the user'''
@@ -801,16 +809,86 @@ class IterativeDesmear(threading.Thread):
         self.dsm.stop_iteration = False
 
 
-class JL_Plot(matplotlib.figure.Figure):
+class PlotPanel(QGroupBox):
+    '''generic creation of a plot panel in a titled box (QGroupBox)'''
+
+    def __init__(self, parent, title):
+        QGroupBox.__init__(self, title, parent)
+
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+
+        self.canvas = PacktFigureCanvas()
+        layout.addWidget(self.canvas)
     
-    # see: http://packtlib.packtpub.com/library/9781847197900/ch06lvl1sec03#
+        # convenience shortcuts
+        self.create_dataset = self.canvas.create_dataset
+        self.update_dataset = self.canvas.update_dataset
+        self.set_marker_linestyle = self.canvas.set_marker_linestyle
+        self.set_xscale = self.canvas.axis.set_xscale
+        self.set_yscale = self.canvas.axis.set_yscale
+        self.autoscale_view = self.canvas.axis.autoscale_view
+        self.relim = self.canvas.axis.relim
+        self.legend = self.canvas.axis.legend
+        self.draw = self.canvas.draw
+
+
+class PacktFigureCanvas(FigureCanvas):
+    '''
+    create a MatPlotLib FigureCanvas object with a single Figure
     
-    def __init__(self, parent):
-        matplotlib.figure.Figure.__init__(self)
-        canvas = FigureCanvas(self)
-        canvas.setParent(parent)
-        self.axis = None
+    :see: http://packtlib.packtpub.com/library/9781847197900/ch06lvl1sec03#
+    '''
+    
+    def __init__(self):
+        self.fig = matplotlib.figure.Figure()
+        FigureCanvas.__init__(self, self.fig)
+        self.axis = self.fig.add_subplot(1, 1, 1)
+        self.axis.autoscale_view(tight=True)
         self.plot = {}
+        
+        # FIXME: as noted
+        '''
+        .. note:: Something is not quite right here.
+           Both PySide and PyQt4 report problems
+           when charts are created this way.
+           
+           **PyQt4** reports::
+
+                QObject::connect: Cannot queue arguments of type 'QTextCursor'
+                (Make sure 'QTextCursor' is registered using qRegisterMetaType().)
+
+           
+           **PySide** (on linux) reports::
+
+                (python2.7:5972): libgnomevfs-WARNING **: Cannot load module `/usr/lib/gnome-vfs-2.0/modules/libfile.so' (/usr/lib/gnome-vfs-2.0/modules/libfile.so: cannot open shared object file: No such file or directory)
+                Application asked to unregister timer 0x44000005 which is not registered in this thread. Fix application.
+
+           
+           This does not stop program execution.
+           It is an indication that some subtlety
+           has been missed.
+        '''
+    
+    def create_dataset(self, label, **kws):
+        if label in self.plot:
+            msg = label + ' is already in use on figure'
+            raise RuntimeError, msg
+        self.plot[label], = self.axis.plot([], [], label=label, **kws)
+    
+    def update_dataset(self, x, y, label):
+        if label not in self.plot:
+            msg = label + ' is not defined for figure'
+            raise RuntimeError, msg
+        self.plot[label].set_data(x, y)
+    
+    def set_marker_linestyle(self, label, marker='', linestyle=''):
+        if label not in self.plot:
+            msg = label + ' is not defined for figure'
+            raise RuntimeError, msg
+        self.plot[label].set_marker(marker)
+        self.plot[label].set_markerfacecolor('none')
+        self.plot[label].set_linestyle(linestyle)
 
 
 def main():
