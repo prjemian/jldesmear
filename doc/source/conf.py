@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# lake-python documentation build configuration file, created by
+# jldesmear documentation build configuration file, created by
 # sphinx-quickstart on Thu Apr 14 14:49:25 2011.
 #
 # This file is execfile()d with the current directory set to its containing dir.

@@ -197,12 +197,3 @@ def GetTest1DataFilename(ext='.smr'):
     path = os.path.dirname(__file__)
     filename = os.path.join(path, '..', 'data', 'test1'+ext)
     return os.path.abspath(filename)
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

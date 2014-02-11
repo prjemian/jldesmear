@@ -1,5 +1,3 @@
-.. $Id$
-
 Extrapolations at highest *q*
 -----------------------------
 

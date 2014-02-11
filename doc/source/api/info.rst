@@ -1,5 +1,3 @@
-.. $Id$
-
 Desmearing parameters, the :class:`~jldesmear.api.info.Info` object
 ###################################################################
 

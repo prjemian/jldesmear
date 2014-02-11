@@ -2,19 +2,19 @@
 JLdesmear: iterative desmearing of small-angle scattering data
 '''
 
-__project__     = u'JLdesmear'
+__project__     = u'jldesmear'
 __author__      = u'Pete R Jemian'
 __email__       = u'prjemian@gmail.com'
 __copyright__   = u'2013, ' + __author__
 __version__     = u'2013-12'
 __release__     = __version__ + u'.dev'
-__url__         = u'tba'
+__url__         = u'https://github.com/prjemian/jldesmear'
 __description__ = u'Desmear small-angle scattering data by Jemian and Lake'
 __long_description__ = __description__ + u'''\n
 Iterative desmearing of SAS data using the technique of JA Lake
 as implemented by PR Jemian.
 '''
-__license__     = u' (see LICENSE file for details)'	# consider Creative-Commons
+__license__     = u' (see LICENSE file for details)'
 
 
 def __about__():
@@ -27,11 +27,3 @@ def __about__():
     m.append(__long_description__)
     m.append('For more details, see: ' + __url__)
     return '\n'.join(m)
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

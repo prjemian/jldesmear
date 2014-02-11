@@ -239,12 +239,3 @@ def command_line_interface ():
 
 if __name__ == '__main__':
     command_line_interface()
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

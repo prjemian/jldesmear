@@ -261,12 +261,3 @@ def __demo():
 
 if __name__ == "__main__":
     __demo()
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

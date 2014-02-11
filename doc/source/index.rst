@@ -1,7 +1,5 @@
-.. $Id$
-
-Program Documentation: lake-python
-##################################
+Program Documentation: jldesmear
+################################
 
 Desmear 1-D SAXS or SANS data according to the method 
 of JA Lake as implemented by Pete Jemian.

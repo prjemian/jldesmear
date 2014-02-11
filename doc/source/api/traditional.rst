@@ -1,6 +1,4 @@
-.. $Id$
-
-Command-line program for Lake/Jemian desmearing
+Command-line program for Jemian/Lake desmearing
 ###############################################
 
 :mod:`jldesmear.api.traditional` is the main program to run desmearing.

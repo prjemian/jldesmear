@@ -1,4 +1,4 @@
-Model.Doc
+Model.txt
 
 About the models to test desmearing
 Pete R. Jemian, 4 October 1989, Northwestern University

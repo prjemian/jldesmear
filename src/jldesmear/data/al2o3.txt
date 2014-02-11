@@ -1,5 +1,3 @@
-.. $Id$
-
 Alumina data used in "Beyond Rg" SAXS training at APS
 =====================================================
 

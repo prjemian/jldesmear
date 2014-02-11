@@ -1,12 +1,5 @@
-.. -*- restructuredtext -*-
-   $Id$
-
-This describes user-visible changes between the versions.
-
 ..
-	Refer to the TRAC site for details on the tickets noting *lake-python* in the title.
-	(TRAC URL here)
-
+  This file describes user-visible changes between the versions.
 
 Change History
 ##############

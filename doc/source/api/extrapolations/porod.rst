@@ -1,5 +1,3 @@
-.. $Id$
-
 Extrapolation: Porod Law
 ########################
 

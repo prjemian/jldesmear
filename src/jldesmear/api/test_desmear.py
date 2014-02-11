@@ -62,11 +62,3 @@ def callback (dsm):
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.test_']
     unittest.main()
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

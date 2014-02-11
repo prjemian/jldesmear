@@ -291,19 +291,10 @@ def __test_Plengt():
 
 def __demo():
     '''show the various routines'''
-    print("Testing $Id$")
+    print("Testing Smear")
     __test_Plengt()
     __test_Smear()
 
 
 if __name__ == "__main__":
     __demo()
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

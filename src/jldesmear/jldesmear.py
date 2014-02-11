@@ -21,12 +21,3 @@ def desmear_qt():
 
 if __name__ == '__main__':
     desmear_cli()
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

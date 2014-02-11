@@ -330,12 +330,3 @@ def __selftest():
 if __name__ == '__main__':
     print("%s: v%s, %s" % ('documentation', version, __doc__))
     __selftest()
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

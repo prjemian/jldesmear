@@ -61,12 +61,3 @@ class Info():
         '''
         infinite = self.NumItr == INFINITE_ITERATIONS
         return infinite or iteration_count < abs(self.NumItr)
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

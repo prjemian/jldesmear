@@ -103,12 +103,3 @@ if __name__ == "__main__":
     print("I(%g) = %g" % (x[0], fit.calc(x[0])))
     print("I(%g) = %g" % (x[-1], fit.calc(x[-1])))
     pprint.pprint(fit.GetCoefficients())
-
-
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $URL$
-# $Id$
-########### SVN repository information ###################

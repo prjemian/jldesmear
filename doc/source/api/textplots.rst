@@ -1,5 +1,3 @@
-.. $Id$
-
 Plotting on a console
 #####################
 
