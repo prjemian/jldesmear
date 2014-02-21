@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>jldesmear.api.textplots &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for jldesmear.api.textplots</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Make charts on a text console using character graphics</span>
+
+<span class="sd">Generate graphical output on a text console.</span>
+<span class="sd">These routines predate modern GUI environments.</span>
+<span class="sd">While the output may look rough, they work just about anywhere.</span>
+
+<span class="sd">Here is how the code may be called::</span>
+
+<span class="sd">    &gt;&gt;&gt; fn = toolbox.GetTest1DataFilename(&#39;.smr&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x, y, dy = toolbox.GetDat(fn)</span>
+<span class="sd">    &gt;&gt;&gt; print(&quot;Data plot: &quot; + fn)</span>
+<span class="sd">    &gt;&gt;&gt; Screen().xyplot(x, y)</span>
+
+<span class="sd">Example, given *C(q)* and *S(q)*::</span>
+
+<span class="sd">    KratkyPlot = textplots.Screen()</span>
+<span class="sd">    title = &quot;\\nKratky plot, I * q^2 vs q: S=smeared&quot;</span>
+<span class="sd">    q2C = q*q*(C - B)</span>
+<span class="sd">    q2S = q*q*(S - B)</span>
+<span class="sd">    KratkyPlot.SetTitle(title)</span>
+<span class="sd">    KratkyPlot.addtrace(lnq, q2S, &quot;S&quot;)</span>
+<span class="sd">    KratkyPlot.printplot()</span>
+<span class="sd">    title = &quot;\\nKratky plot, I * q^2 vs q: C=input, S=smeared&quot;</span>
+<span class="sd">    KratkyPlot.SetTitle(title)</span>
+<span class="sd">    KratkyPlot.addtrace(lnq, q2C, &quot;C&quot;)</span>
+<span class="sd">    KratkyPlot.printplot()</span>
+
+<span class="sd">with the right data, produces plots of :math:`q^2 C(q)` and :math:`q^2 S(q)`::</span>
+
+<span class="sd">    Kratky plot, I * q^2 vs q: C=input, S=smeared</span>
+<span class="sd">    x: min=-7.898   step=0.0889226   max=-1.49558</span>
+<span class="sd">    y: min=-0.107876   step=0.199276   max=4.2762</span>
+<span class="sd">     ------------------------------------------------------------------------- </span>
+<span class="sd">    |           C                                                             |</span>
+<span class="sd">    |        CCCCCC                                                           |</span>
+<span class="sd">    |      CCC    CCC                                                         |</span>
+<span class="sd">    |     CC        CC                                                        |</span>
+<span class="sd">    |    CC          CC                                                       |</span>
+<span class="sd">    |   CC            C                                                       |</span>
+<span class="sd">    |   C              C                                                      |</span>
+<span class="sd">    |  C                C                                                     |</span>
+<span class="sd">    | CC                CC                                                    |</span>
+<span class="sd">    |CC                  C                                                    |</span>
+<span class="sd">    |                     C                                                   |</span>
+<span class="sd">    |C                    CC                                                  |</span>
+<span class="sd">    |                      C                                                  |</span>
+<span class="sd">    |                       C                                                 |</span>
+<span class="sd">    |                        C                                                |</span>
+<span class="sd">    |                         C                                               |</span>
+<span class="sd">    |                         CC                                              |</span>
+<span class="sd">    |                           C                                             |</span>
+<span class="sd">    |                            CC                                           |</span>
+<span class="sd">    |                             CC                                          |</span>
+<span class="sd">    |                               CCC                                       |</span>
+<span class="sd">    |                                  CCCCCC                            CCCC |</span>
+<span class="sd">    |SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC|</span>
+<span class="sd">     ------------------------------------------------------------------------- </span>
+
+<span class="sd">Source code documentation</span>
+<span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">toolbox</span>
+<span class="kn">import</span> <span class="nn">os</span>       <span class="c">#@UnusedImport</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+
+<div class="viewcode-block" id="Screen"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen">[docs]</a><span class="k">class</span> <span class="nc">Screen</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;plotting canvas&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MaxRow</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">MaxCol</span> <span class="o">=</span> <span class="mi">75</span><span class="p">,</span> <span class="n">Symbol</span> <span class="o">=</span> <span class="s">&#39;O&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;declare initial storage&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MaxRow</span> <span class="o">=</span> <span class="n">MaxRow</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MaxCol</span> <span class="o">=</span> <span class="n">MaxCol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Symbol</span> <span class="o">=</span> <span class="n">Symbol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blank</span> <span class="o">=</span> <span class="s">&#39; &#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hBordr</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vBordr</span> <span class="o">=</span> <span class="s">&#39;|&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<div class="viewcode-block" id="Screen.make_buffer"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen.make_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">make_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;prepare a screen buffer&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">rows</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxRow</span>
+        <span class="k">if</span> <span class="n">cols</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxCol</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">blank</span><span class="p">]</span><span class="o">*</span><span class="n">cols</span>
+        <span class="n">screen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="n">screen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">row</span><span class="p">))</span>
+        <span class="c"># paint the plot border on the screen</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">screen</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hBordr</span>
+            <span class="n">screen</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hBordr</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">screen</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vBordr</span>
+            <span class="n">screen</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vBordr</span>
+        <span class="k">return</span> <span class="n">screen</span>
+</div>
+<div class="viewcode-block" id="Screen.addtrace"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen.addtrace">[docs]</a>    <span class="k">def</span> <span class="nf">addtrace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">symbol</span> <span class="o">=</span> <span class="s">&quot;O&quot;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        add the (x,y) trace to the plot with the given symbol</span>
+
+<span class="sd">        :param x: array (list) of abcissae</span>
+<span class="sd">        :param y: array (list) of ordinates</span>
+<span class="sd">        :param symbol: plotting character </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">trace</span><span class="p">[</span><span class="s">&#39;xMin&#39;</span><span class="p">],</span> <span class="n">trace</span><span class="p">[</span><span class="s">&#39;xMax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__minmaxlist</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">trace</span><span class="p">[</span><span class="s">&#39;yMin&#39;</span><span class="p">],</span> <span class="n">trace</span><span class="p">[</span><span class="s">&#39;yMax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__minmaxlist</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">trace</span><span class="p">[</span><span class="s">&#39;symbol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">symbol</span>
+        <span class="n">trace</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">trace</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Screen.paintbuffer"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen.paintbuffer">[docs]</a>    <span class="k">def</span> <span class="nf">paintbuffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        plot the traces on the screen buffer</span>
+<span class="sd">        data scaling functions are offset by +1 for plot frame</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>      <span class="c"># nothing to show</span>
+        <span class="n">xMin</span><span class="p">,</span> <span class="n">xMax</span><span class="p">,</span> <span class="n">yMin</span><span class="p">,</span> <span class="n">yMax</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="n">xMin</span><span class="p">,</span> <span class="n">xMax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__minmax</span><span class="p">(</span><span class="n">xMin</span><span class="p">,</span> <span class="n">xMax</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s">&#39;xMin&#39;</span><span class="p">])</span>
+            <span class="n">xMin</span><span class="p">,</span> <span class="n">xMax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__minmax</span><span class="p">(</span><span class="n">xMin</span><span class="p">,</span> <span class="n">xMax</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s">&#39;xMax&#39;</span><span class="p">])</span>
+            <span class="n">yMin</span><span class="p">,</span> <span class="n">yMax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__minmax</span><span class="p">(</span><span class="n">yMin</span><span class="p">,</span> <span class="n">yMax</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s">&#39;yMin&#39;</span><span class="p">])</span>
+            <span class="n">yMin</span><span class="p">,</span> <span class="n">yMax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__minmax</span><span class="p">(</span><span class="n">yMin</span><span class="p">,</span> <span class="n">yMax</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="s">&#39;yMax&#39;</span><span class="p">])</span>
+        <span class="c"># loop through the traces and find min and max for x and y,</span>
+        <span class="c"># set scale factors, then add traces to the buffer</span>
+        <span class="c"># then show the buffer</span>
+        <span class="n">ColDel</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MaxCol</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">xMax</span> <span class="o">-</span> <span class="n">xMin</span><span class="p">)</span>
+        <span class="n">RowDel</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MaxRow</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">yMax</span> <span class="o">-</span> <span class="n">yMin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_buffer</span><span class="p">()</span>    <span class="c"># clear the buffer</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">])):</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ColDel</span> <span class="o">*</span> <span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">xMin</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">RowDel</span> <span class="o">*</span> <span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">yMin</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="s">&#39;symbol&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">: min=</span><span class="si">%g</span><span class="s">   step=</span><span class="si">%g</span><span class="s">   max=</span><span class="si">%g</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">+=</span> <span class="n">fmt</span> <span class="o">%</span> <span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="n">xMin</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">ColDel</span><span class="p">,</span> <span class="n">xMax</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">+=</span> <span class="n">fmt</span> <span class="o">%</span> <span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">yMin</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">RowDel</span><span class="p">,</span> <span class="n">yMax</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Screen.printplot"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen.printplot">[docs]</a>    <span class="k">def</span> <span class="nf">printplot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; plot to stdout &#39;&#39;&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; :return: plot as a string &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paintbuffer</span><span class="p">()</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments</span>
+            <span class="n">txt</span> <span class="o">+=</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">txt</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;default representation of this structure is ASCII&#39;&#39;&#39;</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">txt</span>  <span class="c"># bottom to top</span>
+        <span class="k">return</span> <span class="n">txt</span>
+
+    <span class="k">def</span> <span class="nf">__minmaxlist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        return the minimum and maximum of the array</span>
+
+<span class="sd">        :param numpy.ndarray x: array to be examined</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        return the minimum and maximum of the value</span>
+
+<span class="sd">        :param float lo: current minimum or None if not set</span>
+<span class="sd">        :param float hi: current maximum or None if not set</span>
+<span class="sd">        :param float value: value to be tested</span>
+<span class="sd">        :return: lo = min(lo,value), hi = max(hi, value)</span>
+<span class="sd">        :rtype: (float, float)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">lo</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="n">lo</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">hi</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">lo</span><span class="p">:</span> <span class="n">lo</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">hi</span><span class="p">:</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span>
+
+<div class="viewcode-block" id="Screen.SetTitle"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen.SetTitle">[docs]</a>    <span class="k">def</span> <span class="nf">SetTitle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        define a plot title</span>
+
+<span class="sd">        :param str title: the title of the plot</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+</div>
+<div class="viewcode-block" id="Screen.xyplot"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen.xyplot">[docs]</a>    <span class="k">def</span> <span class="nf">xyplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        convenience to plot *y(x)*</span>
+
+<span class="sd">        :param numpy.ndarray x: abcissae</span>
+<span class="sd">        :param numpy.ndarray y: ordinates</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s">&quot;plot of y vs x, </span><span class="si">%d</span><span class="s"> points&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addtrace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printplot</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Screen.residualsplot"><a class="viewcode-back" href="../../../api/textplots.html#jldesmear.api.textplots.Screen.residualsplot">[docs]</a>    <span class="k">def</span> <span class="nf">residualsplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        convenience to plot *z* vs point number</span>
+
+<span class="sd">        :param numpy.ndarray z: ordinates (standardized residuals)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="c"># generate pseudo-data for the +1, -1, and 0 bars</span>
+        <span class="n">npm</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxCol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxCol</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">MaxCol</span>
+        <span class="n">zeros</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">npm</span><span class="p">)</span>
+        <span class="n">plus</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">npm</span><span class="p">)</span>
+        <span class="n">minus</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">plus</span>
+        <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s">&quot;plot of standardized residuals vs index&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addtrace</span><span class="p">(</span><span class="n">npm</span><span class="p">,</span> <span class="n">plus</span><span class="p">,</span> <span class="s">&quot;=&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addtrace</span><span class="p">(</span><span class="n">npm</span><span class="p">,</span> <span class="n">minus</span><span class="p">,</span> <span class="s">&quot;=&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addtrace</span><span class="p">(</span><span class="n">npm</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="s">&quot;~&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addtrace</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="s">&quot;+&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">printplot</span><span class="p">()</span>
+
+</div></div>
+<span class="k">def</span> <span class="nf">__demo</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;show the various routines&#39;&#39;&#39;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Testing $Id$&quot;</span><span class="p">)</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetTest1DataFilename</span><span class="p">(</span><span class="s">&#39;.smr&#39;</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span> <span class="n">fn</span> <span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Data plot: &quot;</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span><span class="o">.</span><span class="n">xyplot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Residuals plot: &quot;</span> <span class="o">+</span> <span class="n">fn</span>
+    <span class="c"># create test some data that looks sort of like residuals</span>
+    <span class="n">avg</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">avg</span>
+    <span class="n">scr</span> <span class="o">=</span> <span class="n">Screen</span><span class="p">()</span>
+    <span class="n">scr</span><span class="o">.</span><span class="n">residualsplot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">__demo</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

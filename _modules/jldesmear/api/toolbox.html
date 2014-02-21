@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>jldesmear.api.toolbox &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for jldesmear.api.toolbox</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">General mathematical toolbox routines</span>
+
+<span class="sd">The routines that follow are part of my general</span>
+<span class="sd">mathematical &quot;toolbox&quot;.  Some of them are taken</span>
+<span class="sd">(with reference) from book(s) but most, I have</span>
+<span class="sd">developed on my own.  They are modular in construction</span>
+<span class="sd">so that they may be improved, as needed.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">math</span>     <span class="c">#@UnusedImport</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">scipy</span>    <span class="c">#@UnusedImport</span>
+
+
+<div class="viewcode-block" id="AskQuestion"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.AskQuestion">[docs]</a><span class="k">def</span> <span class="nf">AskQuestion</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    request a string, float, or int from the command line</span>
+
+<span class="sd">    :param str question: string to pose</span>
+<span class="sd">    :param answer: default answer</span>
+<span class="sd">    :type answer: string | float | int</span>
+<span class="sd">    :return: final answer</span>
+<span class="sd">    :rtype: str | float | int</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> &lt;</span><span class="si">%s</span><span class="s">&gt; ==&gt; &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">),</span> 
+    <span class="n">reply</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="k">return</span> <span class="n">reply</span>
+
+</div>
+<div class="viewcode-block" id="AskString"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.AskString">[docs]</a><span class="k">def</span> <span class="nf">AskString</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    request a string from the command line</span>
+
+<span class="sd">    :param str question: string to pose</span>
+<span class="sd">    :param str answer: default answer</span>
+<span class="sd">    :return: final answer</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">AskQuestion</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="AskDouble"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.AskDouble">[docs]</a><span class="k">def</span> <span class="nf">AskDouble</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    request a double from the command line</span>
+
+<span class="sd">    :param str question: string to pose</span>
+<span class="sd">    :param double answer: default answer</span>
+<span class="sd">    :return: final answer</span>
+<span class="sd">    :rtype: double</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">AskQuestion</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="AskInt"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.AskInt">[docs]</a><span class="k">def</span> <span class="nf">AskInt</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    request an integer from the command line</span>
+
+<span class="sd">    :param str question: string to pose</span>
+<span class="sd">    :param int answer: default answer</span>
+<span class="sd">    :return: final answer</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">AskQuestion</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="AskYesOrNo"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.AskYesOrNo">[docs]</a><span class="k">def</span> <span class="nf">AskYesOrNo</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    one of two choices seems simple</span>
+
+<span class="sd">    :param str question: string to pose</span>
+<span class="sd">    :param str answer: default answer</span>
+<span class="sd">    :return: ``y | n``</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">choices</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="s">&quot;n&quot;</span><span class="p">)</span>
+    <span class="n">new_question</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> (Y=yes, N=no)&quot;</span> <span class="o">%</span> <span class="n">question</span>
+    <span class="n">reply</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">reply</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">:</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="n">AskQuestion</span> <span class="p">(</span><span class="n">new_question</span><span class="p">,</span> <span class="n">answer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">reply</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">reply</span>
+
+</div>
+<div class="viewcode-block" id="Spinner"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.Spinner">[docs]</a><span class="k">def</span> <span class="nf">Spinner</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">quiet</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Spins a stick to indicate program is still working.</span>
+<span class="sd">    Call this routine frequently during long operations to show progress.</span>
+
+<span class="sd">    :param int i: selector (increment this in the calling routine)</span>
+<span class="sd">    :param bool quiet: optional switch to turn off the spinner</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+        <span class="n">sym</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="s">&quot;/&quot;</span><span class="p">,</span> <span class="s">&quot;|&quot;</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%c%c</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sym</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="mi">4</span><span class="p">],</span> <span class="mh">0x08</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="isDataLine"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.isDataLine">[docs]</a><span class="k">def</span> <span class="nf">isDataLine</span> <span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    test if a given line of text is not blank or commented out</span>
+
+<span class="sd">    :param string line: line of text from an input file (usually)</span>
+<span class="sd">    :return: True | False</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">isData</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>        <span class="c"># only consider non-blank lines */</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;#&#39;</span><span class="p">:</span> <span class="c"># but don&#39;t count comment lines */</span>
+            <span class="n">isData</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="n">isData</span>
+
+</div>
+<div class="viewcode-block" id="GetDat"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.GetDat">[docs]</a><span class="k">def</span> <span class="nf">GetDat</span> <span class="p">(</span><span class="n">infile</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    read three-column data from a wss (white-space-separated) file</span>
+<span class="sd">    </span>
+<span class="sd">    Data appear as Q  I  dI with one data point per line.</span>
+<span class="sd">    A &quot;#&quot; may be used to comment out any line.</span>
+<span class="sd">    </span>
+<span class="sd">    :param string infile: name of input data file</span>
+<span class="sd">    :return: x, y, dy</span>
+<span class="sd">    :rtype: (numpy.ndarray, numpy.ndarray, numpy.ndarray)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> 
+                      <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> 
+                      <span class="n">comments</span><span class="o">=</span><span class="s">&#39;#&#39;</span><span class="p">,</span>
+                      <span class="n">unpack</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s">&quot;GetDat: error while opening or reading: &quot;</span> <span class="o">+</span> <span class="n">infile</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="n">message</span>
+
+</div>
+<div class="viewcode-block" id="SavDat"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.SavDat">[docs]</a><span class="k">def</span> <span class="nf">SavDat</span> <span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    save three column ASCII data in tab-separated file</span>
+
+<span class="sd">    :param str outfile: name of output file </span>
+<span class="sd">    :param numpy.ndarray x: column 1 data array</span>
+<span class="sd">    :param numpy.ndarray y: column 2 data array </span>
+<span class="sd">    :param numpy.ndarray dy: column 3 data array</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> 
+                      <span class="n">numpy</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">]),</span>
+                      <span class="n">fmt</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span><span class="p">,</span>
+                      <span class="n">delimiter</span><span class="o">=</span><span class="s">&#39;</span><span class="se">\t</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Saved data in file: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">outfile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outfile</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;SavDat: error while opening or writing: &quot;</span> <span class="o">+</span> <span class="n">outfile</span>
+        <span class="k">raise</span>
+
+</div>
+<div class="viewcode-block" id="Iswap"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.Iswap">[docs]</a><span class="k">def</span> <span class="nf">Iswap</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;:return: (tuple) of (b, a)&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span>
+
+</div>
+<div class="viewcode-block" id="strtrim"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.strtrim">[docs]</a><span class="k">def</span> <span class="nf">strtrim</span> <span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    cut out any white space from the string </span>
+<span class="sd">    (compatibility method for legacy code only)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">txt</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="find_first_index"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.find_first_index">[docs]</a><span class="k">def</span> <span class="nf">find_first_index</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    find i such that x[i] &gt;= target and x[i-1] &lt; target</span>
+
+<span class="sd">    :param ndarray x: array to search</span>
+<span class="sd">    :param float target: value to bracket</span>
+<span class="sd">    :return: index of array x or None</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">i</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<div class="viewcode-block" id="GetTest1DataFilename"><a class="viewcode-back" href="../../../api/toolbox.html#jldesmear.api.toolbox.GetTest1DataFilename">[docs]</a><span class="k">def</span> <span class="nf">GetTest1DataFilename</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&#39;.smr&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;find the test1 data in the package&#39;&#39;&#39;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="s">&#39;test1&#39;</span><span class="o">+</span><span class="n">ext</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

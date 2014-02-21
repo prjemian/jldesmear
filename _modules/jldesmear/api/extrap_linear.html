@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>jldesmear.api.extrap_linear &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for jldesmear.api.extrap_linear</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Extrapolate as:  I(q) = B + m * q</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">extrapolation</span>
+<span class="kn">import</span> <span class="nn">toolbox</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">os</span>       <span class="c">#@UnusedImport</span>
+<span class="kn">import</span> <span class="nn">numpy</span>    <span class="c">#@UnusedImport</span>
+
+
+<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../api/extrapolations/linear.html#jldesmear.api.extrap_linear.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">Extrapolation</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;I(q) = B + m*q&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;set up things&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;B&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;:return: a text string showing the functional form&#39;&#39;&#39;</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="s">&quot;linear: I(q) = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">])</span>
+        <span class="n">form</span> <span class="o">+=</span> <span class="s">&quot; + q*(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;m&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span>
+        <span class="k">return</span> <span class="n">form</span>
+
+<div class="viewcode-block" id="Linear.calc"><a class="viewcode-back" href="../../../api/extrapolations/linear.html#jldesmear.api.extrap_linear.Linear.calc">[docs]</a>    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. math::</span>
+<span class="sd">        </span>
+<span class="sd">            I(q) = B + m q</span>
+<span class="sd">        </span>
+<span class="sd">        :param float q: magnitude of scattering vector</span>
+<span class="sd">        :return: value of extrapolation function at *q*</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;m&#39;</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">B</span> <span class="o">+</span> <span class="n">m</span> <span class="o">*</span> <span class="n">q</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+<div class="viewcode-block" id="Linear.fit_result"><a class="viewcode-back" href="../../../api/extrapolations/linear.html#jldesmear.api.extrap_linear.Linear.fit_result">[docs]</a>    <span class="k">def</span> <span class="nf">fit_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">        Determine the results of the fit and store them</span>
+<span class="sd">        as the set of coefficients in the self.coefficients </span>
+<span class="sd">        dictionary.  Called from :meth:`fit()`.</span>
+<span class="sd">        </span>
+<span class="sd">        :note: *must* override in subclass otherwise :meth:`fit_result()` will throw an exception</span>
+<span class="sd">        :param reg: statistics registers (created in :meth:`fit()`)</span>
+<span class="sd">        :type reg: StatsRegClass object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">constant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;m&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">slope</span>
+
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;show the various routines&#39;&#39;&#39;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Testing $Id$&quot;</span><span class="p">)</span>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">Linear</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;using default coefficients&quot;</span><span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)))</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">GetCoefficients</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;#--------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;setting coefficients&quot;</span><span class="p">)</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">SetCoefficients</span><span class="p">({</span><span class="s">&#39;B&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)))</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">GetCoefficients</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;#--------------------------&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;fitting coefficients&quot;</span><span class="p">)</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetTest1DataFilename</span><span class="p">(</span><span class="s">&#39;.smr&#39;</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span> <span class="n">fn</span> <span class="p">)</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
+    <span class="n">fit</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dy</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;I(</span><span class="si">%g</span><span class="s">) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">fit</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">GetCoefficients</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

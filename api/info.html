@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Desmearing parameters, the Info object &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
+    <link rel="next" title="Desmearing" href="desmear.html" />
+    <link rel="prev" title="Example using test1.smr data set" href="example.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="desmear.html" title="Desmearing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example.html" title="Example using test1.smr data set"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="example.html"
+                        title="previous chapter">Example using <tt class="docutils literal"><span class="pre">test1.smr</span></tt> data set</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="desmear.html"
+                        title="next chapter">Desmearing</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/info.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-jldesmear.api.info">
+<span id="desmearing-parameters-the-info-object"></span><h1>Desmearing parameters, the <a class="reference internal" href="#jldesmear.api.info.Info" title="jldesmear.api.info.Info"><tt class="xref py py-class docutils literal"><span class="pre">Info</span></tt></a> object<a class="headerlink" href="#module-jldesmear.api.info" title="Permalink to this headline">¶</a></h1>
+<p>desmearing parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">infile</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>                     <span class="c"># input data file</span>
+<span class="n">outfile</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>                    <span class="c"># output data file</span>
+<span class="n">slitlength</span> <span class="o">=</span> <span class="mf">1.0</span>                <span class="c"># slit length (l_o) as defined by Lake</span>
+<span class="n">sFinal</span> <span class="o">=</span> <span class="mf">1.0</span>                    <span class="c"># fit extrapolation constants for q&gt;=sFinal</span>
+<span class="n">NumItr</span> <span class="o">=</span> <span class="n">INFINITE_ITERATIONS</span>    <span class="c"># number of desmearing iterations</span>
+<span class="n">extrapname</span> <span class="o">=</span> <span class="s">&quot;constant&quot;</span>         <span class="c"># model final data as a constant</span>
+<span class="n">LakeWeighting</span> <span class="o">=</span> <span class="s">&quot;fast&quot;</span>          <span class="c"># shows the fastest convergence most times</span>
+<span class="n">extrap</span> <span class="o">=</span> <span class="bp">None</span>                   <span class="c"># extrapolation function object</span>
+<span class="n">quiet</span> <span class="o">=</span> <span class="bp">False</span>                   <span class="c"># suppress output from desmearing operations</span>
+<span class="n">callback</span> <span class="o">=</span> <span class="bp">None</span>                 <span class="c"># function object to call after each desmearing iteration</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="jldesmear.api.info.Info">
+<em class="property">class </em><tt class="descclassname">jldesmear.api.info.</tt><tt class="descname">Info</tt><a class="reference internal" href="../_modules/jldesmear/api/info.html#Info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.info.Info" title="Permalink to this definition">¶</a></dt>
+<dd><p>parameters used by the desmearing methods</p>
+<dl class="method">
+<dt id="jldesmear.api.info.Info.moreIterationsOk">
+<tt class="descname">moreIterationsOk</tt><big>(</big><em>iteration_count</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/info.html#Info.moreIterationsOk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.info.Info.moreIterationsOk" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">is it OK to take more iterations?</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="desmear.html" title="Desmearing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example.html" title="Example using test1.smr data set"
+             >previous</a> |</li>
+        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

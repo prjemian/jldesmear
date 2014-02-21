@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>CHANGES &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="index.html" />
+    <link rel="up" title="Contents" href="contents.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="Graphical User Interface for Lake/Jemian desmearing" href="gui/desmearinggui.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="license.html" title="License"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gui/desmearinggui.html" title="Graphical User Interface for Lake/Jemian desmearing"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="contents.html" accesskey="U">Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">CHANGES</a><ul>
+<li><a class="reference internal" href="#change-history">Change History</a><ul>
+<li><a class="reference internal" href="#development-lake-python-trunk">Development: lake-python (trunk)</a></li>
+<li><a class="reference internal" href="#production">Production</a><ul>
+<li><a class="reference internal" href="#lake-python-2011-08">2011-08-25: lake-python-2011-08</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gui/desmearinggui.html"
+                        title="previous chapter">Graphical User Interface for Lake/Jemian desmearing</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="license.html"
+                        title="next chapter">License</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/changes.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="changes">
+<h1>CHANGES<a class="headerlink" href="#changes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="change-history">
+<h2>Change History<a class="headerlink" href="#change-history" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="development-lake-python-trunk">
+<h3>Development: lake-python (trunk)<a class="headerlink" href="#development-lake-python-trunk" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">subversion changesets are noted in square brackets
+such as [2002] is change set 2002</p>
+</div>
+<p>Changes:</p>
+<ul class="simple">
+<li>refactored <tt class="xref py py-mod docutils literal"><span class="pre">api.desmear</span></tt> into a class: <tt class="xref py py-class docutils literal"><span class="pre">api.desmear.Desmearing</span></tt><ul>
+<li>allows iterating one at a time</li>
+<li>computes ChiSqr data after iteration</li>
+<li>keeps record of all ChiSqr values</li>
+</ul>
+</li>
+<li>added single iteration method to <tt class="xref py py-mod docutils literal"><span class="pre">api.desmear</span></tt></li>
+<li>added single and N desmearing iteration controls to GUI</li>
+<li>update plots in the GUI after each iteration by running desmear calculation in a separate thread</li>
+<li>provided ChiSqr v iteration plot (log-lin)</li>
+<li>[2000] auto-discover all extrapolation functions</li>
+<li>[2000] renamed packages and modules to reduce overuse of &#8220;lake&#8221;</li>
+<li>[2000] moved content off first page of documentation</li>
+<li>[2002] start to refactor all GUI code from Enthought Traits to PySide (or PyQt4)</li>
+<li>[2005] add package installation support</li>
+<li>[2006] release test data with package</li>
+<li>[2006] rebrand package as JLdesmear (Jemian/Lake desmearing code)</li>
+<li>[2009] start to use numpy.ndarray() instead of [float]</li>
+</ul>
+<p>TODO:</p>
+<ol class="arabic simple">
+<li>add capability for GUI to write desmeared data to a file</li>
+<li>read data from CanSAS XML</li>
+<li>read data from HDF5/NeXus</li>
+</ol>
+</div>
+<div class="section" id="production">
+<h3>Production<a class="headerlink" href="#production" title="Permalink to this headline">¶</a></h3>
+<p>This documents tagged releases.</p>
+<div class="section" id="lake-python-2011-08">
+<h4>2011-08-25: lake-python-2011-08<a class="headerlink" href="#lake-python-2011-08" title="Permalink to this headline">¶</a></h4>
+<p>Initial release:</p>
+<ul class="simple">
+<li>python code fully operable</li>
+<li>command line interface<ul>
+<li>uses same paradigm as original FORTRAN code</li>
+<li>Q&amp;A in a console session, then desmear</li>
+<li>tested on Windows, Macintosh, and Linux</li>
+<li>only uses standard Python libraries, no NumPy or SciPy</li>
+</ul>
+</li>
+<li>All test data copied from legacy C and FORTRAN projects</li>
+<li>Documentation<ul>
+<li>as good or better than FORTRAN manual</li>
+<li>could improve still with content from thesis</li>
+</ul>
+</li>
+<li>graphical user interface<ul>
+<li>provisional, demo only</li>
+<li>uses Enthought&#8217;s Traits and Chaco</li>
+<li>does not write desmeared data to a file</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="license.html" title="License"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gui/desmearinggui.html" title="Graphical User Interface for Lake/Jemian desmearing"
+             >previous</a> |</li>
+        <li><a href="index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="contents.html" >Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

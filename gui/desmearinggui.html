@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Graphical User Interface for Lake/Jemian desmearing &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="up" title="Contents" href="../contents.html" />
+    <link rel="next" title="CHANGES" href="../changes.html" />
+    <link rel="prev" title="Utility Routines" href="../api/toolbox.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../changes.html" title="CHANGES"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../api/toolbox.html" title="Utility Routines"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../contents.html" accesskey="U">Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Graphical User Interface for Lake/Jemian desmearing</a><ul>
+<li><a class="reference internal" href="#module-jldesmear.gui.desmearinggui"><tt class="docutils literal"><span class="pre">desmearinggui</span></tt> documentation</a></li>
+<li><a class="reference internal" href="#module-jldesmear.gui.traitsgui"><tt class="docutils literal"><span class="pre">traitsgui</span></tt> documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../api/toolbox.html"
+                        title="previous chapter">Utility Routines</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../changes.html"
+                        title="next chapter">CHANGES</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/gui/desmearinggui.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="graphical-user-interface-for-lake-jemian-desmearing">
+<h1>Graphical User Interface for Lake/Jemian desmearing<a class="headerlink" href="#graphical-user-interface-for-lake-jemian-desmearing" title="Permalink to this headline">¶</a></h1>
+<p>Several classes are defined in the source code.
+This class is used to start the GUI:
+<tt class="xref py py-class docutils literal"><span class="pre">jldesmear.gui.desmearinggui.DesmearingGui</span></tt>.
+The main GUI program is started with a Python command such as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">jldesmear.gui</span> <span class="kn">import</span> <span class="n">desmearinggui</span>
+<span class="n">desmearinggui</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="module-jldesmear.gui.desmearinggui">
+<span id="desmearinggui-documentation"></span><h2><a class="reference internal" href="#module-jldesmear.gui.desmearinggui" title="jldesmear.gui.desmearinggui: Python Qt GUI for desmearing standalone code"><tt class="xref py py-mod docutils literal"><span class="pre">desmearinggui</span></tt></a> documentation<a class="headerlink" href="#module-jldesmear.gui.desmearinggui" title="Permalink to this headline">¶</a></h2>
+<p>Lake desmearing GUI using PySide (or PyQt4) and Matplotlib</p>
+<dl class="class">
+<dt id="jldesmear.gui.desmearinggui.CustomSignalDef">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.desmearinggui.</tt><tt class="descname">CustomSignalDef</tt><a class="reference internal" href="../_modules/jldesmear/gui/desmearinggui.html#CustomSignalDef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.desmearinggui.CustomSignalDef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the signals used to communicate between the 
+desmearing thread and the PySide (main Qt4 GUI) thread.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="jldesmear.gui.desmearinggui.FileEntryBox">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.desmearinggui.</tt><tt class="descname">FileEntryBox</tt><big>(</big><em>parent=None</em>, <em>title='selected file'</em>, <em>callback=None</em>, <em>tip='select a file'</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/desmearinggui.html#FileEntryBox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.desmearinggui.FileEntryBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>FileEntryBox = QGroupBox[QLineEdit + QPushButton]</p>
+<dl class="method">
+<dt id="jldesmear.gui.desmearinggui.FileEntryBox.selectFile">
+<tt class="descname">selectFile</tt><big>(</big><em>**kw</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/desmearinggui.html#FileEntryBox.selectFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.desmearinggui.FileEntryBox.selectFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose file for input</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jldesmear.gui.desmearinggui.IterativeDesmear">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.desmearinggui.</tt><tt class="descname">IterativeDesmear</tt><big>(</big><em>dsm</em>, <em>n</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/desmearinggui.html#IterativeDesmear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.desmearinggui.IterativeDesmear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run <tt class="docutils literal"><span class="pre">n</span></tt> iterations of the desmearing operation in a separate thread.
+Running in a separate thread with callbacks allows the 
+GUI widgets to be updated after each iteration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dsm</strong> (<em>obj</em>) &#8211; existing Desmearing object</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; number of iterations to perform</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Start this thread with code such as this example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IterativeDesmear</span><span class="p">(</span><span class="n">Desmear_object</span><span class="p">,</span> <span class="n">number_of_iterations</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="jldesmear.gui.desmearinggui.PacktFigureCanvas">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.desmearinggui.</tt><tt class="descname">PacktFigureCanvas</tt><a class="reference internal" href="../_modules/jldesmear/gui/desmearinggui.html#PacktFigureCanvas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.desmearinggui.PacktFigureCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a MatPlotLib FigureCanvas object with a single Figure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">See :</th><td class="field-body"><a class="reference external" href="http://packtlib.packtpub.com/library/9781847197900">http://packtlib.packtpub.com/library/9781847197900</a>/ch06lvl1sec03#</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="jldesmear.gui.desmearinggui.PacktFigureCanvas.plot">
+<tt class="descname">plot</tt><em class="property"> = None</em><a class="headerlink" href="#jldesmear.gui.desmearinggui.PacktFigureCanvas.plot" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Something is not quite right here.
+Both PySide and PyQt4 report problems
+when charts are created this way.</p>
+<p><strong>PyQt4</strong> reports:</p>
+<div class="highlight-python"><pre>QObject::connect: Cannot queue arguments of type 'QTextCursor'
+(Make sure 'QTextCursor' is registered using qRegisterMetaType().)</pre>
+</div>
+<p><strong>PySide</strong> (on linux) reports:</p>
+<div class="highlight-python"><pre>(python2.7:5972): libgnomevfs-WARNING **: Cannot load module `/usr/lib/gnome-vfs-2.0/modules/libfile.so' (/usr/lib/gnome-vfs-2.0/modules/libfile.so: cannot open shared object file: No such file or directory)
+Application asked to unregister timer 0x44000005 which is not registered in this thread. Fix application.</pre>
+</div>
+<p class="last">This does not stop program execution.
+It is an indication that some subtlety
+has been missed.  No error is reported on
+MS Windows 7 using Enthought Python Distribution.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jldesmear.gui.desmearinggui.PlotPanel">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.desmearinggui.</tt><tt class="descname">PlotPanel</tt><big>(</big><em>parent</em>, <em>title</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/desmearinggui.html#PlotPanel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.desmearinggui.PlotPanel" title="Permalink to this definition">¶</a></dt>
+<dd><p>generic creation of a plot panel in a titled box (QGroupBox)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-jldesmear.gui.traitsgui">
+<span id="traitsgui-documentation"></span><h2><a class="reference internal" href="#module-jldesmear.gui.traitsgui" title="jldesmear.gui.traitsgui: Traits GUI for desmearing standalone code"><tt class="xref py py-mod docutils literal"><span class="pre">traitsgui</span></tt></a> documentation<a class="headerlink" href="#module-jldesmear.gui.traitsgui" title="Permalink to this headline">¶</a></h2>
+<p>Lake desmearing GUI using Enthought&#8217;s Traits, Chaco, and Enable packages.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">note:</th><td class="field-body"><p class="first">If you are using Ubuntu 11.04 and cannot see a menubar,
+this is a bug in Ubuntu 11.04. Try setting the environment
+variable: UBUNTU_MENUPROXY=1</p>
+<p class="last">Or, the code does not call for a menubar. ... Nevermind.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="jldesmear.gui.traitsgui.ChiSqr_plot">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.traitsgui.</tt><tt class="descname">ChiSqr_plot</tt><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#ChiSqr_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.ChiSqr_plot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="jldesmear.gui.traitsgui.ChiSqr_plot.SetData">
+<tt class="descname">SetData</tt><big>(</big><em>chiSqr</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#ChiSqr_plot.SetData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.ChiSqr_plot.SetData" title="Permalink to this definition">¶</a></dt>
+<dd><p>provide the data to be plotted,
+replaces any existing data on the plot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chiSqr</strong> (<em>[float]</em>) &#8211; list of ChiSqr values for each iteration</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jldesmear.gui.traitsgui.DesmearingGui">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.traitsgui.</tt><tt class="descname">DesmearingGui</tt><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#DesmearingGui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.DesmearingGui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide interactive access to all the parameters used in desmearing</p>
+<p>This is a main GUI for the Lake/Jemian small-angle scattering desmearing program.  
+It uses Traits, Chaco, and Enable.  
+Call it with code like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">DesmearingGui</span><span class="p">()</span><span class="o">.</span><span class="n">configure_traits</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="jldesmear.gui.traitsgui.DesmearingGui.SetStatus">
+<tt class="descname">SetStatus</tt><big>(</big><em>msg</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#DesmearingGui.SetStatus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.DesmearingGui.SetStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>put text in the status box</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jldesmear.gui.traitsgui.DesmearingGui.discover_extrapolations">
+<tt class="descname">discover_extrapolations</tt><big>(</big><big>)</big><a class="headerlink" href="#jldesmear.gui.traitsgui.DesmearingGui.discover_extrapolations" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a dictionary of the available extrapolation functions</p>
+<p>Extrapolation functions must be in a file named 
+<tt class="docutils literal"><span class="pre">extrap_KEY.py</span></tt>
+where <tt class="docutils literal"><span class="pre">KEY</span></tt> is the key name of the extrapolation function.
+The file is placed in the source code tree in the same directory
+as the module: <a class="reference internal" href="../api/extrapolations.html#module-jldesmear.api.extrapolation" title="jldesmear.api.extrapolation: superclass of functions for extrapolation of SAS data past available range"><tt class="xref py py-mod docutils literal"><span class="pre">extrapolation</span></tt></a>.</p>
+<p>The <tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt> method should be capable of handling
+<tt class="docutils literal"><span class="pre">q</span></tt> as a <tt class="docutils literal"><span class="pre">numpy.ndarray</span></tt> or as a <tt class="docutils literal"><span class="pre">float</span></tt>.</p>
+<p>The file must contain:</p>
+<ul class="simple">
+<li>a subclass of <a class="reference internal" href="../api/extrapolations.html#jldesmear.api.extrapolation.Extrapolation" title="jldesmear.api.extrapolation.Extrapolation"><tt class="xref py py-class docutils literal"><span class="pre">Extrapolation</span></tt></a></li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="jldesmear.gui.traitsgui.DesmearingGui.dsm_callback">
+<tt class="descname">dsm_callback</tt><big>(</big><em>dsm</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#DesmearingGui.dsm_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.DesmearingGui.dsm_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function is called after every desmearing iteration
+from <a class="reference internal" href="../api/desmear.html#jldesmear.api.desmear.Desmearing.traditional" title="jldesmear.api.desmear.Desmearing.traditional"><tt class="xref py py-func docutils literal"><span class="pre">traditional()</span></tt></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dsm</strong> (<em>obj</em>) &#8211; desmearing parameters object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">should desmearing stop?</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jldesmear.gui.traitsgui.DesmearingGui.setupDesmearing">
+<tt class="descname">setupDesmearing</tt><big>(</big><em>Qvec</em>, <em>smr</em>, <em>esd</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#DesmearingGui.setupDesmearing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.DesmearingGui.setupDesmearing" title="Permalink to this definition">¶</a></dt>
+<dd><p>prepare to start desmearing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jldesmear.gui.traitsgui.DesmearingGui.toInfo">
+<tt class="descname">toInfo</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#DesmearingGui.toInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.DesmearingGui.toInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy local variables to Info() structure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> (<em>Info object</em>) &#8211; desmearing parameters structure</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jldesmear.gui.traitsgui.IterativeDesmear">
+<em class="property">class </em><tt class="descclassname">jldesmear.gui.traitsgui.</tt><tt class="descname">IterativeDesmear</tt><big>(</big><em>dsm</em>, <em>n</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/gui/traitsgui.html#IterativeDesmear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.gui.traitsgui.IterativeDesmear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run <tt class="docutils literal"><span class="pre">n</span></tt> iterations of the desmearing operation in a separate thread.
+Running in a separate thread with callbacks allows the 
+GUI widgets to be updated after each iteration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dsm</strong> (<em>obj</em>) &#8211; Desmearing object</li>
+<li><strong>n</strong> (<em>int</em>) &#8211; number of iterations to perform</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Start this thread with code such as this example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IterativeDesmear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_dsm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumItr</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../changes.html" title="CHANGES"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../api/toolbox.html" title="Utility Routines"
+             >previous</a> |</li>
+        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

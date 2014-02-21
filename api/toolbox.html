@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Utility Routines &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
+    <link rel="next" title="Graphical User Interface for Lake/Jemian desmearing" href="../gui/desmearinggui.html" />
+    <link rel="prev" title="Plotting on a console" href="textplots.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../gui/desmearinggui.html" title="Graphical User Interface for Lake/Jemian desmearing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="textplots.html" title="Plotting on a console"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="textplots.html"
+                        title="previous chapter">Plotting on a console</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../gui/desmearinggui.html"
+                        title="next chapter">Graphical User Interface for Lake/Jemian desmearing</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/api/toolbox.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-jldesmear.api.toolbox">
+<span id="utility-routines"></span><h1>Utility Routines<a class="headerlink" href="#module-jldesmear.api.toolbox" title="Permalink to this headline">¶</a></h1>
+<p>General mathematical toolbox routines</p>
+<p>The routines that follow are part of my general
+mathematical &#8220;toolbox&#8221;.  Some of them are taken
+(with reference) from book(s) but most, I have
+developed on my own.  They are modular in construction
+so that they may be improved, as needed.</p>
+<dl class="function">
+<dt id="jldesmear.api.toolbox.AskDouble">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">AskDouble</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#AskDouble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.AskDouble" title="Permalink to this definition">¶</a></dt>
+<dd><p>request a double from the command line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>question</strong> (<em>str</em>) &#8211; string to pose</li>
+<li><strong>answer</strong> (<em>double</em>) &#8211; default answer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">final answer</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">double</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.AskInt">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">AskInt</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#AskInt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.AskInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>request an integer from the command line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>question</strong> (<em>str</em>) &#8211; string to pose</li>
+<li><strong>answer</strong> (<em>int</em>) &#8211; default answer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">final answer</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.AskQuestion">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">AskQuestion</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#AskQuestion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.AskQuestion" title="Permalink to this definition">¶</a></dt>
+<dd><p>request a string, float, or int from the command line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>question</strong> (<em>str</em>) &#8211; string to pose</li>
+<li><strong>answer</strong> (<em>string | float | int</em>) &#8211; default answer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">final answer</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str | float | int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.AskString">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">AskString</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#AskString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.AskString" title="Permalink to this definition">¶</a></dt>
+<dd><p>request a string from the command line</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>question</strong> (<em>str</em>) &#8211; string to pose</li>
+<li><strong>answer</strong> (<em>str</em>) &#8211; default answer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">final answer</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.AskYesOrNo">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">AskYesOrNo</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#AskYesOrNo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.AskYesOrNo" title="Permalink to this definition">¶</a></dt>
+<dd><p>one of two choices seems simple</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>question</strong> (<em>str</em>) &#8211; string to pose</li>
+<li><strong>answer</strong> (<em>str</em>) &#8211; default answer</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">y</span> <span class="pre">|</span> <span class="pre">n</span></tt></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.GetDat">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">GetDat</tt><big>(</big><em>infile</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#GetDat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.GetDat" title="Permalink to this definition">¶</a></dt>
+<dd><p>read three-column data from a wss (white-space-separated) file</p>
+<p>Data appear as Q  I  dI with one data point per line.
+A &#8220;#&#8221; may be used to comment out any line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>infile</strong> (<em>string</em>) &#8211; name of input data file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">x, y, dy</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(numpy.ndarray, numpy.ndarray, numpy.ndarray)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.GetTest1DataFilename">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">GetTest1DataFilename</tt><big>(</big><em>ext='.smr'</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#GetTest1DataFilename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.GetTest1DataFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>find the test1 data in the package</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.Iswap">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">Iswap</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#Iswap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.Iswap" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(tuple) of (b, a)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.SavDat">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">SavDat</tt><big>(</big><em>outfile</em>, <em>x</em>, <em>y</em>, <em>dy</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#SavDat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.SavDat" title="Permalink to this definition">¶</a></dt>
+<dd><p>save three column ASCII data in tab-separated file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>outfile</strong> (<em>str</em>) &#8211; name of output file</li>
+<li><strong>x</strong> (<em>numpy.ndarray</em>) &#8211; column 1 data array</li>
+<li><strong>y</strong> (<em>numpy.ndarray</em>) &#8211; column 2 data array</li>
+<li><strong>dy</strong> (<em>numpy.ndarray</em>) &#8211; column 3 data array</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.Spinner">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">Spinner</tt><big>(</big><em>i</em>, <em>quiet=False</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#Spinner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.Spinner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spins a stick to indicate program is still working.
+Call this routine frequently during long operations to show progress.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i</strong> (<em>int</em>) &#8211; selector (increment this in the calling routine)</li>
+<li><strong>quiet</strong> (<em>bool</em>) &#8211; optional switch to turn off the spinner</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.find_first_index">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">find_first_index</tt><big>(</big><em>x</em>, <em>target</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#find_first_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.find_first_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>find i such that x[i] &gt;= target and x[i-1] &lt; target</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>ndarray</em>) &#8211; array to search</li>
+<li><strong>target</strong> (<em>float</em>) &#8211; value to bracket</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">index of array x or None</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.isDataLine">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">isDataLine</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#isDataLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.isDataLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>test if a given line of text is not blank or commented out</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>line</strong> (<em>string</em>) &#8211; line of text from an input file (usually)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True | False</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.toolbox.strtrim">
+<tt class="descclassname">jldesmear.api.toolbox.</tt><tt class="descname">strtrim</tt><big>(</big><em>txt</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/toolbox.html#strtrim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.toolbox.strtrim" title="Permalink to this definition">¶</a></dt>
+<dd><p>cut out any white space from the string 
+(compatibility method for legacy code only)</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../gui/desmearinggui.html" title="Graphical User Interface for Lake/Jemian desmearing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="textplots.html" title="Plotting on a console"
+             >previous</a> |</li>
+        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

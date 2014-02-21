@@ -1,0 +1,1010 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>jldesmear.gui.desmearinggui &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for jldesmear.gui.desmearinggui</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Lake desmearing GUI using PySide (or PyQt4) and Matplotlib</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">&#39;Qt4Agg&#39;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PySide.QtCore</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c">#@UnusedWildImport</span>
+    <span class="kn">from</span> <span class="nn">PySide.QtGui</span> <span class="kn">import</span> <span class="o">*</span>   <span class="c">#@UnusedWildImport</span>
+    <span class="n">pyqtSignal</span> <span class="o">=</span> <span class="n">Signal</span>
+    <span class="kn">import</span> <span class="nn">PySide</span>
+    <span class="n">pyqt_name</span> <span class="o">=</span> <span class="s">&quot;PySide&quot;</span>
+    <span class="n">pyqt_version</span> <span class="o">=</span> <span class="n">PySide</span><span class="o">.</span><span class="n">__version__</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt4.QtCore</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c">#@UnusedWildImport</span>
+    <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="o">*</span>   <span class="c">#@UnusedWildImport</span>
+    <span class="n">pyqtSignal</span> <span class="o">=</span> <span class="n">pyqtSignal</span>
+    <span class="n">pyqt_name</span> <span class="o">=</span> <span class="s">&quot;PyQt4&quot;</span>
+    <span class="kn">from</span> <span class="nn">PyQt4.pyqtconfig</span> <span class="kn">import</span> <span class="n">Configuration</span>
+    <span class="n">pyqt_version</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span><span class="o">.</span><span class="n">pyqt_version_str</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;backend.qt4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyqt_name</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_qt4agg</span> <span class="kn">import</span> <span class="n">FigureCanvasQTAgg</span> <span class="k">as</span> <span class="n">FigureCanvas</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;..&#39;</span><span class="p">)</span> <span class="p">))</span>
+<span class="kn">from</span> <span class="nn">jldesmear.api</span> <span class="kn">import</span> <span class="n">toolbox</span>
+<span class="kn">from</span> <span class="nn">jldesmear.api.desmear</span> <span class="kn">import</span> <span class="n">Weighting_Methods</span>
+<span class="kn">from</span> <span class="nn">jldesmear.api.extrapolation</span> <span class="kn">import</span> <span class="n">discover_extrapolations</span>
+<span class="kn">from</span> <span class="nn">jldesmear.api.info</span> <span class="kn">import</span> <span class="n">Info</span>
+<span class="kn">import</span> <span class="nn">jldesmear.fileio.fileio</span> <span class="c">#import makeFilters, ext_xref, formats</span>
+<span class="kn">import</span> <span class="nn">jldesmear.api.desmear</span>
+
+
+<div class="viewcode-block" id="FileEntryBox"><a class="viewcode-back" href="../../../gui/desmearinggui.html#jldesmear.gui.desmearinggui.FileEntryBox">[docs]</a><span class="k">class</span> <span class="nc">FileEntryBox</span><span class="p">(</span><span class="n">QGroupBox</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;FileEntryBox = QGroupBox[QLineEdit + QPushButton]&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;selected file&#39;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tip</span><span class="o">=</span><span class="s">&#39;select a file&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param obj callback:  method to call if a name is selected</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FileEntryBox</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;full path of selected file&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;Open a file ...&#39;</span>
+        <span class="n">b_icon</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">b_icon</span><span class="o">.</span><span class="n">clicked</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectFile</span><span class="p">)</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="n">b_icon</span><span class="o">.</span><span class="n">style</span><span class="p">()</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="n">style</span><span class="o">.</span><span class="n">standardIcon</span><span class="p">(</span><span class="n">QStyle</span><span class="o">.</span><span class="n">SP_FileIcon</span><span class="p">)</span>
+        <span class="n">b_icon</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">icon</span><span class="p">)</span>
+        <span class="n">b_icon</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">b_icon</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entry</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">b_icon</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setStretch</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FileEntryBox.selectFile"><a class="viewcode-back" href="../../../gui/desmearinggui.html#jldesmear.gui.desmearinggui.FileEntryBox.selectFile">[docs]</a>    <span class="k">def</span> <span class="nf">selectFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Choose file for input&#39;&#39;&#39;</span>
+<span class="c">#         filters = &#39;;;&#39;.join([</span>
+<span class="c">#                              &#39;Input parameters (*.inp)&#39;,</span>
+<span class="c">#                              &#39;cansas1d:1.1 (*.xml)&#39;,</span>
+<span class="c">#                              &#39;HDF5/NeXus (*.hdf *.hdf5 *.h5 *.nx *.nxs)&#39;,</span>
+<span class="c">#                              &#39;smeared SAS (*.smr)&#39;,</span>
+<span class="c">#                              &#39;any file (*.* *)&#39;,</span>
+<span class="c">#                              ])</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">jldesmear</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">makeFilters</span><span class="p">()</span>
+        <span class="n">answers</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="p">()</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+        <span class="c"># getOpenFileName() returns different items in PySide and PyQt4</span>
+        <span class="k">if</span> <span class="n">pyqt_name</span> <span class="o">==</span> <span class="s">&#39;PySide&#39;</span><span class="p">:</span>
+            <span class="n">fileName</span> <span class="o">=</span> <span class="n">answers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">filefilter</span> <span class="o">=</span> <span class="n">answers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">pyqt_name</span> <span class="o">==</span> <span class="s">&#39;PyQt4&#39;</span><span class="p">:</span>
+            <span class="n">fileName</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">answers</span><span class="p">)</span>
+            <span class="n">filefilter</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="n">filefilter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fileName</span>
+
+</div></div>
+<span class="k">class</span> <span class="nc">JLdesmearGui</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">JLdesmearGui</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="n">jldesmear</span><span class="o">.</span><span class="n">__project__</span> <span class="o">+</span> <span class="s">&#39; GUI&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_signal</span> <span class="o">=</span> <span class="n">CustomSignalDef</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Main_Frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mf</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_actions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_menus</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">exitEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;received a request to exit application, shall we allow it?&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;Unsaved Changes&#39;</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s">&#39;There are parameters which have changed since the file was last saved.&#39;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s">&#39; Is it still OK to quit?&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">confirmation</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_init_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;define the actions for the GUI&#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">shortcut</span><span class="p">,</span> <span class="n">tip</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">shortcut</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">action</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="n">shortcut</span><span class="p">)</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+            <span class="n">action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">action</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_new</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;&amp;New ...&#39;</span><span class="p">,</span> <span class="n">QKeySequence</span><span class="o">.</span><span class="n">New</span><span class="p">,</span> <span class="s">&#39;Start a new project&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onNewProject</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_open</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;&amp;Open ...&#39;</span><span class="p">,</span> <span class="n">QKeySequence</span><span class="o">.</span><span class="n">Open</span><span class="p">,</span> <span class="s">&#39;Open a file&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onOpen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_save</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;&amp;Save&#39;</span><span class="p">,</span> <span class="n">QKeySequence</span><span class="o">.</span><span class="n">Save</span><span class="p">,</span> <span class="s">&#39;Save parameters to a file&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onSaveFile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_saveas</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;Save &amp;As ...&#39;</span><span class="p">,</span> <span class="n">QKeySequence</span><span class="o">.</span><span class="n">SaveAs</span><span class="p">,</span> <span class="s">&#39;Save parameters to a new file&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onSaveAsFile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_saveDSM</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;Save &amp;DSM&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;Save desmeared data to a file&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onSaveDsmFile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_exit</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;E&amp;xit&#39;</span><span class="p">,</span> <span class="n">QKeySequence</span><span class="o">.</span><span class="n">Quit</span><span class="p">,</span> <span class="s">&#39;Exit the application&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exitEvent</span><span class="p">)</span>
+
+        <span class="c"># TODO: needs Edit menu actions if menu items are created</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_about</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;About ...&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;Describe the application&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doAboutBox</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_aboutQt</span> <span class="o">=</span> <span class="n">_setup</span><span class="p">(</span><span class="s">&#39;About Qt&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;Describe the Qt support&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">doAboutQtBox</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_stop</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_stop</span><span class="p">)</span>
+        <span class="c">#self.b_pause.clicked.connect(self.do_pause)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_do_N</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_N_iterations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_do_once</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_1_iteration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_restart</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_session</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_console</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_Clear_Console</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_plots</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_Clear_Plots</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_signal</span><span class="o">.</span><span class="n">updatePlot</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updatePlots</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_init_menus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;define the menus for the GUI&#39;&#39;&#39;</span>
+        <span class="n">fileMenu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuBar</span><span class="p">()</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s">&#39;&amp;File&#39;</span><span class="p">)</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_new</span><span class="p">)</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_open</span><span class="p">)</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_save</span><span class="p">)</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_saveas</span><span class="p">)</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_saveDSM</span><span class="p">)</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_exit</span><span class="p">)</span>
+        
+        <span class="n">editMenu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuBar</span><span class="p">()</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s">&#39;&amp;Edit&#39;</span><span class="p">)</span>
+        <span class="n">editMenu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        
+        <span class="n">helpMenu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuBar</span><span class="p">()</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s">&#39;&amp;Help&#39;</span><span class="p">)</span>
+        <span class="n">helpMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_about</span><span class="p">)</span>
+        <span class="n">helpMenu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+        <span class="n">helpMenu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_aboutQt</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_init_Main_Frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileentry</span> <span class="o">=</span> <span class="n">FileEntryBox</span><span class="p">(</span><span class="n">fr</span><span class="p">,</span> 
+            <span class="n">title</span><span class="o">=</span><span class="s">&#39;Command Input parameters file&#39;</span><span class="p">,</span> 
+            <span class="n">tip</span><span class="o">=</span><span class="s">&#39;select a file with desmearing parameters&#39;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">onOpenCallback</span><span class="p">)</span>
+        <span class="n">panel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Big_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        
+        <span class="c"># TODO: need entry for input data file</span>
+        <span class="c"># TODO: need entry for output data file</span>
+        
+        <span class="c"># TODO: need a box with widgets that depend on the type of self.fileentry</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">           .inp file    : text file with input parameters</span>
+<span class="sd">           cansas1d/1.1 : need to select smeared &amp; desmeared data path &amp; parameters path</span>
+<span class="sd">           HDF5/NeXus   : need to select smeared &amp; desmeared data path &amp; parameters path</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileentry</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">panel</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setStretch</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fr</span>
+
+    <span class="k">def</span> <span class="nf">_init_Big_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains parameter entries and plots&#39;&#39;&#39;</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        
+        <span class="n">parms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Parms_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="n">parms</span><span class="o">.</span><span class="n">setFrameStyle</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">StyledPanel</span><span class="p">)</span>
+        <span class="n">plots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Plots_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="n">plots</span><span class="o">.</span><span class="n">setFrameStyle</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">StyledPanel</span><span class="p">)</span>
+
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">setOrientation</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">parms</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">splitter</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fr</span>
+    
+    <span class="k">def</span> <span class="nf">_init_Parms_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains parameter entries and controls&#39;&#39;&#39;</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="n">adjustables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Adjustables_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="n">controls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Controls_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="n">console</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Console_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">adjustables</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">controls</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">console</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fr</span>
+    
+    <span class="k">def</span> <span class="nf">_init_Adjustables_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains adjustable parameters&#39;&#39;&#39;</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s">&#39;Adjustable parameters&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+        <span class="n">box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        
+        <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;desmearing slit length, l_o&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slitlength</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slitlength</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slitlength</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s">&#39;l_o&#39;</span><span class="p">),</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slitlength</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slitlength</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s">&#39;0.1&#39;</span><span class="p">)</span>
+
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;functional form of extrapolation for desmearing&#39;</span>
+        <span class="n">functions</span> <span class="o">=</span> <span class="n">discover_extrapolations</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="mi">999</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">functions</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s">&#39;extrap&#39;</span><span class="p">),</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setExtrapolationMethod</span><span class="p">(</span><span class="s">&#39;constant&#39;</span><span class="p">)</span>
+
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;evaluate extrapolation constants based on data for q &gt; q_F&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s">&#39;q_F&#39;</span><span class="p">),</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s">&#39;0.1&#39;</span><span class="p">)</span>
+
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;functional form of desmearing feedback, always use &quot;fast&quot;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feedback</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">insertItems</span><span class="p">(</span><span class="mi">999</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">Weighting_Methods</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s">&#39;feedback&#39;</span><span class="p">),</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFeedbackMethod</span><span class="p">(</span><span class="s">&#39;fast&#39;</span><span class="p">)</span>
+
+        <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;specifies number of desmearing iterations, N_i&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s">&#39;N_i&#39;</span><span class="p">),</span> <span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">box</span>
+
+    <span class="k">def</span> <span class="nf">_init_Controls_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;widgets to control desmearing&#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">iconButton</span><span class="p">(</span><span class="n">tip</span><span class="p">,</span> <span class="n">pixmap</span><span class="p">):</span>
+            <span class="n">btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+            <span class="n">btn</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+            <span class="n">btn</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+            <span class="n">btn</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">btn</span><span class="o">.</span><span class="n">style</span><span class="p">()</span><span class="o">.</span><span class="n">standardIcon</span><span class="p">(</span><span class="n">pixmap</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">btn</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s">&#39;Desmearing controls&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;stop iterations&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_stop</span> <span class="o">=</span> <span class="n">iconButton</span><span class="p">(</span><span class="n">tip</span><span class="p">,</span> <span class="n">QStyle</span><span class="o">.</span><span class="n">SP_MediaStop</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_stop</span><span class="p">)</span>
+        
+        <span class="c">#tip = &#39;pause iterations&#39;</span>
+        <span class="c">#self.b_pause = iconButton(tip, QStyle.SP_MediaPause)</span>
+        <span class="c">#layout.addWidget(self.b_pause)</span>
+        
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;desmear one iteration&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_do_once</span> <span class="o">=</span> <span class="n">iconButton</span><span class="p">(</span><span class="n">tip</span><span class="p">,</span> <span class="n">QStyle</span><span class="o">.</span><span class="n">SP_MediaPlay</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_do_once</span><span class="p">)</span>
+        
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;desmear N iterations&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_do_N</span> <span class="o">=</span> <span class="n">iconButton</span><span class="p">(</span><span class="n">tip</span><span class="p">,</span> <span class="n">QStyle</span><span class="o">.</span><span class="n">SP_MediaSeekForward</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_do_N</span><span class="p">)</span>
+        
+        <span class="n">layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;re(start) by clearing all results and reloading data&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_restart</span> <span class="o">=</span> <span class="n">iconButton</span><span class="p">(</span><span class="n">tip</span><span class="p">,</span> <span class="n">QStyle</span><span class="o">.</span><span class="n">SP_BrowserReload</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_restart</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">box</span>
+    
+    <span class="k">def</span> <span class="nf">_init_Console_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains console output&#39;&#39;&#39;</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s">&#39;Console&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span> <span class="o">=</span> <span class="n">QTextEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">ensureCursorVisible</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="p">)</span>
+        
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;remove all content from the console window&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_console</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s">&#39;clear all console text&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_console</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_console</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_clear_console</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fr</span>
+    
+    <span class="k">def</span> <span class="nf">_init_Plots_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains plots&#39;&#39;&#39;</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_chisqr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_ChiSqr_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">setOrientation</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_Data_Plots_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">))</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_chisqr</span><span class="p">)</span> 
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">splitter</span><span class="p">)</span>
+        
+        <span class="n">tip</span> <span class="o">=</span> <span class="s">&#39;remove all data from the plots&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_plots</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s">&#39;clear all plots&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_plots</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_clear_plots</span><span class="o">.</span><span class="n">setStatusTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_clear_plots</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fr</span>
+    
+    <span class="k">def</span> <span class="nf">_init_Data_Plots_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains I(Q) and z(Q) plots&#39;&#39;&#39;</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Sas_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_Residuals_Panel</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">setOrientation</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Vertical</span><span class="p">)</span>
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span><span class="p">)</span> 
+        <span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_z</span><span class="p">)</span> 
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">splitter</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fr</span>
+
+    <span class="k">def</span> <span class="nf">_init_Sas_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains I(Q) plot&#39;&#39;&#39;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;~I(Q) and I(Q)&#39;</span>
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">PlotPanel</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+        
+        <span class="n">fr</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s">&#39;~I&#39;</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s">&#39;~Ic&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s">&#39;Ic&#39;</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">)</span>
+        
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_marker_linestyle</span><span class="p">(</span><span class="s">&#39;~I&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_marker_linestyle</span><span class="p">(</span><span class="s">&#39;~Ic&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_marker_linestyle</span><span class="p">(</span><span class="s">&#39;Ic&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+        
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">&#39;lower left&#39;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fr</span>
+    
+    <span class="k">def</span> <span class="nf">_init_Residuals_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains z(Q) plot&#39;&#39;&#39;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;z(Q)&#39;</span>
+
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">PlotPanel</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+
+        <span class="n">fr</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_marker_linestyle</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fr</span>
+    
+    <span class="k">def</span> <span class="nf">_init_ChiSqr_Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;contains ChiSqr vs. iteration plot&#39;&#39;&#39;</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;ChiSqr vs. iteration&#39;</span>
+
+        <span class="n">fr</span> <span class="o">=</span> <span class="n">PlotPanel</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+
+        <span class="n">fr</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s">&#39;ChiSqr&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_marker_linestyle</span><span class="p">(</span><span class="s">&#39;ChiSqr&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">fr</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fr</span>
+
+    <span class="k">def</span> <span class="nf">setStatus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Ready&#39;</span><span class="p">,</span> <span class="n">duration_ms</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setup the status bar for the GUI or set a new status message&#39;&#39;&#39;</span>
+        <span class="c"># TODO: add logging</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">setSizeGripEnabled</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s">&#39;normal message&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">addPermanentWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">duration_ms</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">duration_ms</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">appendConsole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;write more text to the console widget&#39;&#39;&#39;</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">textCursor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">movePosition</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">End</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">onOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Choose a file with SAS desmearing parameters&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileentry</span><span class="o">.</span><span class="n">selectFile</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">onOpenCallback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">filefilter</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;open a Command Input file with SAS desmearing parameters&#39;&#39;&#39;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">xref</span> <span class="o">=</span> <span class="n">jldesmear</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">ext_xref</span>
+        <span class="c"># do not use the filefilter term</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">xref</span> <span class="ow">and</span> <span class="n">xref</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;CommandInput&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;selected file: &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="o">=</span> <span class="bp">None</span>
+            
+            <span class="c"># read a .inp file</span>
+            <span class="n">cls</span> <span class="o">=</span> <span class="n">jldesmear</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">formats</span><span class="p">[</span><span class="n">xref</span><span class="p">[</span><span class="n">ext</span><span class="p">]]</span>
+            <span class="n">cmd_inp</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
+            <span class="n">cmd_inp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">setInputDataFile</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setOutputDataFile</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">outfile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setSlitLength</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">slitlength</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setExtrapolationMethod</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">extrapname</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setQFinal</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">sFinal</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setNumIterations</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">NumItr</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setFeedbackMethod</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">LakeWeighting</span><span class="p">)</span>
+            
+            <span class="c"># load the SAS data</span>
+            <span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span> <span class="o">=</span> <span class="n">cmd_inp</span><span class="o">.</span><span class="n">read_SMR</span><span class="p">(</span><span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="o">=</span> <span class="n">Desmearing</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">cmd_inp</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">updatePlots</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="bp">False</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_session</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;loaded file: &#39;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">onNewProject</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;start a new project&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;start a new project&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;method not defined yet&#39;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">onSaveFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;save desmearing parameters to a file&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span>
+        <span class="k">if</span> <span class="s">&#39;fileio_class&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s">&#39;programmer trouble: something replaced the params&#39;</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">fileio_class</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;saved file: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="bp">False</span>
+
+    
+    <span class="k">def</span> <span class="nf">onSaveAsFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;save desmearing parameters to a new file&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span>
+        <span class="k">if</span> <span class="s">&#39;fileio_class&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s">&#39;programmer trouble: something replaced the params&#39;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">dlog</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="p">()</span>
+        <span class="n">dlog</span><span class="o">.</span><span class="n">setDirectory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">filefilter</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">fileio_class</span><span class="p">)</span>
+        <span class="n">outfile</span><span class="p">,</span> <span class="n">filefilter</span> <span class="o">=</span> <span class="n">dlog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="n">filefilter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">fileio_class</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;saved file: &#39;</span> <span class="o">+</span> <span class="n">outfile</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">onSaveDsmFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;save desmeared data to a file&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span>
+        <span class="k">if</span> <span class="s">&#39;fileio_class&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s">&#39;programmer trouble: something replaced the params&#39;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">outfile</span><span class="p">)</span>
+        <span class="n">dlog</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="p">()</span>
+        <span class="n">dlog</span><span class="o">.</span><span class="n">setDirectory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">dlog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">outfile</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">fileio_class</span><span class="o">.</span><span class="n">save_DSM</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="p">)</span>
+            <span class="c">#self.dirty = False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;saved data file: &#39;</span> <span class="o">+</span> <span class="n">outfile</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">init_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;setup a new desmearing session using existing parameters and plot the data&#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">session_callback</span><span class="p">(</span><span class="n">dsm</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;#&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">iteration_count</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;  ChiSqr=&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s">&quot;  &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">extrap</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">console</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">appendConsole</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">custom_signal</span><span class="o">.</span><span class="n">updatePlot</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">Info</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">params</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInputDataFile</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;no data to clear from plots&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getOutputDataFile</span><span class="p">()</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">slitlength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getSlitLength</span><span class="p">()</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">sFinal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getQFinal</span><span class="p">()</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">NumItr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNumIterations</span><span class="p">()</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">extrapname</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getExtrapolationMethod</span><span class="p">())</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">LakeWeighting</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getFeedbackMethod</span><span class="p">())</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">extrap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getExtrapolationMethod</span><span class="p">()</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">quiet</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">session_callback</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendConsole</span><span class="p">(</span><span class="s">&#39;reading SAS data from &#39;</span> <span class="o">+</span> <span class="n">params</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span> <span class="o">=</span> <span class="n">toolbox</span><span class="o">.</span><span class="n">GetDat</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">infile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendConsole</span><span class="p">(</span><span class="s">&#39;number of points read: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendConsole</span><span class="p">(</span><span class="s">&#39;Qmin: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">min</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendConsole</span><span class="p">(</span><span class="s">&#39;Qmax: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        
+        <span class="c"># verify parameters are within range of data before continuing!</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">sFinal</span> <span class="o">&lt;=</span> <span class="n">q</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="ow">or</span> <span class="n">params</span><span class="o">.</span><span class="n">sFinal</span> <span class="o">&gt;=</span> <span class="n">q</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;Wrong choice of q_F&#39;</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s">&#39;Must choose a value for q_F &#39;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s">&#39;between &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">+</span> <span class="s">&#39; and &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s">&#39;.</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">+</span> <span class="s">&#39;Then re-initialize desmearing.&#39;</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendConsole</span><span class="p">(</span><span class="s">&#39;Preparing for desmearing&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="o">=</span> <span class="n">Desmearing</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">dE</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">updatePlots</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">updatePlots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;update the plots with new data&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">dsm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span>
+        
+        <span class="c"># plot E(q)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span><span class="o">.</span><span class="n">update_dataset</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="s">&#39;~I&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span><span class="o">.</span><span class="n">update_dataset</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="s">&#39;~Ic&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span><span class="o">.</span><span class="n">update_dataset</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="s">&#39;Ic&#39;</span><span class="p">)</span>
+        <span class="c">#self.plot_sas.axis.autoscale_view(tight=True)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span><span class="o">.</span><span class="n">relim</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_sas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+        <span class="c"># plot z(q)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_z</span><span class="o">.</span><span class="n">update_dataset</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_z</span><span class="o">.</span><span class="n">relim</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_z</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">(</span><span class="n">tight</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_z</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+        <span class="c"># plot ChiSqr vs. iteration</span>
+        <span class="n">iterations</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dsm</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_chisqr</span><span class="o">.</span><span class="n">update_dataset</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="n">dsm</span><span class="o">.</span><span class="n">ChiSqr</span><span class="p">,</span> <span class="s">&#39;ChiSqr&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_chisqr</span><span class="o">.</span><span class="n">relim</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_chisqr</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">(</span><span class="n">tight</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_chisqr</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        
+    
+    <span class="k">def</span> <span class="nf">do_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;pause button was pressed by the user&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;pause button was pressed&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;method not defined yet&#39;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">do_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;stop button was pressed by the user&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">stop_iteration</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="c">#self.setStatus(&#39;stop button was pressed&#39;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;stopping desmearing computations&#39;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">do_1_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;1 button (iterate once) was pressed by the user&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">busy</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s">&#39;Desmearing computation is working.&#39;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s">&#39;  Wait before pressing this button.&#39;</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;Busy!&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;desmear one iteration&#39;</span><span class="p">)</span>
+            <span class="n">IterativeDesmear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="bp">False</span>
+    
+    <span class="k">def</span> <span class="nf">do_N_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;N button (iterate N times) was pressed by the user&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">busy</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s">&#39;Desmearing computation is working.&#39;</span>
+            <span class="n">text</span> <span class="o">+=</span> <span class="s">&#39;  Wait before pressing this button.&#39;</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;Busy!&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;desmearing N iterations&#39;</span><span class="p">)</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNumIterations</span><span class="p">()</span>
+            <span class="n">IterativeDesmear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">busy</span> <span class="o">=</span> <span class="bp">False</span>
+            
+    <span class="k">def</span> <span class="nf">do_Clear_Console</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">question</span> <span class="o">=</span> <span class="s">&#39;Really clear the console?&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">confirmation</span><span class="p">(</span><span class="s">&#39;clear console text&#39;</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s">&#39;&lt;console cleared&gt;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;console cleared&#39;</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">do_Clear_Plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">question</span> <span class="o">=</span> <span class="s">&#39;Really clear all plot data?&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">confirmation</span><span class="p">(</span><span class="s">&#39;clear plot data&#39;</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">plot</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig_sas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig_z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig_chisqr</span><span class="p">):</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">clf</span><span class="p">(</span><span class="n">keep_observers</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;plot data was cleared&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">doAboutBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;show the about box&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;describe this application&#39;</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">u&#39;about &#39;</span> <span class="o">+</span>  <span class="n">jldesmear</span><span class="o">.</span><span class="n">__project__</span>
+        <span class="n">support</span> <span class="o">=</span> <span class="p">[</span><span class="n">pyqt_name</span> <span class="o">+</span> <span class="s">&#39; version: &#39;</span> <span class="o">+</span> <span class="n">pyqt_version</span><span class="p">,]</span>
+        <span class="n">support</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;Matplotlib version: &#39;</span> <span class="o">+</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="n">support</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;Numpy version: &#39;</span> <span class="o">+</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__numpy__</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">jldesmear</span><span class="o">.</span><span class="n">__about__</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">support</span><span class="p">)</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">about</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">doAboutQtBox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;show the about box&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;describe this application&#39;</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">u&#39;about Qt&#39;</span>
+        <span class="n">QMessageBox</span><span class="o">.</span><span class="n">aboutQt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">confirmation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">cancel_default</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;request confirmation from user before an action, return True if Ok&#39;&#39;&#39;</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span>
+        <span class="n">flags</span> <span class="o">|=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span>
+        
+        <span class="k">if</span> <span class="n">cancel_default</span><span class="p">:</span>
+            <span class="n">default_button</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">default_button</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">default_button</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;Ok selected&#39;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStatus</span><span class="p">(</span><span class="s">&#39;Cancel selected&#39;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span>
+
+    <span class="k">def</span> <span class="nf">selectQComboBoxItemByText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;select a QComboBox object by text value&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s">&#39;Programmer error&#39;</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span>
+    
+    <span class="k">def</span> <span class="nf">setInputDataFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputdatafile</span> <span class="o">=</span> <span class="n">value</span>
+    
+    <span class="k">def</span> <span class="nf">getInputDataFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputdatafile</span>
+    
+    <span class="k">def</span> <span class="nf">setOutputDataFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputdatafile</span> <span class="o">=</span> <span class="n">value</span>
+    
+    <span class="k">def</span> <span class="nf">getOutputDataFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputdatafile</span>
+    
+    <span class="k">def</span> <span class="nf">setSlitLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slitlength</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">getSlitLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slitlength</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="k">return</span> <span class="n">value</span>
+    
+    <span class="k">def</span> <span class="nf">setQFinal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">getQFinal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qFinal</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="k">return</span> <span class="n">value</span>
+    
+    <span class="k">def</span> <span class="nf">setNumIterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">getNumIterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_iterations</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="k">return</span> <span class="n">value</span>
+    
+    <span class="k">def</span> <span class="nf">setExtrapolationMethod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectQComboBoxItemByText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">getExtrapolationMethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">setFeedbackMethod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectQComboBoxItemByText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">getFeedbackMethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="CustomSignalDef"><a class="viewcode-back" href="../../../gui/desmearinggui.html#jldesmear.gui.desmearinggui.CustomSignalDef">[docs]</a><span class="k">class</span> <span class="nc">CustomSignalDef</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Define the signals used to communicate between the </span>
+<span class="sd">    desmearing thread and the PySide (main Qt4 GUI) thread.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># see: http://www.pyside.org/docs/pyside/PySide/QtCore/Signal.html</span>
+    <span class="c"># see: http://zetcode.com/gui/pysidetutorial/eventsandsignals/</span>
+
+    <span class="n">updatePlot</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+
+</div>
+<span class="k">class</span> <span class="nc">Desmearing</span><span class="p">(</span><span class="n">jldesmear</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">desmear</span><span class="o">.</span><span class="n">Desmearing</span><span class="p">):</span>
+    
+    <span class="n">stop_iteration</span> <span class="o">=</span> <span class="bp">False</span>  <span class="c"># flag allowing UI to stop</span>
+
+
+<div class="viewcode-block" id="IterativeDesmear"><a class="viewcode-back" href="../../../gui/desmearinggui.html#jldesmear.gui.desmearinggui.IterativeDesmear">[docs]</a><span class="k">class</span> <span class="nc">IterativeDesmear</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">    Run ``n`` iterations of the desmearing operation in a separate thread.</span>
+<span class="sd">    Running in a separate thread with callbacks allows the </span>
+<span class="sd">    GUI widgets to be updated after each iteration.</span>
+<span class="sd">        </span>
+<span class="sd">    :param obj dsm: existing Desmearing object</span>
+<span class="sd">    :param int n: number of iterations to perform</span>
+<span class="sd">    </span>
+<span class="sd">    Start this thread with code such as this example::</span>
+<span class="sd">    </span>
+<span class="sd">        IterativeDesmear(Desmear_object, number_of_iterations).start()</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsm</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span> <span class="o">=</span> <span class="n">dsm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">stop_iteration</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">iterate_and_callback</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsm</span><span class="o">.</span><span class="n">stop_iteration</span> <span class="o">=</span> <span class="bp">False</span>
+
+</div>
+<div class="viewcode-block" id="PlotPanel"><a class="viewcode-back" href="../../../gui/desmearinggui.html#jldesmear.gui.desmearinggui.PlotPanel">[docs]</a><span class="k">class</span> <span class="nc">PlotPanel</span><span class="p">(</span><span class="n">QGroupBox</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;generic creation of a plot panel in a titled box (QGroupBox)&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+        <span class="n">QGroupBox</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">PacktFigureCanvas</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">)</span>
+    
+        <span class="c"># convenience shortcuts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">create_dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">update_dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_marker_linestyle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">set_marker_linestyle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_xscale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_xscale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_yscale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_yscale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autoscale_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">autoscale_view</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">relim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">legend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span>
+
+</div>
+<div class="viewcode-block" id="PacktFigureCanvas"><a class="viewcode-back" href="../../../gui/desmearinggui.html#jldesmear.gui.desmearinggui.PacktFigureCanvas">[docs]</a><span class="k">class</span> <span class="nc">PacktFigureCanvas</span><span class="p">(</span><span class="n">FigureCanvas</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    create a MatPlotLib FigureCanvas object with a single Figure</span>
+<span class="sd">    </span>
+<span class="sd">    :see: http://packtlib.packtpub.com/library/9781847197900/ch06lvl1sec03#</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+        <span class="n">FigureCanvas</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">(</span><span class="n">tight</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c"># FIXME: as noted</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        .. note:: Something is not quite right here.</span>
+<span class="sd">           Both PySide and PyQt4 report problems</span>
+<span class="sd">           when charts are created this way.</span>
+<span class="sd">           </span>
+<span class="sd">           **PyQt4** reports::</span>
+
+<span class="sd">                QObject::connect: Cannot queue arguments of type &#39;QTextCursor&#39;</span>
+<span class="sd">                (Make sure &#39;QTextCursor&#39; is registered using qRegisterMetaType().)</span>
+
+<span class="sd">           </span>
+<span class="sd">           **PySide** (on linux) reports::</span>
+
+<span class="sd">                (python2.7:5972): libgnomevfs-WARNING **: Cannot load module `/usr/lib/gnome-vfs-2.0/modules/libfile.so&#39; (/usr/lib/gnome-vfs-2.0/modules/libfile.so: cannot open shared object file: No such file or directory)</span>
+<span class="sd">                Application asked to unregister timer 0x44000005 which is not registered in this thread. Fix application.</span>
+
+<span class="sd">           </span>
+<span class="sd">           This does not stop program execution.</span>
+<span class="sd">           It is an indication that some subtlety</span>
+<span class="sd">           has been missed.  No error is reported on</span>
+<span class="sd">           MS Windows 7 using Enthought Python Distribution.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">create_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39; is already in use on figure&#39;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">update_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39; is not defined for figure&#39;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">set_marker_linestyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39; is not defined for figure&#39;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">set_marker</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">set_markerfacecolor</span><span class="p">(</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">set_linestyle</span><span class="p">(</span><span class="n">linestyle</span><span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">myapp</span> <span class="o">=</span> <span class="n">JLdesmearGui</span><span class="p">()</span>
+    <span class="n">myapp</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>

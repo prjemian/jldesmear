@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Extrapolation: Linear &mdash; jldesmear 2013-12.dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2013-12.dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../index.html" />
+    <link rel="up" title="Extrapolations at highest q" href="../extrapolations.html" />
+    <link rel="next" title="Extrapolation: Porod Law" href="porod.html" />
+    <link rel="prev" title="Extrapolation: Constant" href="constant.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="porod.html" title="Extrapolation: Porod Law"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="constant.html" title="Extrapolation: Constant"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="../traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li>
+          <li><a href="../extrapolations.html" accesskey="U">Extrapolations at highest <em>q</em></a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="constant.html"
+                        title="previous chapter">Extrapolation: Constant</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="porod.html"
+                        title="next chapter">Extrapolation: Porod Law</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/api/extrapolations/linear.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-jldesmear.api.extrap_linear">
+<span id="extrapolation-linear"></span><h1>Extrapolation: Linear<a class="headerlink" href="#module-jldesmear.api.extrap_linear" title="Permalink to this headline">¶</a></h1>
+<p>Extrapolate as:  I(q) = B + m * q</p>
+<dl class="class">
+<dt id="jldesmear.api.extrap_linear.Linear">
+<em class="property">class </em><tt class="descclassname">jldesmear.api.extrap_linear.</tt><tt class="descname">Linear</tt><a class="reference internal" href="../../_modules/jldesmear/api/extrap_linear.html#Linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_linear.Linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>I(q) = B + m*q</p>
+<dl class="method">
+<dt id="jldesmear.api.extrap_linear.Linear.calc">
+<tt class="descname">calc</tt><big>(</big><em>q</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_linear.html#Linear.calc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_linear.Linear.calc" title="Permalink to this definition">¶</a></dt>
+<dd><img src="../../_images/mathmpl/math-7c8f522ef6.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>q</strong> (<em>float</em>) &#8211; magnitude of scattering vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">value of extrapolation function at <em>q</em></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jldesmear.api.extrap_linear.Linear.fit_result">
+<tt class="descname">fit_result</tt><big>(</big><em>reg</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_linear.html#Linear.fit_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_linear.Linear.fit_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the results of the fit and store them
+as the set of coefficients in the self.coefficients 
+dictionary.  Called from <tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><em>must</em> override in subclass otherwise <a class="reference internal" href="#jldesmear.api.extrap_linear.Linear.fit_result" title="jldesmear.api.extrap_linear.Linear.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> will throw an exception</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg</strong> (<em>StatsRegClass object</em>) &#8211; statistics registers (created in <tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="porod.html" title="Extrapolation: Porod Law"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="constant.html" title="Extrapolation: Constant"
+             >previous</a> |</li>
+        <li><a href="../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+          <li><a href="../../contents.html" >Contents</a> &raquo;</li>
+          <li><a href="../traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li>
+          <li><a href="../extrapolations.html" >Extrapolations at highest <em>q</em></a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+    </div>
+  </body>
+</html>
