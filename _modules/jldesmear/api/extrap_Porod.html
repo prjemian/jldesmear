@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>jldesmear.api.extrap_Porod &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>jldesmear.api.extrap_Porod &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -79,7 +79,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span>    <span class="c">#@UnusedImport</span>
 
 
-<div class="viewcode-block" id="Porod"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Porod">[docs]</a><span class="k">class</span> <span class="nc">Porod</span><span class="p">(</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">Extrapolation</span><span class="p">):</span>
+<div class="viewcode-block" id="Extrapolation"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Extrapolation">[docs]</a><span class="k">class</span> <span class="nc">Extrapolation</span><span class="p">(</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">Extrapolation</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;I(q) = B + Cp / q^4&#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -93,7 +93,7 @@
         <span class="n">form</span> <span class="o">+=</span> <span class="s">&quot; / q^4&quot;</span>
         <span class="k">return</span> <span class="n">form</span>
 
-<div class="viewcode-block" id="Porod.calc"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Porod.calc">[docs]</a>    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="Extrapolation.calc"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Extrapolation.calc">[docs]</a>    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        .. math::</span>
 <span class="sd">        </span>
@@ -108,7 +108,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">B</span> <span class="o">+</span> <span class="n">Cp</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 </div>
-<div class="viewcode-block" id="Porod.fit_add"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Porod.fit_add">[docs]</a>    <span class="k">def</span> <span class="nf">fit_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="Extrapolation.fit_add"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Extrapolation.fit_add">[docs]</a>    <span class="k">def</span> <span class="nf">fit_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">        Add a data point to the statistics registers.</span>
 <span class="sd">        Called from :meth:`fit_loop()`.</span>
@@ -127,7 +127,7 @@
         <span class="n">q4</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
         <span class="n">reg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">q4</span><span class="p">,</span> <span class="n">q4</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Porod.fit_result"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Porod.fit_result">[docs]</a>    <span class="k">def</span> <span class="nf">fit_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>
+<div class="viewcode-block" id="Extrapolation.fit_result"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Extrapolation.fit_result">[docs]</a>    <span class="k">def</span> <span class="nf">fit_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; </span>
 <span class="sd">        Determine the results of the fit and store them</span>
 <span class="sd">        as the set of coefficients in the self.coefficients </span>
@@ -145,7 +145,7 @@
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;show the various routines&#39;&#39;&#39;</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;Testing $Id$&quot;</span><span class="p">)</span>
-    <span class="n">func</span> <span class="o">=</span> <span class="n">Porod</span>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">Extrapolation</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;using default coefficients&quot;</span><span class="p">)</span>
     <span class="n">fit</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
     <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
@@ -185,13 +185,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Forward Smearing &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>Forward Smearing &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../index.html" />
     <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
     <link rel="next" title="Extrapolations at highest q" href="extrapolations.html" />
     <link rel="prev" title="Desmearing" href="desmear.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="desmear.html" title="Desmearing"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
@@ -113,11 +113,11 @@ to a ValueError Exception, linear interpolation is used.</p>
 <dt id="jldesmear.api.smear.Plengt">
 <tt class="descclassname">jldesmear.api.smear.</tt><tt class="descname">Plengt</tt><big>(</big><em>l</em>, <em>slitlength</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/smear.html#Plengt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.smear.Plengt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Slit-length weighting function, <em>P_l(l)</em></p>
-<img src="../_images/mathmpl/math-12d3fb473a.png" class="center" /><p>It is defined for a rectangular slit of length <tt class="docutils literal"><span class="pre">2*slitlength</span></tt>
-(<img src="../_images/mathmpl/math-b6d8763873.png" style="position: relative; bottom: -7px"/>)
-and probability <tt class="docutils literal"><span class="pre">1/(2*slitlength)</span></tt> (<img src="../_images/mathmpl/math-6fd7e61f57.png" style="position: relative; bottom: -8px"/>).  
+<img src="../_images\mathmpl/math-12d3fb473a.png" class="center" /><p>It is defined for a rectangular slit of length <tt class="docutils literal"><span class="pre">2*slitlength</span></tt>
+(<img src="../_images\mathmpl/math-b6d8763873.png" style="position: relative; bottom: -7px"/>)
+and probability <tt class="docutils literal"><span class="pre">1/(2*slitlength)</span></tt> (<img src="../_images\mathmpl/math-6fd7e61f57.png" style="position: relative; bottom: -8px"/>).  
 It is zero elsewhere.:</p>
-<div class="highlight-python"><pre>                    P(l)
+<div class="highlight-python"><div class="highlight"><pre>                    P(l)
 /--------------------|--------------------\
 |                    |                    |
 |                    |                    |
@@ -126,16 +126,17 @@ It is zero elsewhere.:</p>
 |      *             |             *      |
 |      *             |             *      |
 \*******-------------|-------------*******/ 0
-      -l_o           0            l_o</pre>
+      -l_o           0            l_o
+</pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first">integral( P(l) dl ) = 1.0</p>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first">integral( P(l) dl ) = 1.0</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Note :</th><td class="field-body"><p class="first">If you change this to a different functional form ...
+<tr class="field-even field"><th class="field-name">Note:</th><td class="field-body"><p class="first">If you change this to a different functional form ...
 It is not necessary to change the limit of the integration
 if the functional form here is changed.  You may, however,
 need more parameters.</p>
@@ -166,7 +167,7 @@ of the data to avoid truncation errors.  Assume that
 <a class="reference internal" href="#jldesmear.api.smear.Plengt" title="jldesmear.api.smear.Plengt"><tt class="xref py py-func docutils literal"><span class="pre">Plengt()</span></tt></a> goes to zero for <tt class="docutils literal"><span class="pre">l</span> <span class="pre">&gt;</span> <span class="pre">l_o</span></tt> (the slit length).</p>
 <p>Also assume that the slit length function is symmetrical
 about <tt class="docutils literal"><span class="pre">l</span> <span class="pre">=</span> <span class="pre">zero</span></tt>.</p>
-<img src="../_images/mathmpl/math-3d039386e7.png" class="center" /><p>This routine is written so that if <a class="reference internal" href="#jldesmear.api.smear.Plengt" title="jldesmear.api.smear.Plengt"><tt class="xref py py-func docutils literal"><span class="pre">Plengt()</span></tt></a> is changed
+<img src="../_images\mathmpl/math-3d039386e7.png" class="center" /><p>This routine is written so that if <a class="reference internal" href="#jldesmear.api.smear.Plengt" title="jldesmear.api.smear.Plengt"><tt class="xref py py-func docutils literal"><span class="pre">Plengt()</span></tt></a> is changed
 (for example) to a Gaussian, that no further modification
 is necessary to the integration procedure.  That is,
 this routine will integrate the data out to &#8220;slitlength&#8221; (<tt class="docutils literal"><span class="pre">l_o</span></tt>).</p>
@@ -178,7 +179,7 @@ this routine will integrate the data out to &#8220;slitlength&#8221; (<tt class=
 <li><strong>q</strong> (<em>numpy.ndarray</em>) &#8211; magnitude of scattering vector</li>
 <li><strong>C</strong> (<em>numpy.ndarray</em>) &#8211; unsmeared data is C(q) +/- dC(q)</li>
 <li><strong>dC</strong> (<em>numpy.ndarray</em>) &#8211; estimated uncertainties of C</li>
-<li><strong>extrapname</strong> (<em>string</em>) &#8211; one of <tt class="docutils literal"><span class="pre">constant</span> <span class="pre">|</span> <span class="pre">linear</span> <span class="pre">|</span> <span class="pre">powerlaw</span> <span class="pre">|</span> <span class="pre">Porod</span></tt></li>
+<li><strong>extrapname</strong> (<em>str</em>) &#8211; one of <tt class="docutils literal"><span class="pre">constant</span> <span class="pre">|</span> <span class="pre">linear</span> <span class="pre">|</span> <span class="pre">powerlaw</span> <span class="pre">|</span> <span class="pre">Porod</span></tt></li>
 <li><strong>sFinal</strong> (<em>float</em>) &#8211; fit extrapolation to I(q) for q &gt;= sFinal</li>
 <li><strong>slitlength</strong> (<em>float</em>) &#8211; l_o, same units as q</li>
 <li><strong>quiet</strong> (<em>bool</em>) &#8211; if True, then no printed output from this routine</li>
@@ -256,14 +257,14 @@ this routine will integrate the data out to &#8220;slitlength&#8221; (<tt class=
         <li class="right" >
           <a href="desmear.html" title="Desmearing"
              >previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

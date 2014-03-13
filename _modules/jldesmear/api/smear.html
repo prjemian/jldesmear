@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>jldesmear.api.smear &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>jldesmear.api.smear &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -206,8 +206,7 @@
 <span class="sd">    :param numpy.ndarray q: magnitude of scattering vector</span>
 <span class="sd">    :param numpy.ndarray C: unsmeared data is C(q) +/- dC(q)</span>
 <span class="sd">    :param numpy.ndarray dC: estimated uncertainties of C</span>
-<span class="sd">    :param extrapname: one of ``constant | linear | powerlaw | Porod``</span>
-<span class="sd">    :type extrapname: string</span>
+<span class="sd">    :param str extrapname: one of ``constant | linear | powerlaw | Porod``</span>
 <span class="sd">    :param float sFinal: fit extrapolation to I(q) for q &gt;= sFinal</span>
 <span class="sd">    :param float slitlength: l_o, same units as q</span>
 <span class="sd">    :param bool quiet: if True, then no printed output from this routine</span>
@@ -228,6 +227,8 @@
     <span class="n">interp</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">C</span><span class="p">))</span>
 
     <span class="c"># select and fit the extrapolation</span>
+    <span class="k">if</span> <span class="n">extrapolation</span><span class="o">.</span><span class="n">functions</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">extrapolation</span><span class="o">.</span><span class="n">discover_extrapolations</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">extrap</span> <span class="o">=</span> <span class="n">prepare_extrapolation</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">dC</span><span class="p">,</span> <span class="n">extrapname</span><span class="p">,</span> <span class="n">sFinal</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -380,13 +381,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

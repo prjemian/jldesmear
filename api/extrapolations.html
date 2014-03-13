@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Extrapolations at highest q &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>Extrapolations at highest q &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../index.html" />
     <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
     <link rel="next" title="Extrapolation: Constant" href="extrapolations/constant.html" />
     <link rel="prev" title="Forward Smearing" href="smear.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="smear.html" title="Forward Smearing"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
@@ -99,18 +99,18 @@
 <em class="property">class </em><tt class="descclassname">jldesmear.api.extrapolation.</tt><tt class="descname">Extrapolation</tt><a class="reference internal" href="../_modules/jldesmear/api/extrapolation.html#Extrapolation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrapolation.Extrapolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>superclass of functions for extrapolation of SAS data past available range</p>
 <p>The general case to (forward) slit-smear small-angle scattering involves
-integration at <img src="../_images/mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> values past any measurable range.</p>
-<img src="../_images/mathmpl/math-e3afaf06bf.png" class="center" /><p>Due to symmetry, the integral is usually folded around zero,thus becoming</p>
-<img src="../_images/mathmpl/math-582cdb71c2.png" class="center" /><p>Even when the upper limit is reduced due to finite slit dimension (the 
-so-called slit-length, <img src="../_images/mathmpl/math-6da3a050ea.png" style="position: relative; bottom: -7px"/>),</p>
-<img src="../_images/mathmpl/math-22645bfd79.png" class="center" /><p>it is still necessary to evaluate <img src="../_images/mathmpl/math-5d44bec197.png" style="position: relative; bottom: -8px"/> beyond
+integration at <img src="../_images\mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> values past any measurable range.</p>
+<img src="../_images\mathmpl/math-e3afaf06bf.png" class="center" /><p>Due to symmetry, the integral is usually folded around zero,thus becoming</p>
+<img src="../_images\mathmpl/math-582cdb71c2.png" class="center" /><p>Even when the upper limit is reduced due to finite slit dimension (the 
+so-called slit-length, <img src="../_images\mathmpl/math-6da3a050ea.png" style="position: relative; bottom: -7px"/>),</p>
+<img src="../_images\mathmpl/math-22645bfd79.png" class="center" /><p>it is still necessary to evaluate <img src="../_images\mathmpl/math-5d44bec197.png" style="position: relative; bottom: -8px"/> beyond
 the last measured data point, just to evaluate the integral.</p>
-<p>An extrapolation function is used to describe the <img src="../_images/mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> beyond the measured data.
+<p>An extrapolation function is used to describe the <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> beyond the measured data.
 In the most trivial case, zero would be returned.  Since this simplification
 is known to introduce truncation errors, an model form for the last few 
 available data points is assumed.  Fitting coefficients are determined from
 the final data points (in the method <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit" title="jldesmear.api.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>) and are used 
-subsequently to generate the extrapolation at a specific <img src="../_images/mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> value
+subsequently to generate the extrapolation at a specific <img src="../_images\mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> value
 (in the method <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.calc" title="jldesmear.api.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a>).</p>
 <p>Examples:</p>
 <p>See the subclasses for examples how to implement a new extrapolation function.</p>
@@ -124,7 +124,7 @@ subsequently to generate the extrapolation at a specific <img src="../_images/ma
 <p>The basic methods to override are</p>
 <ul class="simple">
 <li><tt class="xref py py-meth docutils literal"><span class="pre">__str__()</span></tt> : string representation</li>
-<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.calc" title="jldesmear.api.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a> : determines <img src="../_images/mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> from <tt class="docutils literal"><span class="pre">q</span></tt> and <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.calc" title="jldesmear.api.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a> : determines <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> from <tt class="docutils literal"><span class="pre">q</span></tt> and <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
 <li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_result" title="jldesmear.api.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> : assigns fit coefficients to <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
 </ul>
 <dl class="method">
@@ -155,7 +155,7 @@ subsequently to generate the extrapolation at a specific <img src="../_images/ma
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><strong>must</strong> override in subclass</td>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><strong>must</strong> override in subclass</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>q</strong> (<em>float</em>) &#8211; magnitude of scattering vector</td>
 </tr>
@@ -175,7 +175,7 @@ subsequently to generate the extrapolation at a specific <img src="../_images/ma
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
@@ -198,7 +198,7 @@ Called from <a class="reference internal" href="#jldesmear.api.extrapolation.Ext
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
@@ -222,7 +222,7 @@ for use in curve fitting.  Called from <a class="reference internal" href="#jlde
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
@@ -254,7 +254,7 @@ dictionary.  Called from <a class="reference internal" href="#jldesmear.api.extr
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><em>must</em> override in subclass otherwise <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_result" title="jldesmear.api.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> will raise an exception</td>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><em>must</em> override in subclass otherwise <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_result" title="jldesmear.api.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> will raise an exception</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg</strong> (<em>StatsRegClass object</em>) &#8211; statistics registers (created in <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit" title="jldesmear.api.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>)</td>
 </tr>
@@ -271,7 +271,7 @@ the coefficients of the curve fit.  Called from <a class="reference internal" hr
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><em>might</em> override in subclass</td>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><em>might</em> override in subclass</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">statistics registers</td>
 </tr>
@@ -290,7 +290,7 @@ Called from <a class="reference internal" href="#jldesmear.api.extrapolation.Ext
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
@@ -311,7 +311,7 @@ Called from <a class="reference internal" href="#jldesmear.api.extrapolation.Ext
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><em>might</em> override in subclass</td>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><em>might</em> override in subclass</td>
 </tr>
 </tbody>
 </table>
@@ -322,7 +322,7 @@ Called from <a class="reference internal" href="#jldesmear.api.extrapolation.Ext
 <dl class="function">
 <dt id="jldesmear.api.extrapolation.discover_extrapolations">
 <tt class="descclassname">jldesmear.api.extrapolation.</tt><tt class="descname">discover_extrapolations</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/extrapolation.html#discover_extrapolations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrapolation.discover_extrapolations" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a dictionary of the available extrapolation functions</p>
+<dd><p>return a dictionary of the available extrapolation functions provided</p>
 <p>Extrapolation functions must be in a file named 
 <tt class="docutils literal"><span class="pre">extrap_KEY.py</span></tt>
 where <tt class="docutils literal"><span class="pre">KEY</span></tt> is the key name of the extrapolation function.
@@ -332,8 +332,14 @@ as the module: <a class="reference internal" href="#module-jldesmear.api.extrapo
 <tt class="docutils literal"><span class="pre">q</span></tt> as a <tt class="docutils literal"><span class="pre">numpy.ndarray</span></tt> or as a <tt class="docutils literal"><span class="pre">float</span></tt>.</p>
 <p>The file must contain:</p>
 <ul class="simple">
-<li>a subclass of <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation" title="jldesmear.api.extrapolation.Extrapolation"><tt class="xref py py-class docutils literal"><span class="pre">Extrapolation</span></tt></a></li>
+<li><em>Extrapolation</em>: a subclass of <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation" title="jldesmear.api.extrapolation.Extrapolation"><tt class="xref py py-class docutils literal"><span class="pre">Extrapolation</span></tt></a></li>
 </ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="jldesmear.api.extrapolation.module_extrapolations">
+<tt class="descclassname">jldesmear.api.extrapolation.</tt><tt class="descname">module_extrapolations</tt><big>(</big><em>modulename</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/extrapolation.html#module_extrapolations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrapolation.module_extrapolations" title="Permalink to this definition">¶</a></dt>
+<dd><p>return any extmodulename.Extrapolation as a dict</p>
 </dd></dl>
 
 </div>
@@ -359,14 +365,14 @@ as the module: <a class="reference internal" href="#module-jldesmear.api.extrapo
         <li class="right" >
           <a href="smear.html" title="Forward Smearing"
              >previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

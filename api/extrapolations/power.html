@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Extrapolation: Power Law &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>Extrapolation: Power Law &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../../index.html" />
     <link rel="up" title="Extrapolations at highest q" href="../extrapolations.html" />
     <link rel="next" title="Statistics Registers" href="../StatsReg.html" />
     <link rel="prev" title="Extrapolation: Porod Law" href="porod.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="porod.html" title="Extrapolation: Porod Law"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../../contents.html" >Contents</a> &raquo;</li>
           <li><a href="../traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li>
           <li><a href="../extrapolations.html" accesskey="U">Extrapolations at highest <em>q</em></a> &raquo;</li> 
@@ -88,13 +88,13 @@
 <span id="extrapolation-power-law"></span><h1>Extrapolation: Power Law<a class="headerlink" href="#module-jldesmear.api.extrap_powerlaw" title="Permalink to this headline">¶</a></h1>
 <p>Extrapolate as:  I(q) = A * q^p</p>
 <dl class="class">
-<dt id="jldesmear.api.extrap_powerlaw.Power">
-<em class="property">class </em><tt class="descclassname">jldesmear.api.extrap_powerlaw.</tt><tt class="descname">Power</tt><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Power" title="Permalink to this definition">¶</a></dt>
+<dt id="jldesmear.api.extrap_powerlaw.Extrapolation">
+<em class="property">class </em><tt class="descclassname">jldesmear.api.extrap_powerlaw.</tt><tt class="descname">Extrapolation</tt><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Extrapolation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Extrapolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>I(q) = A * q^p</p>
 <dl class="method">
-<dt id="jldesmear.api.extrap_powerlaw.Power.calc">
-<tt class="descname">calc</tt><big>(</big><em>q</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Power.calc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Power.calc" title="Permalink to this definition">¶</a></dt>
-<dd><img src="../../_images/mathmpl/math-f98f8e6249.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<dt id="jldesmear.api.extrap_powerlaw.Extrapolation.calc">
+<tt class="descname">calc</tt><big>(</big><em>q</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Extrapolation.calc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Extrapolation.calc" title="Permalink to this definition">¶</a></dt>
+<dd><img src="../../_images\mathmpl/math-f98f8e6249.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -109,15 +109,15 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="jldesmear.api.extrap_powerlaw.Power.fit_add">
-<tt class="descname">fit_add</tt><big>(</big><em>reg</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Power.fit_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Power.fit_add" title="Permalink to this definition">¶</a></dt>
+<dt id="jldesmear.api.extrap_powerlaw.Extrapolation.fit_add">
+<tt class="descname">fit_add</tt><big>(</big><em>reg</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Extrapolation.fit_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Extrapolation.fit_add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a data point to the statistics registers.
 Called from <tt class="xref py py-meth docutils literal"><span class="pre">fit_loop()</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><p class="first"><em>might</em> override in subclass</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
@@ -133,8 +133,8 @@ Called from <tt class="xref py py-meth docutils literal"><span class="pre">fit_l
 </dd></dl>
 
 <dl class="method">
-<dt id="jldesmear.api.extrap_powerlaw.Power.fit_result">
-<tt class="descname">fit_result</tt><big>(</big><em>reg</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Power.fit_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Power.fit_result" title="Permalink to this definition">¶</a></dt>
+<dt id="jldesmear.api.extrap_powerlaw.Extrapolation.fit_result">
+<tt class="descname">fit_result</tt><big>(</big><em>reg</em><big>)</big><a class="reference internal" href="../../_modules/jldesmear/api/extrap_powerlaw.html#Extrapolation.fit_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrap_powerlaw.Extrapolation.fit_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine the results of the fit and store them
 as the set of coefficients in the self.coefficients 
 dictionary.  Called from <tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt>.</p>
@@ -142,7 +142,7 @@ dictionary.  Called from <tt class="xref py py-meth docutils literal"><span clas
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Note :</th><td class="field-body"><em>must</em> override in subclass otherwise <a class="reference internal" href="#jldesmear.api.extrap_powerlaw.Power.fit_result" title="jldesmear.api.extrap_powerlaw.Power.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> will throw an exception</td>
+<tr class="field-odd field"><th class="field-name">Note:</th><td class="field-body"><em>must</em> override in subclass otherwise <a class="reference internal" href="#jldesmear.api.extrap_powerlaw.Extrapolation.fit_result" title="jldesmear.api.extrap_powerlaw.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> will throw an exception</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reg</strong> (<em>StatsRegClass object</em>) &#8211; statistics registers (created in <tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt>)</td>
 </tr>
@@ -175,15 +175,15 @@ dictionary.  Called from <tt class="xref py py-meth docutils literal"><span clas
         <li class="right" >
           <a href="porod.html" title="Extrapolation: Porod Law"
              >previous</a> |</li>
-        <li><a href="../../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../../contents.html" >Contents</a> &raquo;</li>
           <li><a href="../traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li>
           <li><a href="../extrapolations.html" >Extrapolations at highest <em>q</em></a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

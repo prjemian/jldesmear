@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Statistics Registers &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>Statistics Registers &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../index.html" />
     <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
     <link rel="next" title="Plotting on a console" href="textplots.html" />
     <link rel="prev" title="Extrapolation: Power Law" href="extrapolations/power.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="extrapolations/power.html" title="Extrapolation: Power Law"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
@@ -95,7 +95,7 @@
 <span id="statistics-registers"></span><h1>Statistics Registers<a class="headerlink" href="#module-jldesmear.api.StatsReg" title="Permalink to this headline">¶</a></h1>
 <p>Implement a set of statistics registers in the style of a pocket calculator.</p>
 <p>The available routines are:</p>
-<div class="highlight-python"><pre>def  Clear():                        clear the stats registers
+<div class="highlight-python"><div class="highlight"><pre>def  Clear():                        clear the stats registers
 def  Show():                         print the contents of the stats registers
 def  Add(x, y):                      add an X,Y pair
 def  Subtract(x, y):                 remove an X,Y pair
@@ -107,7 +107,8 @@ def  StdErr():                       standard error on X &amp; Y
 def  LinearRegression():             linear regression
 def  LinearRegressionVariance():     est. errors of slope &amp; intercept
 def  LinearRegressionCorrelation():  the regression coefficient
-def  CorrelationCoefficient():       relation of errors in slope &amp; intercept</pre>
+def  CorrelationCoefficient():       relation of errors in slope &amp; intercept
+</pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -165,7 +166,7 @@ def  CorrelationCoefficient():       relation of errors in slope &amp; intercept
 <dt id="jldesmear.api.StatsReg.StatsRegClass.Clear">
 <tt class="descname">Clear</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/StatsReg.html#StatsRegClass.Clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.StatsReg.StatsRegClass.Clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>clear the statistics registers: 
-<img src="../_images/mathmpl/math-7cf7f717aa.png" style="position: relative; bottom: -10px"/></p>
+<img src="../_images\mathmpl/math-7cf7f717aa.png" style="position: relative; bottom: -10px"/></p>
 </dd></dl>
 
 <dl class="method">
@@ -187,7 +188,7 @@ def  CorrelationCoefficient():       relation of errors in slope &amp; intercept
 <dl class="method">
 <dt id="jldesmear.api.StatsReg.StatsRegClass.LinearEval">
 <tt class="descname">LinearEval</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/StatsReg.html#StatsRegClass.LinearEval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.StatsReg.StatsRegClass.LinearEval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate a linear fit at the given value: <img src="../_images/mathmpl/math-d5cbe8d539.png" style="position: relative; bottom: -7px"/></p>
+<dd><p>Evaluate a linear fit at the given value: <img src="../_images\mathmpl/math-d5cbe8d539.png" style="position: relative; bottom: -7px"/></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -207,7 +208,7 @@ def  CorrelationCoefficient():       relation of errors in slope &amp; intercept
 <tt class="descname">LinearRegression</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/StatsReg.html#StatsRegClass.LinearRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.StatsReg.StatsRegClass.LinearRegression" title="Permalink to this definition">¶</a></dt>
 <dd><p>For (<em>x,y</em>) data pairs added to the registers, 
 fit and find (<em>a,b</em>) that satisfy:</p>
-<img src="../_images/mathmpl/math-d5cbe8d539.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<img src="../_images\mathmpl/math-d5cbe8d539.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -231,7 +232,7 @@ fit and find (<em>a,b</em>) that satisfy:</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(float, float)</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">See :</th><td class="field-body"><a class="reference external" href="http://stattrek.com/AP-Statistics-1/Correlation.aspx?Tutorial=Stat">http://stattrek.com/AP-Statistics-1/Correlation.aspx?Tutorial=Stat</a>
+<tr class="field-odd field"><th class="field-name">See:</th><td class="field-body"><a class="reference external" href="http://stattrek.com/AP-Statistics-1/Correlation.aspx?Tutorial=Stat">http://stattrek.com/AP-Statistics-1/Correlation.aspx?Tutorial=Stat</a>
 Look at &#8220;Product-moment correlation coefficient&#8221;</td>
 </tr>
 </tbody>
@@ -258,7 +259,7 @@ Look at &#8220;Product-moment correlation coefficient&#8221;</td>
 <dt id="jldesmear.api.StatsReg.StatsRegClass.Mean">
 <tt class="descname">Mean</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/StatsReg.html#StatsRegClass.Mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.StatsReg.StatsRegClass.Mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>arithmetic mean of X &amp; Y</p>
-<img src="../_images/mathmpl/math-5701b7648b.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
+<img src="../_images\mathmpl/math-5701b7648b.png" class="center" /><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -349,8 +350,9 @@ Look at &#8220;Product-moment correlation coefficient&#8221;</td>
 <dt id="jldesmear.api.StatsReg.StatsRegClass.determinant">
 <tt class="descname">determinant</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/StatsReg.html#StatsRegClass.determinant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.StatsReg.StatsRegClass.determinant" title="Permalink to this definition">¶</a></dt>
 <dd><p>compute and return the determinant of the square matrices:</p>
-<div class="highlight-python"><pre>|  sum_w   sum_x      |          |  sum_w   sum_y      |
-|  sum_x   sum_(x^2)  |          |  sum_y   sum_(y^2)  |</pre>
+<div class="highlight-python"><div class="highlight"><pre>|  sum_w   sum_x      |          |  sum_w   sum_y      |
+|  sum_x   sum_(x^2)  |          |  sum_y   sum_(y^2)  |
+</pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -390,14 +392,14 @@ Look at &#8220;Product-moment correlation coefficient&#8221;</td>
         <li class="right" >
           <a href="extrapolations/power.html" title="Extrapolation: Power Law"
              >previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

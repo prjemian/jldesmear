@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Example using test1.smr data set &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>Example using test1.smr data set &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../index.html" />
     <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
     <link rel="next" title="Desmearing parameters, the Info object" href="info.html" />
     <link rel="prev" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="traditional.html" title="Command-line program for Jemian/Lake desmearing"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
@@ -105,71 +105,81 @@
 <h2>Input Commands<a class="headerlink" href="#input-commands" title="Permalink to this headline">¶</a></h2>
 <p>Start the program from the <tt class="docutils literal"><span class="pre">data</span></tt> directory in the source tree.
 We&#8217;ll use UNIX shell redirection to get everything in a text file:</p>
-<div class="highlight-python"><pre>cd src/jldesmear/data
-python ../api/traditional.py &lt; test1.inp &gt; test1.out</pre>
+<div class="highlight-python"><div class="highlight"><pre>cd src/jldesmear/data
+python ../api/traditional.py &lt; test1.inp &gt; test1.out
+</pre></div>
 </div>
 <p>The program will print a header:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt;     SAS data desmearing, by Pete R. Jemian
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt;     SAS data desmearing, by Pete R. Jemian
 &lt;&lt;&lt;     Based on the iterative technique of JA Lake and PR Jemian.
 &lt;&lt;&lt;     P.R.Jemian,; Ph.D. thesis, Northwestern University (1990).
 &lt;&lt;&lt;     J.A. Lake; ACTA CRYST 23 (1967) 191-194.
 &lt;&lt;&lt;
 &lt;&lt;&lt;     $Id$
 &lt;&lt;&lt;     desmear using the same FORTRAN &amp; C command line interface
-&lt;&lt;&lt;</pre>
+&lt;&lt;&lt;
+</pre></div>
 </div>
 <p>Then, the program will ask some questions about the input data.
 Here, the test data is <tt class="docutils literal"><span class="pre">test1.smr</span></tt>:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt; What is the input data file name? &lt;''=Quit&gt; &lt;&gt; ==&gt;
-&gt;&gt;&gt; test1.smr</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt; What is the input data file name? &lt;&#39;&#39;=Quit&gt; &lt;&gt; ==&gt;
+&gt;&gt;&gt; test1.smr
+</pre></div>
 </div>
 <p>Name the (new) file name to write the results.  If it exists,
 it will be overwritten without further comment.
 Here, we choose the name <tt class="docutils literal"><span class="pre">test1.out</span></tt>:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt; What is the output data file name? &lt;&gt; ==&gt;
-&gt;&gt;&gt; test1.out</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt; What is the output data file name? &lt;&gt; ==&gt;
+&gt;&gt;&gt; test1.out
+</pre></div>
 </div>
 <p>The slit length is the term <em>l_o</em> and has the same units as <em>X</em>:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt; What is the slit length (x-axis units)? &lt;1.0&gt; ==&gt;
-&gt;&gt;&gt; .08</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt; What is the slit length (x-axis units)? &lt;1.0&gt; ==&gt;
+&gt;&gt;&gt; .08
+</pre></div>
 </div>
 <p>To complete the smearing integral at highest <em>X</em>, it is necessary
 to extrapolate beyond the range of measured data.
 Choose the functional form that best represents the data at
 highest <em>X</em>.  Fit coefficients will be evaluated for each
 desmearing iteration over the range <tt class="docutils literal"><span class="pre">X_start</span> <span class="pre">&lt;=</span> <span class="pre">X</span> <span class="pre">&lt;=</span> <span class="pre">X_max</span></tt>:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt; Extrapolation forms to avoid truncation-error.
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt; Extrapolation forms to avoid truncation-error.
 &lt;&lt;&lt;    constant = flat background, I(q) = B
 &lt;&lt;&lt;    linear = linear, I(q) = b + q * m
 &lt;&lt;&lt;    powerlaw = power law, I(q) = b * q^m
 &lt;&lt;&lt;    Porod = Porod law, I(q) = Cp + Bkg / q^4
-&lt;&lt;&lt;</pre>
+&lt;&lt;&lt;
+</pre></div>
 </div>
 <p>Choose the <em>linear</em> form (although <em>constant</em> would work with this data as well):</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt; Which form? &lt;constant&gt; ==&gt;
-&gt;&gt;&gt; linear</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt; Which form? &lt;constant&gt; ==&gt;
+&gt;&gt;&gt; linear
+</pre></div>
 </div>
 <p>This is <tt class="docutils literal"><span class="pre">X-start</span></tt> as noted above: <tt class="docutils literal"><span class="pre">.08</span></tt>:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt; What X to begin evaluating extrapolation (x-axis units)? &lt;1.0&gt; ==&gt;
-&gt;&gt;&gt; .08</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt; What X to begin evaluating extrapolation (x-axis units)? &lt;1.0&gt; ==&gt;
+&gt;&gt;&gt; .08
+</pre></div>
 </div>
 <p>Accept the solution after 20 iterations this time:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt; How many iteration(s)? (10000 = infinite) &lt;10000&gt; ==&gt;
-&gt;&gt;&gt; 20</pre>
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt; How many iteration(s)? (10000 = infinite) &lt;10000&gt; ==&gt;
+&gt;&gt;&gt; 20
+</pre></div>
 </div>
 <p>This question is largely historical.  The <tt class="docutils literal"><span class="pre">fast</span></tt> method
 is <strong>always</strong> the best choice.  The others were implementations of either
 Jansson or Halsey &amp; Blass.  They converge more slowly by far.
 That said, you are free to re-determine this for yourself.
 Press the [return] key to accept the default suggestion:</p>
-<div class="highlight-python"><pre>&lt;&lt;&lt;  Weighting methods for iterative corrections:
+<div class="highlight-python"><div class="highlight"><pre>&lt;&lt;&lt;  Weighting methods for iterative corrections:
 &lt;&lt;&lt;  Correction = weight * (MeasuredI - SmearedI)
 &lt;&lt;&lt;    constant: weight = 1.0
 &lt;&lt;&lt;    fast: weight = CorrectedI / SmearedI
 &lt;&lt;&lt;    ChiSqr: weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))
 &lt;&lt;&lt;
 &lt;&lt;&lt; Which method? &lt;fast&gt; ==&gt;
-&gt;&gt;&gt;</pre>
+&gt;&gt;&gt;
+</pre></div>
 </div>
 </div>
 <div class="section" id="program-output-to-console">
@@ -179,7 +189,7 @@ an awful chi-square statistic.  This will improve with subsequent iterations.
 The plot is standardized residual vs. data point number.  There are
 <tt class="docutils literal"><span class="pre">==========</span></tt> bars indicated at <tt class="docutils literal"><span class="pre">+1</span></tt> and <tt class="docutils literal"><span class="pre">-1</span></tt>; these merge together
 on the first plot.:</p>
-<div class="highlight-python"><pre>Input file: test1.smr
+<div class="highlight-python"><div class="highlight"><pre>Input file: test1.smr
 -/|\ ...
 standardized residuals, ChiSqr = 1.29823e+07, iteration=0
 x: min=1   step=3.45833   max=250
@@ -208,11 +218,12 @@ y: min=-545.836   step=24.8717   max=1.34169
 |                                +                                        |
 |                                +                                        |
 |                                +                                        |
- -------------------------------------------------------------------------</pre>
+ -------------------------------------------------------------------------
+</pre></div>
 </div>
 <p>After the next iteration, the chi-squared statistic has improved by an order
 of magnitude but the plot still does not different:</p>
-<div class="highlight-python"><pre>standardized residuals, ChiSqr = 1.36804e+06, iteration=1
+<div class="highlight-python"><div class="highlight"><pre>standardized residuals, ChiSqr = 1.36804e+06, iteration=1
 x: min=1   step=3.45833   max=250
 y: min=-206.354   step=9.44611   max=1.46073
  -------------------------------------------------------------------------
@@ -239,10 +250,11 @@ y: min=-206.354   step=9.44611   max=1.46073
 |                                 +                                       |
 |                                +                                        |
 |                                +                                        |
- -------------------------------------------------------------------------</pre>
+ -------------------------------------------------------------------------
+</pre></div>
 </div>
 <p>Skipping forward a few iterations, we see some real progress:</p>
-<div class="highlight-python"><pre>standardized residuals, ChiSqr = 566.385, iteration=5
+<div class="highlight-python"><div class="highlight"><pre>standardized residuals, ChiSqr = 566.385, iteration=5
 x: min=1   step=3.45833   max=250
 y: min=-3.97891   step=0.499962   max=7.02024
  -------------------------------------------------------------------------
@@ -269,12 +281,13 @@ y: min=-3.97891   step=0.499962   max=7.02024
 |        +                         +                                      |
 |                                ++                                       |
 |                                ++                                       |
- -------------------------------------------------------------------------</pre>
+ -------------------------------------------------------------------------
+</pre></div>
 </div>
 <p>After about 10 iterations or so, it seems convergence has been achieved.
 The chi-squared statistic has dropped and the plot looks more
 randomly-arranged about 0.:</p>
-<div class="highlight-python"><pre>standardized residuals, ChiSqr = 103.479, iteration=11
+<div class="highlight-python"><div class="highlight"><pre>standardized residuals, ChiSqr = 103.479, iteration=11
 x: min=1   step=3.45833   max=250
 y: min=-2.89125   step=0.349475   max=4.7972
  -------------------------------------------------------------------------
@@ -301,10 +314,11 @@ y: min=-2.89125   step=0.349475   max=4.7972
 |        +                                                                |
 |                                                                         |
 |   +                                                                     |
- -------------------------------------------------------------------------</pre>
+ -------------------------------------------------------------------------
+</pre></div>
 </div>
 <p>Finally, after 20 iterations (numbered 0 .. 19):</p>
-<div class="highlight-python"><pre>standardized residuals, ChiSqr = 46.9362, iteration=19
+<div class="highlight-python"><div class="highlight"><pre>standardized residuals, ChiSqr = 46.9362, iteration=19
 x: min=1   step=3.45833   max=250
 y: min=-2.94353   step=0.264922   max=2.88475
  -------------------------------------------------------------------------
@@ -331,10 +345,11 @@ y: min=-2.94353   step=0.264922   max=2.88475
 |                                                                         |
 |                                                                         |
 |   +                                                                     |
- -------------------------------------------------------------------------</pre>
+ -------------------------------------------------------------------------
+</pre></div>
 </div>
 <p>The result is accepted and the data are saved to the output file:</p>
-<div class="highlight-python"><pre>Saving data in file: test1.out
+<div class="highlight-python"><div class="highlight"><pre>Saving data in file: test1.out
 SAS log-log plot, final, S=input, D=desmeared
 x: min=-7.898   step=0.0889226   max=-1.49558
 y: min=3.0786   step=0.637599   max=17.1058
@@ -362,7 +377,8 @@ y: min=3.0786   step=0.637599   max=17.1058
 |                                        SSSSS DDDD                       |
 |                                            SSSSSDDDDDDDDDD  D DD DDDDDD |
 |                                                  D DDDDDSSDDDDDDDDDDDDDD|
- -------------------------------------------------------------------------</pre>
+ -------------------------------------------------------------------------
+</pre></div>
 </div>
 </div>
 <div class="section" id="data-files">
@@ -381,7 +397,7 @@ y: min=3.0786   step=0.637599   max=17.1058
 </div>
 <div class="section" id="input-data-file-test1-smr">
 <h3>Input Data File (<tt class="file docutils literal"><span class="pre">test1.smr</span></tt>)<a class="headerlink" href="#input-data-file-test1-smr" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><pre>0.000371484	211554	1874.86
+<div class="highlight-python"><div class="highlight"><pre>0.000371484	211554	1874.86
 0.000386255	201603	1721.35
 0.000392446	193423	4250.66
 0.000400937	205280	1563.25
@@ -631,12 +647,12 @@ y: min=3.0786   step=0.637599   max=17.1058
 0.216573	39.0708	1.3538
 0.220346	38.2783	1.35074
 0.224119	38.589	1.35581
-</pre>
+</pre></div>
 </div>
 </div>
 <div class="section" id="output-data-file-test1-dsm">
 <h3>Output Data File (<tt class="file docutils literal"><span class="pre">test1.dsm</span></tt>)<a class="headerlink" href="#output-data-file-test1-dsm" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><pre>0.000371484	2.68503e+07	1874.86
+<div class="highlight-python"><div class="highlight"><pre>0.000371484	2.68503e+07	1874.86
 0.000386255	1.89615e+07	1721.35
 0.000392446	9.24608e+06	4250.66
 0.000400937	2.3107e+07	1563.25
@@ -886,7 +902,7 @@ y: min=3.0786   step=0.637599   max=17.1058
 0.216573	40.6662	1.3538
 0.220346	39.1768	1.35074
 0.224119	34.2228	1.35581
-</pre>
+</pre></div>
 </div>
 </div>
 <div class="section" id="complete-program-output-test1-out">
@@ -917,14 +933,14 @@ y: min=3.0786   step=0.637599   max=17.1058
         <li class="right" >
           <a href="traditional.html" title="Command-line program for Jemian/Lake desmearing"
              >previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>

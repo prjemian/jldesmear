@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Desmearing &mdash; jldesmear 2013-12.dev documentation</title>
+    <title>Desmearing &mdash; jldesmear 2014.03.13 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2013-12.dev',
+        VERSION:     '2014.03.13',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2013-12.dev documentation" href="../index.html" />
+    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../index.html" />
     <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
     <link rel="next" title="Forward Smearing" href="smear.html" />
     <link rel="prev" title="Desmearing parameters, the Info object" href="info.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="info.html" title="Desmearing parameters, the Info object"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
@@ -102,7 +102,7 @@
 <dt id="jldesmear.api.desmear.Desmearing">
 <em class="property">class </em><tt class="descclassname">jldesmear.api.desmear.</tt><tt class="descname">Desmearing</tt><big>(</big><em>q</em>, <em>I</em>, <em>dI</em>, <em>params</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/desmear.html#Desmearing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.desmear.Desmearing" title="Permalink to this definition">¶</a></dt>
 <dd><p>desmear the 1-D SAS data <em>(q, I, dI)</em> by method of Jemian/Lake</p>
-<img src="../_images/mathmpl/math-0e345ab34b.png" class="center" /><p>To start Lake&#8217;s method, assume that the 0-th approximation 
+<img src="../_images\mathmpl/math-0e345ab34b.png" class="center" /><p>To start Lake&#8217;s method, assume that the 0-th approximation 
 of the corrected intensity is the measured intensity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -148,11 +148,11 @@ It is suggested to <strong>always</strong> use the fast method.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>LakeWeighting</strong> (<em>str</em>) &#8211; one of <em>constant</em>, <em>ChiSqr</em>, or <em>fast</em></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Constant :</th><td class="field-body">weight = 1.0</td>
+<tr class="field-even field"><th class="field-name">Constant:</th><td class="field-body">weight = 1.0</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Chisqr :</th><td class="field-body">weight = CorrectedI / SmearedI</td>
+<tr class="field-odd field"><th class="field-name">ChiSqr:</th><td class="field-body">weight = CorrectedI / SmearedI</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Fast :</th><td class="field-body">weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))</td>
+<tr class="field-even field"><th class="field-name">Fast:</th><td class="field-body">weight = 2*SQRT(ChiSqr(0) / ChiSqr(i))</td>
 </tr>
 </tbody>
 </table>
@@ -168,10 +168,10 @@ It is suggested to <strong>always</strong> use the fast method.</p>
 <dt id="jldesmear.api.desmear.Desmearing.first_step">
 <tt class="descname">first_step</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/desmear.html#Desmearing.first_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.desmear.Desmearing.first_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>the first step</p>
-<p>calculate the standardized residuals (<img src="../_images/mathmpl/math-53fa883457.png" style="position: relative; bottom: -3px"/> <tt class="docutils literal"><span class="pre">self.z</span></tt> )</p>
-<img src="../_images/mathmpl/math-bd58d40112.png" class="center" /><p>where <tt class="docutils literal"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">S</span></tt>, <tt class="docutils literal"><span class="pre">yHat</span> <span class="pre">=</span> <span class="pre">I</span></tt>, and <tt class="docutils literal"><span class="pre">sigma</span> <span class="pre">=</span> <span class="pre">dI</span></tt></p>
-<p>calculate the chi-squared statistic (<img src="../_images/mathmpl/math-1b5f375f6d.png" style="position: relative; bottom: -7px"/> <tt class="docutils literal"><span class="pre">self.ChiSqr</span></tt> )</p>
-<img src="../_images/mathmpl/math-b3d0022f56.png" class="center" /></dd></dl>
+<p>calculate the standardized residuals (<img src="../_images\mathmpl/math-53fa883457.png" style="position: relative; bottom: -3px"/> <tt class="docutils literal"><span class="pre">self.z</span></tt> )</p>
+<img src="../_images\mathmpl/math-bd58d40112.png" class="center" /><p>where <tt class="docutils literal"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">S</span></tt>, <tt class="docutils literal"><span class="pre">yHat</span> <span class="pre">=</span> <span class="pre">I</span></tt>, and <tt class="docutils literal"><span class="pre">sigma</span> <span class="pre">=</span> <span class="pre">dI</span></tt></p>
+<p>calculate the chi-squared statistic (<img src="../_images\mathmpl/math-1b5f375f6d.png" style="position: relative; bottom: -7px"/> <tt class="docutils literal"><span class="pre">self.ChiSqr</span></tt> )</p>
+<img src="../_images\mathmpl/math-b3d0022f56.png" class="center" /></dd></dl>
 
 <dl class="method">
 <dt id="jldesmear.api.desmear.Desmearing.iterate_and_callback">
@@ -226,14 +226,14 @@ the list of ChiSqr results is not empty.</p>
         <li class="right" >
           <a href="info.html" title="Desmearing parameters, the Info object"
              >previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2013-12.dev documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2013, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+        &copy; Copyright 2013-2014, Pete R Jemian.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>
