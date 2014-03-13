@@ -4,13 +4,14 @@
 Change History
 ##############
 
+:2014.03.13: refactored extrapolations to be easier to recognize and improved import
+
 Development: lake-python (trunk)
 ---------------------------------
 
-.. note:: subversion changesets are noted in square brackets
-   such as [2002] is change set 2002
-
 Changes:
+
+:2013-12: and previous noted blow [#]_
 
 * refactored :mod:`api.desmear` into a class: :class:`api.desmear.Desmearing`
 
@@ -68,3 +69,6 @@ Initial release:
   * uses Enthought's Traits and Chaco
   * does not write desmeared data to a file
 
+
+.. [#] subversion changesets are noted in square brackets
+   such as [2002] is change set 2002

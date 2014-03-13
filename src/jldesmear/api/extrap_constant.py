@@ -12,7 +12,7 @@ import os       #@UnusedImport
 import numpy    #@UnusedImport
 
 
-class Constant(extrapolation.Extrapolation):
+class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = B'''
 
     def __init__(self):
@@ -56,7 +56,7 @@ class Constant(extrapolation.Extrapolation):
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")
-    func = Constant
+    func = Extrapolation
     print("using default coefficients")
     fit = func()
     print(fit.show().strip())

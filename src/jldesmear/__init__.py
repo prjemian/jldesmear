@@ -5,10 +5,10 @@ JLdesmear: iterative desmearing of small-angle scattering data
 __project__     = u'jldesmear'
 __author__      = u'Pete R Jemian'
 __email__       = u'prjemian@gmail.com'
-__copyright__   = u'2013, ' + __author__
-__version__     = u'2013-12'
-__release__     = __version__ + u'.dev'
-__url__         = u'https://github.com/prjemian/jldesmear'
+__copyright__   = u'2013-2014, ' + __author__
+__version__     = u'2014.03.13'
+__release__     = __version__
+__url__         = u'http://prjemian.github.io/jldesmear'
 __description__ = u'Desmear small-angle scattering data by Jemian and Lake'
 __long_description__ = __description__ + u'''\n
 Iterative desmearing of SAS data using the technique of JA Lake

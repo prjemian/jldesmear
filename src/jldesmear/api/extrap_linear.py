@@ -12,7 +12,7 @@ import os       #@UnusedImport
 import numpy    #@UnusedImport
 
 
-class Linear(extrapolation.Extrapolation):
+class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = B + m*q'''
 
     def __init__(self):
@@ -58,7 +58,7 @@ class Linear(extrapolation.Extrapolation):
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")
-    func = Linear
+    func = Extrapolation
     print("using default coefficients")
     fit = func()
     print(fit.show().strip())

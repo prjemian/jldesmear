@@ -13,7 +13,7 @@ import os       #@UnusedImport
 import numpy    #@UnusedImport
 
 
-class Porod(extrapolation.Extrapolation):
+class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = B + Cp / q^4'''
 
     def __init__(self):
@@ -79,7 +79,7 @@ class Porod(extrapolation.Extrapolation):
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")
-    func = Porod
+    func = Extrapolation
     print("using default coefficients")
     fit = func()
     print(fit.show().strip())

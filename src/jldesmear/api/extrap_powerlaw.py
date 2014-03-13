@@ -13,7 +13,7 @@ import os       #@UnusedImport
 import numpy    #@UnusedImport
 
 
-class Power(extrapolation.Extrapolation):
+class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = A * q^p'''
 
     def __init__(self):
@@ -80,7 +80,7 @@ class Power(extrapolation.Extrapolation):
 if __name__ == "__main__":
     '''show the various routines'''
     print("Testing $Id$")
-    func = Power
+    func = Extrapolation
     print("using default coefficients")
     fit = func()
     print(fit.show().strip())

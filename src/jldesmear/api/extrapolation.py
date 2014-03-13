@@ -6,6 +6,7 @@ superclass of functions for extrapolation of SAS data past available range
 
 import StatsReg
 import os
+import importlib
 
 
 functions = None
@@ -13,7 +14,7 @@ functions = None
 
 def discover_extrapolations():
     '''
-    return a dictionary of the available extrapolation functions
+    return a dictionary of the available extrapolation functions provided
     
     Extrapolation functions must be in a file named 
     ``extrap_KEY.py``
@@ -26,31 +27,28 @@ def discover_extrapolations():
     
     The file must contain:
 
-    * a subclass of :class:`~jldesmear.api.extrapolation.Extrapolation`
+    * *Extrapolation*: a subclass of :class:`~jldesmear.api.extrapolation.Extrapolation`
     
     '''
     global functions
     if functions is None:
+        functions = {}
         owd = os.getcwd()
         path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(path)
-        functions = {}
         for item in os.listdir('.'):
             if item.startswith('extrap_') and item.endswith('.py'):
-                modulename = os.path.splitext(item)[0]
-                extrapname = modulename[len('extrap_'):]
-                exec 'import ' + modulename
-                contents = locals()[modulename].__dict__
-                for key, value in contents.items():
-                    if isinstance(value, type) and 'extrapolation_kind' in dir(value):
-                        if extrapname in functions:
-                            msg = 'Duplicate extrapolation method defined: ' + key 
-                            msg += ' in ' + modulename
-                            raise RuntimeError, msg
-                        functions[extrapname] = value
-                        continue
+                functions.update( module_extrapolations(os.path.splitext(item)[0]) )
         os.chdir(owd)
     return functions
+
+
+def module_extrapolations(modulename):
+    '''return any extmodulename.Extrapolation as a dict'''
+    funcs = {}
+    mod = importlib.import_module(modulename)
+    funcs[modulename[len('extrap_'):]] = mod.__dict__['Extrapolation']
+    return funcs
 
 
 class Extrapolation(object):
@@ -254,13 +252,10 @@ class Extrapolation(object):
         self.coefficients = coefficients
 
 
-discover_extrapolations()
-
-
 def main():
     func_dict = discover_extrapolations()
     for k, v in func_dict.items():
-        print k + ': ', v
+        print k + ': ', v.__doc__
 
 
 if __name__ == "__main__":

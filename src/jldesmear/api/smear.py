@@ -140,8 +140,7 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False, weighted_tran
     :param numpy.ndarray q: magnitude of scattering vector
     :param numpy.ndarray C: unsmeared data is C(q) +/- dC(q)
     :param numpy.ndarray dC: estimated uncertainties of C
-    :param extrapname: one of ``constant | linear | powerlaw | Porod``
-    :type extrapname: string
+    :param str extrapname: one of ``constant | linear | powerlaw | Porod``
     :param float sFinal: fit extrapolation to I(q) for q >= sFinal
     :param float slitlength: l_o, same units as q
     :param bool quiet: if True, then no printed output from this routine
@@ -162,6 +161,8 @@ def Smear(q, C, dC, extrapname, sFinal, slitlength, quiet = False, weighted_tran
     interp = interp1d(q, numpy.log(C))
 
     # select and fit the extrapolation
+    if extrapolation.functions is None:
+        extrapolation.discover_extrapolations()
     try:
         extrap = prepare_extrapolation(q, C, dC, extrapname, sFinal)
     except Exception:
