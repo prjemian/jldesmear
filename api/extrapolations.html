@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Extrapolations at highest q &mdash; jldesmear 2014.03.13 documentation</title>
+    <title>Extrapolations at highest q &mdash; jldesmear 2014.03.14 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '2014.03.13',
+        VERSION:     '2014.03.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../index.html" />
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="jldesmear 2014.03.14 documentation" href="../index.html" />
     <link rel="up" title="Command-line program for Jemian/Lake desmearing" href="traditional.html" />
     <link rel="next" title="Extrapolation: Constant" href="extrapolations/constant.html" />
     <link rel="prev" title="Forward Smearing" href="smear.html" /> 
@@ -44,7 +45,7 @@
         <li class="right" >
           <a href="smear.html" title="Forward Smearing"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.14 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" accesskey="U">Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
@@ -107,26 +108,67 @@ so-called slit-length, <img src="../_images\mathmpl/math-6da3a050ea.png" style="
 the last measured data point, just to evaluate the integral.</p>
 <p>An extrapolation function is used to describe the <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> beyond the measured data.
 In the most trivial case, zero would be returned.  Since this simplification
-is known to introduce truncation errors, an model form for the last few 
+is known to introduce truncation errors, a model form for the last few 
 available data points is assumed.  Fitting coefficients are determined from
 the final data points (in the method <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit" title="jldesmear.api.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a>) and are used 
 subsequently to generate the extrapolation at a specific <img src="../_images\mathmpl/math-9954bd611d.png" style="position: relative; bottom: -7px"/> value
 (in the method <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.calc" title="jldesmear.api.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a>).</p>
-<p>Examples:</p>
-<p>See the subclasses for examples how to implement a new extrapolation function.</p>
+<p class="rubric">Examples:</p>
+<p>See the subclasses for examples implementations of extrapolations.</p>
 <ul class="simple">
 <li><a class="reference internal" href="extrapolations/constant.html#module-jldesmear.api.extrap_constant" title="jldesmear.api.extrap_constant: Extrapolate as:  I(q) = B"><tt class="xref py py-mod docutils literal"><span class="pre">extrap_constant</span></tt></a></li>
 <li><a class="reference internal" href="extrapolations/linear.html#module-jldesmear.api.extrap_linear" title="jldesmear.api.extrap_linear: Extrapolate as:  I(q) = B + m * q"><tt class="xref py py-mod docutils literal"><span class="pre">extrap_linear</span></tt></a></li>
 <li><a class="reference internal" href="extrapolations/power.html#module-jldesmear.api.extrap_powerlaw" title="jldesmear.api.extrap_powerlaw: Extrapolate as:  I(q) = A * q^p"><tt class="xref py py-mod docutils literal"><span class="pre">extrap_powerlaw</span></tt></a></li>
 <li><a class="reference internal" href="extrapolations/porod.html#module-jldesmear.api.extrap_Porod" title="jldesmear.api.extrap_Porod: Extrapolate as:  I(q) = B + Cp / q^4"><tt class="xref py py-mod docutils literal"><span class="pre">extrap_Porod</span></tt></a></li>
 </ul>
-<p>Basics:</p>
-<p>The basic methods to override are</p>
+<p class="rubric">Example Linear Extrapolation:</p>
+<p>Here is an example linear extrapolation class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">extrapolation</span>
+
+<span class="k">class</span> <span class="nc">Extrapolation</span><span class="p">(</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">Extrapolation</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;linear&#39;</span>        <span class="c"># unique identifier for users </span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>    <span class="c"># initialize whatever is needed internally</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;B&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="s">&quot;linear: I(q) = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">])</span>
+        <span class="n">form</span> <span class="o">+=</span> <span class="s">&quot; + q*(&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;m&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span>
+        <span class="k">return</span> <span class="n">form</span>
+
+    <span class="k">def</span> <span class="nf">calc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>    <span class="c"># evaluate at given q</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;B&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;m&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">q</span>
+
+    <span class="k">def</span> <span class="nf">fit_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">):</span>    <span class="c"># evaluate fitting parameters with regression object</span>
+        <span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">B</span><span class="o">=</span><span class="n">constant</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">slope</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Basics:</p>
+<p>Create an Extrapolation class which is a subclass of <tt class="xref py py-mod docutils literal"><span class="pre">extrapolation.Extrapolation</span></tt>.</p>
+<blockquote>
+<div><p>The basic methods to override are</p>
 <ul class="simple">
 <li><tt class="xref py py-meth docutils literal"><span class="pre">__str__()</span></tt> : string representation</li>
 <li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.calc" title="jldesmear.api.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a> : determines <img src="../_images\mathmpl/math-255d53ce2c.png" style="position: relative; bottom: -8px"/> from <tt class="docutils literal"><span class="pre">q</span></tt> and <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
 <li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_result" title="jldesmear.api.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a> : assigns fit coefficients to <tt class="docutils literal"><span class="pre">self.coefficients</span></tt> dictionary</li>
 </ul>
+</div></blockquote>
+<p>By default, the base class Extrapolation uses the <a class="reference internal" href="StatsReg.html#module-jldesmear.api.StatsReg" title="jldesmear.api.StatsReg: set of statistics registers in the style of a pocket calculator"><tt class="xref py py-mod docutils literal"><span class="pre">jldesmear.api.StatsReg</span></tt></a> 
+module to accumulate data and evaluate fitted parameters.  
+Override any or all of these methods to define your own handling:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit" title="jldesmear.api.extrapolation.Extrapolation.fit"><tt class="xref py py-meth docutils literal"><span class="pre">fit()</span></tt></a></li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_setup" title="jldesmear.api.extrapolation.Extrapolation.fit_setup"><tt class="xref py py-meth docutils literal"><span class="pre">fit_setup()</span></tt></a></li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_loop" title="jldesmear.api.extrapolation.Extrapolation.fit_loop"><tt class="xref py py-meth docutils literal"><span class="pre">fit_loop()</span></tt></a></li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_add" title="jldesmear.api.extrapolation.Extrapolation.fit_add"><tt class="xref py py-meth docutils literal"><span class="pre">fit_add()</span></tt></a></li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.fit_result" title="jldesmear.api.extrapolation.Extrapolation.fit_result"><tt class="xref py py-meth docutils literal"><span class="pre">fit_result()</span></tt></a></li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.calc" title="jldesmear.api.extrapolation.Extrapolation.calc"><tt class="xref py py-meth docutils literal"><span class="pre">calc()</span></tt></a></li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.show" title="jldesmear.api.extrapolation.Extrapolation.show"><tt class="xref py py-meth docutils literal"><span class="pre">show()</span></tt></a></li>
+<li><a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation.format_coefficient" title="jldesmear.api.extrapolation.Extrapolation.format_coefficient"><tt class="xref py py-meth docutils literal"><span class="pre">format_coefficient()</span></tt></a></li>
+</ul>
+<p>See the source code of <a class="reference internal" href="extrapolations/porod.html#jldesmear.api.extrap_Porod.Extrapolation" title="jldesmear.api.extrap_Porod.Extrapolation"><tt class="xref py py-mod docutils literal"><span class="pre">Extrapolation</span></tt></a> for an example.</p>
+<p class="rubric">documentation from source code:</p>
 <dl class="method">
 <dt id="jldesmear.api.extrapolation.Extrapolation.GetCoefficients">
 <tt class="descname">GetCoefficients</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/extrapolation.html#Extrapolation.GetCoefficients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrapolation.Extrapolation.GetCoefficients" title="Permalink to this definition">¶</a></dt>
@@ -322,7 +364,7 @@ Called from <a class="reference internal" href="#jldesmear.api.extrapolation.Ext
 <dl class="function">
 <dt id="jldesmear.api.extrapolation.discover_extrapolations">
 <tt class="descclassname">jldesmear.api.extrapolation.</tt><tt class="descname">discover_extrapolations</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/extrapolation.html#discover_extrapolations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrapolation.discover_extrapolations" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a dictionary of the available extrapolation functions provided</p>
+<dd><p>return a dictionary of the available extrapolations</p>
 <p>Extrapolation functions must be in a file named 
 <tt class="docutils literal"><span class="pre">extrap_KEY.py</span></tt>
 where <tt class="docutils literal"><span class="pre">KEY</span></tt> is the key name of the extrapolation function.
@@ -334,12 +376,6 @@ as the module: <a class="reference internal" href="#module-jldesmear.api.extrapo
 <ul class="simple">
 <li><em>Extrapolation</em>: a subclass of <a class="reference internal" href="#jldesmear.api.extrapolation.Extrapolation" title="jldesmear.api.extrapolation.Extrapolation"><tt class="xref py py-class docutils literal"><span class="pre">Extrapolation</span></tt></a></li>
 </ul>
-</dd></dl>
-
-<dl class="function">
-<dt id="jldesmear.api.extrapolation.module_extrapolations">
-<tt class="descclassname">jldesmear.api.extrapolation.</tt><tt class="descname">module_extrapolations</tt><big>(</big><em>modulename</em><big>)</big><a class="reference internal" href="../_modules/jldesmear/api/extrapolation.html#module_extrapolations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jldesmear.api.extrapolation.module_extrapolations" title="Permalink to this definition">¶</a></dt>
-<dd><p>return any extmodulename.Extrapolation as a dict</p>
 </dd></dl>
 
 </div>
@@ -365,14 +401,14 @@ as the module: <a class="reference internal" href="#module-jldesmear.api.extrapo
         <li class="right" >
           <a href="smear.html" title="Forward Smearing"
              >previous</a> |</li>
-        <li><a href="../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
+        <li><a href="../index.html">jldesmear 2014.03.14 documentation</a> &raquo;</li>
           <li><a href="../contents.html" >Contents</a> &raquo;</li>
           <li><a href="traditional.html" >Command-line program for Jemian/Lake desmearing</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013-2014, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

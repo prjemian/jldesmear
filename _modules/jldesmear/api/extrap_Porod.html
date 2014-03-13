@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>jldesmear.api.extrap_Porod &mdash; jldesmear 2014.03.13 documentation</title>
+    <title>jldesmear.api.extrap_Porod &mdash; jldesmear 2014.03.14 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2014.03.13',
+        VERSION:     '2014.03.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../../../index.html" />
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="jldesmear 2014.03.14 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -36,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.14 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -81,6 +82,7 @@
 
 <div class="viewcode-block" id="Extrapolation"><a class="viewcode-back" href="../../../api/extrapolations/porod.html#jldesmear.api.extrap_Porod.Extrapolation">[docs]</a><span class="k">class</span> <span class="nc">Extrapolation</span><span class="p">(</span><span class="n">extrapolation</span><span class="o">.</span><span class="n">Extrapolation</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;I(q) = B + Cp / q^4&#39;&#39;&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Porod&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;set up things&#39;&#39;&#39;</span>
@@ -114,14 +116,11 @@
 <span class="sd">        Called from :meth:`fit_loop()`.</span>
 <span class="sd">        </span>
 <span class="sd">        :note: *might* override in subclass</span>
-<span class="sd">        :param reg: statistics registers (created in :meth:`fit()`)</span>
-<span class="sd">        :type reg: StatsRegClass object</span>
-<span class="sd">        :param x: independent axis</span>
-<span class="sd">        :type x: float</span>
-<span class="sd">        :param y: dependent axis</span>
-<span class="sd">        :type y: float</span>
-<span class="sd">        :param z: estimated uncertainty of y</span>
-<span class="sd">        :type z: float</span>
+<span class="sd">        :param obj reg: statistics registers (created in </span>
+<span class="sd">                        :meth:`~jldesmear.api.extrapolation.Extrapolation.fit()`), instance of StatsRegClass</span>
+<span class="sd">        :param float x: independent axis</span>
+<span class="sd">        :param float y: dependent axis</span>
+<span class="sd">        :param float z: estimated uncertainty of y</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c">#reg.AddWeighted(x, y, z)</span>
         <span class="n">q4</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -134,8 +133,7 @@
 <span class="sd">        dictionary.  Called from :meth:`fit()`.</span>
 <span class="sd">        </span>
 <span class="sd">        :note: *must* override in subclass otherwise :meth:`fit_result()` will throw an exception</span>
-<span class="sd">        :param reg: statistics registers (created in :meth:`fit()`)</span>
-<span class="sd">        :type reg: StatsRegClass object</span>
+<span class="sd">        :param obj reg: statistics registers (created in :meth:`fit()`), instance of StatsRegClass</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="s">&#39;Cp&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">constant</span>
@@ -185,13 +183,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.14 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013-2014, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

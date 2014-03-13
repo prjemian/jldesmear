@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>jldesmear.api.extrapolation &mdash; jldesmear 2014.03.13 documentation</title>
+    <title>jldesmear.api.extrapolation &mdash; jldesmear 2014.03.14 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2014.03.13',
+        VERSION:     '2014.03.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="jldesmear 2014.03.13 documentation" href="../../../index.html" />
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="jldesmear 2014.03.14 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
@@ -36,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.14 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -73,6 +74,8 @@
 <span class="kn">import</span> <span class="nn">StatsReg</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 
 <span class="n">functions</span> <span class="o">=</span> <span class="bp">None</span>
@@ -80,7 +83,7 @@
 
 <div class="viewcode-block" id="discover_extrapolations"><a class="viewcode-back" href="../../../api/extrapolations.html#jldesmear.api.extrapolation.discover_extrapolations">[docs]</a><span class="k">def</span> <span class="nf">discover_extrapolations</span><span class="p">():</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    return a dictionary of the available extrapolation functions provided</span>
+<span class="sd">    return a dictionary of the available extrapolations</span>
 <span class="sd">    </span>
 <span class="sd">    Extrapolation functions must be in a file named </span>
 <span class="sd">    ``extrap_KEY.py``</span>
@@ -96,25 +99,26 @@
 <span class="sd">    * *Extrapolation*: a subclass of :class:`~jldesmear.api.extrapolation.Extrapolation`</span>
 <span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># TODO: allow user to provide additional extrapolation plugins</span>
     <span class="k">global</span> <span class="n">functions</span>
     <span class="k">if</span> <span class="n">functions</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">functions</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">owd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;extrap_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.py&#39;</span><span class="p">):</span>
-                <span class="n">functions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="n">module_extrapolations</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">item</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;extrap_*.py&#39;</span><span class="p">):</span>
+            <span class="n">modulename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">item</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">modulename</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mod</span><span class="o">.</span><span class="n">Extrapolation</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&#39;class Extrapolation in &#39;</span> <span class="o">+</span> <span class="n">item</span> <span class="o">+</span> <span class="s">&#39; must define value for &quot;name&quot;&#39;</span>
+            <span class="k">if</span> <span class="n">mod</span><span class="o">.</span><span class="n">Extrapolation</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">functions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="n">modulename</span> <span class="o">+</span> <span class="s">&#39; extrapolation previously defined&#39;</span>
+            <span class="n">functions</span><span class="p">[</span><span class="n">mod</span><span class="o">.</span><span class="n">Extrapolation</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;Extrapolation&#39;</span><span class="p">]</span>
         <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">owd</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">functions</span>
 
-</div>
-<div class="viewcode-block" id="module_extrapolations"><a class="viewcode-back" href="../../../api/extrapolations.html#jldesmear.api.extrapolation.module_extrapolations">[docs]</a><span class="k">def</span> <span class="nf">module_extrapolations</span><span class="p">(</span><span class="n">modulename</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;return any extmodulename.Extrapolation as a dict&#39;&#39;&#39;</span>
-    <span class="n">funcs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">modulename</span><span class="p">)</span>
-    <span class="n">funcs</span><span class="p">[</span><span class="n">modulename</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s">&#39;extrap_&#39;</span><span class="p">):]]</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;Extrapolation&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">funcs</span>
 
 </div>
 <div class="viewcode-block" id="Extrapolation"><a class="viewcode-back" href="../../../api/extrapolations.html#jldesmear.api.extrapolation.Extrapolation">[docs]</a><span class="k">class</span> <span class="nc">Extrapolation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -146,31 +150,74 @@
 <span class="sd">    </span>
 <span class="sd">    An extrapolation function is used to describe the :math:`I(q)` beyond the measured data.</span>
 <span class="sd">    In the most trivial case, zero would be returned.  Since this simplification</span>
-<span class="sd">    is known to introduce truncation errors, an model form for the last few </span>
+<span class="sd">    is known to introduce truncation errors, a model form for the last few </span>
 <span class="sd">    available data points is assumed.  Fitting coefficients are determined from</span>
 <span class="sd">    the final data points (in the method :meth:`fit()`) and are used </span>
 <span class="sd">    subsequently to generate the extrapolation at a specific :math:`q` value</span>
 <span class="sd">    (in the method :meth:`calc()`).</span>
 <span class="sd">    </span>
-<span class="sd">    Examples:</span>
+<span class="sd">    .. rubric:: Examples:</span>
 <span class="sd">    </span>
-<span class="sd">    See the subclasses for examples how to implement a new extrapolation function.</span>
+<span class="sd">    See the subclasses for examples implementations of extrapolations.</span>
 <span class="sd">    </span>
 <span class="sd">    * :mod:`~jldesmear.api.extrap_constant`</span>
 <span class="sd">    * :mod:`~jldesmear.api.extrap_linear`</span>
 <span class="sd">    * :mod:`~jldesmear.api.extrap_powerlaw`</span>
 <span class="sd">    * :mod:`~jldesmear.api.extrap_Porod`</span>
 <span class="sd">    </span>
-<span class="sd">    Basics:</span>
+<span class="sd">    .. rubric:: Example Linear Extrapolation:</span>
 <span class="sd">    </span>
-<span class="sd">    The basic methods to override are</span>
+<span class="sd">    Here is an example linear extrapolation class::</span>
+
+<span class="sd">        import extrapolation</span>
+
+<span class="sd">        class Extrapolation(extrapolation.Extrapolation):</span>
+<span class="sd">            name = &#39;linear&#39;        # unique identifier for users </span>
+<span class="sd">        </span>
+<span class="sd">            def __init__(self):    # initialize whatever is needed internally</span>
+<span class="sd">                self.coefficients = {&#39;B&#39;: 0, &#39;m&#39;: 0}</span>
+<span class="sd">        </span>
+<span class="sd">            def __str__(self):</span>
+<span class="sd">                form = &quot;linear: I(q) = &quot; + str(self.coefficients[&#39;B&#39;])</span>
+<span class="sd">                form += &quot; + q*(&quot; + str(self.coefficients[&#39;m&#39;]) + &quot;)&quot;</span>
+<span class="sd">                return form</span>
+<span class="sd">        </span>
+<span class="sd">            def calc(self, q):    # evaluate at given q</span>
+<span class="sd">                return self.coefficients[&#39;B&#39;] + self.coefficients[&#39;m&#39;] * q</span>
+<span class="sd">        </span>
+<span class="sd">            def fit_result(self, reg):    # evaluate fitting parameters with regression object</span>
+<span class="sd">                (constant, slope) = reg.LinearRegression()</span>
+<span class="sd">                self.coefficients = dict(B=constant, m=slope)</span>
 <span class="sd">    </span>
-<span class="sd">    * :meth:`__str__()` : string representation</span>
-<span class="sd">    * :meth:`calc()` : determines :math:`I(q)` from ``q`` and ``self.coefficients`` dictionary</span>
-<span class="sd">    * :meth:`fit_result()` : assigns fit coefficients to ``self.coefficients`` dictionary</span>
+<span class="sd">    .. rubric:: Basics:</span>
+<span class="sd">    </span>
+<span class="sd">    Create an Extrapolation class which is a subclass of :mod:`extrapolation.Extrapolation`. </span>
+<span class="sd">    </span>
+<span class="sd">        The basic methods to override are</span>
+<span class="sd">        </span>
+<span class="sd">        * :meth:`__str__()` : string representation</span>
+<span class="sd">        * :meth:`calc()` : determines :math:`I(q)` from ``q`` and ``self.coefficients`` dictionary</span>
+<span class="sd">        * :meth:`fit_result()` : assigns fit coefficients to ``self.coefficients`` dictionary</span>
+<span class="sd">    </span>
+<span class="sd">    By default, the base class Extrapolation uses the :mod:`jldesmear.api.StatsReg` </span>
+<span class="sd">    module to accumulate data and evaluate fitted parameters.  </span>
+<span class="sd">    Override any or all of these methods to define your own handling:</span>
+<span class="sd">    </span>
+<span class="sd">    * :meth:`~fit`</span>
+<span class="sd">    * :meth:`~fit_setup`</span>
+<span class="sd">    * :meth:`~fit_loop`</span>
+<span class="sd">    * :meth:`~fit_add`</span>
+<span class="sd">    * :meth:`~fit_result`</span>
+<span class="sd">    * :meth:`~calc`</span>
+<span class="sd">    * :meth:`~show`</span>
+<span class="sd">    * :meth:`~format_coefficient`</span>
+<span class="sd">    </span>
+<span class="sd">    See the source code of :mod:`~jldesmear.api.extrap_Porod.Extrapolation` for an example.</span>
+<span class="sd">    </span>
+<span class="sd">    .. rubric:: documentation from source code:</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="n">extrapolation_kind</span> <span class="o">=</span> <span class="s">&#39;Extrapolation&#39;</span>      <span class="c"># internal signature to recognize subclasses</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>                              <span class="c"># subclass must define: will be used as keyname to identify this class</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -179,6 +226,7 @@
 <span class="sd">        :note: must override in subclass</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c"># dictionary of coefficients used in the function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>        
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -342,13 +390,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">jldesmear 2014.03.13 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">jldesmear 2014.03.14 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013-2014, Pete R Jemian.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
