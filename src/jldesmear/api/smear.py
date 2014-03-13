@@ -28,13 +28,13 @@ Source Code Documentation
 import math
 import os                        #@UnusedImport
 import sys
+import pprint
+import numpy
+from scipy.interpolate import interp1d
 import toolbox
 import extrapolation             #@UnusedImport
 import extrap_linear             #@UnusedImport
 import textplots
-import pprint
-import numpy
-from scipy.interpolate import interp1d
 
 
 def Plengt (l, slitlength):

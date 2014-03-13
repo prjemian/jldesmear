@@ -4,11 +4,11 @@
 superclass of functions for extrapolation of SAS data past available range
 '''
 
-import StatsReg
 import os
 import importlib
 import glob
 import sys
+import StatsReg
 
 
 functions = None

@@ -73,14 +73,14 @@ Source Code Documentation
 
 
 import math             #@UnusedImport
+import os               #@UnusedImport
+import numpy
+import jldesmear
 import toolbox
 import info
 import desmear
 import extrapolation    #@UnusedImport
 import textplots
-import os               #@UnusedImport
-import numpy
-import jldesmear
 
 
 INFINITE_ITERATIONS = 0

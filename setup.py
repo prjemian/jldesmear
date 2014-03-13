@@ -5,17 +5,18 @@ Python project installation setup for lake-python
 '''
 
 
-#from distutils.core import setup
-from ez_setup import use_setuptools
-use_setuptools()
 from setuptools import setup, find_packages
+import os
+import re
 
 import os, sys
 
 sys.path.insert(0, os.path.join('src', ))
 import jldesmear
 
-requires = ['Sphinx>=0.6']
+requires = ['Sphinx>=0.6', 'numpy', 'scipy']
+
+#here = os.path.abspath(os.path.dirname(__file__))
 
 packages = {}
 for pkg in ('jldesmear', 'jldesmear/api', 'jldesmear/fileio', 'jldesmear/gui',):
@@ -34,10 +35,12 @@ setup(
         version          = jldesmear.__version__,
         description      = jldesmear.__description__,
         long_description = jldesmear.__long_description__,
+        keywords         = jldesmear.__keywords__,
         author           = jldesmear.__author__,
         author_email     = jldesmear.__email__,
         url              = jldesmear.__url__,
         license          = jldesmear.__license__,
+        install_requires = requires,
         platforms        = 'any',
         zip_safe         = False,
         packages         = packages.keys(),

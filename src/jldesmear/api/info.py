@@ -19,7 +19,7 @@ desmearing parameters::
 INFINITE_ITERATIONS = 'INFINITE_ITERATIONS'
 
 
-class Info():
+class Info(object):
     ''' parameters used by the desmearing methods '''
     
     filename = ""                   # file containing these terms

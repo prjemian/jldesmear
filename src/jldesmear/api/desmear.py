@@ -12,13 +12,13 @@ Source Code Documentation
 
 import math
 import pprint             #@UnusedImport
+import os                 #@UnusedImport
+import sys
+import numpy
 import smear
 import textplots
 import toolbox
 import info
-import os                 #@UnusedImport
-import sys
-import numpy
 
 
 Weighting_Methods = {
