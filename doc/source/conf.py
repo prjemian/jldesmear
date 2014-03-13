@@ -28,9 +28,10 @@ import jldesmear
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 
+              'sphinx.ext.autosummary', 
               'sphinx.ext.todo', 
               'sphinx.ext.coverage', 
-              'sphinx.ext.pngmath', 
+              'sphinx.ext.mathjax',
               'sphinx.ext.ifconfig', 
               'sphinx.ext.viewcode', 
               'sphinx.ext.inheritance_diagram',

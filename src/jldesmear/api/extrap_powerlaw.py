@@ -15,6 +15,7 @@ import numpy    #@UnusedImport
 
 class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = A * q^p'''
+    name = 'powerlaw'
 
     def __init__(self):
         '''set up things'''

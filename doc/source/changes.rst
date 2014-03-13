@@ -1,4 +1,5 @@
-CHANGES
-=======
+..
+   CHANGES
+   =======
 
 .. include:: ../../CHANGES

@@ -7,6 +7,8 @@ superclass of functions for extrapolation of SAS data past available range
 import StatsReg
 import os
 import importlib
+import glob
+import sys
 
 
 functions = None
@@ -14,7 +16,7 @@ functions = None
 
 def discover_extrapolations():
     '''
-    return a dictionary of the available extrapolation functions provided
+    return a dictionary of the available extrapolations
     
     Extrapolation functions must be in a file named 
     ``extrap_KEY.py``
@@ -30,25 +32,26 @@ def discover_extrapolations():
     * *Extrapolation*: a subclass of :class:`~jldesmear.api.extrapolation.Extrapolation`
     
     '''
+    # TODO: allow user to provide additional extrapolation plugins
     global functions
     if functions is None:
         functions = {}
         owd = os.getcwd()
         path = os.path.dirname(os.path.abspath(__file__))
+        sys.path.insert(0, path)
         os.chdir(path)
-        for item in os.listdir('.'):
-            if item.startswith('extrap_') and item.endswith('.py'):
-                functions.update( module_extrapolations(os.path.splitext(item)[0]) )
+        for item in glob.glob('extrap_*.py'):
+            modulename = os.path.splitext(item)[0]
+            mod = importlib.import_module(modulename)
+            if mod.Extrapolation.name is None:
+                raise ValueError, 'class Extrapolation in ' + item + ' must define value for "name"'
+            if mod.Extrapolation.name in functions:
+                raise RuntimeError, modulename + ' extrapolation previously defined'
+            functions[mod.Extrapolation.name] = mod.__dict__['Extrapolation']
         os.chdir(owd)
+        sys.path.pop(0)
     return functions
 
-
-def module_extrapolations(modulename):
-    '''return any extmodulename.Extrapolation as a dict'''
-    funcs = {}
-    mod = importlib.import_module(modulename)
-    funcs[modulename[len('extrap_'):]] = mod.__dict__['Extrapolation']
-    return funcs
 
 
 class Extrapolation(object):
@@ -80,31 +83,74 @@ class Extrapolation(object):
     
     An extrapolation function is used to describe the :math:`I(q)` beyond the measured data.
     In the most trivial case, zero would be returned.  Since this simplification
-    is known to introduce truncation errors, an model form for the last few 
+    is known to introduce truncation errors, a model form for the last few 
     available data points is assumed.  Fitting coefficients are determined from
     the final data points (in the method :meth:`fit()`) and are used 
     subsequently to generate the extrapolation at a specific :math:`q` value
     (in the method :meth:`calc()`).
     
-    Examples:
+    .. rubric:: Examples:
     
-    See the subclasses for examples how to implement a new extrapolation function.
+    See the subclasses for examples implementations of extrapolations.
     
     * :mod:`~jldesmear.api.extrap_constant`
     * :mod:`~jldesmear.api.extrap_linear`
     * :mod:`~jldesmear.api.extrap_powerlaw`
     * :mod:`~jldesmear.api.extrap_Porod`
     
-    Basics:
+    .. rubric:: Example Linear Extrapolation:
     
-    The basic methods to override are
+    Here is an example linear extrapolation class::
+
+        import extrapolation
+
+        class Extrapolation(extrapolation.Extrapolation):
+            name = 'linear'        # unique identifier for users 
+        
+            def __init__(self):    # initialize whatever is needed internally
+                self.coefficients = {'B': 0, 'm': 0}
+        
+            def __str__(self):
+                form = "linear: I(q) = " + str(self.coefficients['B'])
+                form += " + q*(" + str(self.coefficients['m']) + ")"
+                return form
+        
+            def calc(self, q):    # evaluate at given q
+                return self.coefficients['B'] + self.coefficients['m'] * q
+        
+            def fit_result(self, reg):    # evaluate fitting parameters with regression object
+                (constant, slope) = reg.LinearRegression()
+                self.coefficients = dict(B=constant, m=slope)
     
-    * :meth:`__str__()` : string representation
-    * :meth:`calc()` : determines :math:`I(q)` from ``q`` and ``self.coefficients`` dictionary
-    * :meth:`fit_result()` : assigns fit coefficients to ``self.coefficients`` dictionary
+    .. rubric:: Basics:
+    
+    Create an Extrapolation class which is a subclass of :mod:`extrapolation.Extrapolation`. 
+    
+        The basic methods to override are
+        
+        * :meth:`__str__()` : string representation
+        * :meth:`calc()` : determines :math:`I(q)` from ``q`` and ``self.coefficients`` dictionary
+        * :meth:`fit_result()` : assigns fit coefficients to ``self.coefficients`` dictionary
+    
+    By default, the base class Extrapolation uses the :mod:`jldesmear.api.StatsReg` 
+    module to accumulate data and evaluate fitted parameters.  
+    Override any or all of these methods to define your own handling:
+    
+    * :meth:`~fit`
+    * :meth:`~fit_setup`
+    * :meth:`~fit_loop`
+    * :meth:`~fit_add`
+    * :meth:`~fit_result`
+    * :meth:`~calc`
+    * :meth:`~show`
+    * :meth:`~format_coefficient`
+    
+    See the source code of :mod:`~jldesmear.api.extrap_Porod.Extrapolation` for an example.
+    
+    .. rubric:: documentation from source code:
     '''
 
-    extrapolation_kind = 'Extrapolation'      # internal signature to recognize subclasses
+    name = None                              # subclass must define: will be used as keyname to identify this class
 
     def __init__(self):
         '''
@@ -113,6 +159,7 @@ class Extrapolation(object):
         :note: must override in subclass
         '''
         self.coefficients = {}  # dictionary of coefficients used in the function
+        self.name = None        
 
     def __str__(self):
         '''

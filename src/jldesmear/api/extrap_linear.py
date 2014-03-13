@@ -14,6 +14,7 @@ import numpy    #@UnusedImport
 
 class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = B + m*q'''
+    name = 'linear'
 
     def __init__(self):
         '''set up things'''

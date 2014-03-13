@@ -4,10 +4,11 @@
 Change History
 ##############
 
+:2014.03.14: cleaned up extrapolation plugin recognition
 :2014.03.13: refactored extrapolations to be easier to recognize and improved import
 
-Development: lake-python (trunk)
----------------------------------
+Older Development: lake-python (subversion repository trunk)
+-------------------------------------------------------------
 
 Changes:
 
@@ -38,8 +39,8 @@ TODO:
 #. read data from CanSAS XML
 #. read data from HDF5/NeXus
 
-Production
------------
+Older Production
+------------------
 
 This documents tagged releases.
 

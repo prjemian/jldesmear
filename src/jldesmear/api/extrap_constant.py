@@ -14,6 +14,7 @@ import numpy    #@UnusedImport
 
 class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = B'''
+    name = 'constant'
 
     def __init__(self):
         '''set up things'''

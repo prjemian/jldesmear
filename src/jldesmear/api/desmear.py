@@ -34,7 +34,7 @@ class Desmearing():
     
     .. math::
     
-        I_0 \\approx \\lim_{i \\rightarrow \\infty}\\tilde I_{i+1} =  I_i \\times \\left({ \\tilde I_0 \\div \\tilde I_i}\\right)
+        I_0 \\approx \\lim_{i \\rightarrow \\infty} I_{i+1} =  I_i \\times \\left({ \\tilde I_0 \\div \\tilde I_i}\\right)
     
     
     To start Lake's method, assume that the 0-th approximation 

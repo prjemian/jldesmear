@@ -15,6 +15,7 @@ import numpy    #@UnusedImport
 
 class Extrapolation(extrapolation.Extrapolation):
     '''I(q) = B + Cp / q^4'''
+    name = 'Porod'
 
     def __init__(self):
         '''set up things'''
@@ -48,14 +49,11 @@ class Extrapolation(extrapolation.Extrapolation):
         Called from :meth:`fit_loop()`.
         
         :note: *might* override in subclass
-        :param reg: statistics registers (created in :meth:`fit()`)
-        :type reg: StatsRegClass object
-        :param x: independent axis
-        :type x: float
-        :param y: dependent axis
-        :type y: float
-        :param z: estimated uncertainty of y
-        :type z: float
+        :param obj reg: statistics registers (created in 
+                        :meth:`~jldesmear.api.extrapolation.Extrapolation.fit()`), instance of StatsRegClass
+        :param float x: independent axis
+        :param float y: dependent axis
+        :param float z: estimated uncertainty of y
         '''
         #reg.AddWeighted(x, y, z)
         q4 = math.pow(x, 4)
@@ -68,8 +66,7 @@ class Extrapolation(extrapolation.Extrapolation):
         dictionary.  Called from :meth:`fit()`.
         
         :note: *must* override in subclass otherwise :meth:`fit_result()` will throw an exception
-        :param reg: statistics registers (created in :meth:`fit()`)
-        :type reg: StatsRegClass object
+        :param obj reg: statistics registers (created in :meth:`fit()`), instance of StatsRegClass
         '''
         (constant, slope) = reg.LinearRegression()
         self.coefficients['Cp']  = constant
