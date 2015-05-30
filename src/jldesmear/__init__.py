@@ -17,10 +17,11 @@ as implemented by PR Jemian.
 __license__     = u' (see LICENSE file for details)'
 __keywords__    = u'small-angle desmearing'
 __install_requires__ = ['Sphinx>=0.6', 
-                        'numpy', 
-                        'numpy.ma', 
+                        'numpy>=1.9', 
+                        'numpy.ma>=1.0', 
                         'scipy', 
                         'scipy.interpolate',
+#                         'matplotlib',
                         ]
 __console_scripts__ = [
                        'jldsmear = jldesmear.jldesmear:desmear_cli', 
