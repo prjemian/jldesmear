@@ -4,7 +4,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join('..',)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',)))
 import fileio
 import jl_api
 import jl_api.extrapolation
@@ -169,7 +169,6 @@ class CommandInput(fileio.FileIO):
 
 def main():
     ext = '.inp'
-    import jl_api.toolbox
     fn = jl_api.toolbox.GetTest1DataFilename(ext)
     cmdInp = CommandInput()
     parms = cmdInp.read(fn)

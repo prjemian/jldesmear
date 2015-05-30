@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join('src', ))
 import jldesmear
 
 packages = {}
-for pkg in ('jldesmear', 'jldesmear/api', 'jldesmear/fileio', 'jldesmear/gui',):
+for pkg in ('jldesmear', 'jldesmear/jl_api', 'jldesmear/jl_fileio',):
     packages[pkg]       = os.path.join('src', pkg)
 
 console_scripts = []

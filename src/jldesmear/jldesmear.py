@@ -15,8 +15,8 @@ def desmear_cli():
 
 
 def desmear_qt():
-    import jldesmear.jl_gui.desmearinggui
-    jldesmear.jl_gui.desmearinggui.main()
+    import jldesmear.jl_gui
+    jldesmear.jl_gui.main()
 
 
 if __name__ == '__main__':

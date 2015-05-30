@@ -19,10 +19,9 @@ matplotlib.rcParams['backend.qt4'] = pyqt_name
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
-sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
-import jl_api
+# import jl_api
 import jl_api.desmear
-import jl_fileio #import makeFilters, ext_xref, formats
+# import jl_fileio #import makeFilters, ext_xref, formats
 import jl_fileio.fileio
 
 
