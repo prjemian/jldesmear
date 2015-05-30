@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join('src', ))
 import jldesmear
 
 packages = {}
-for pkg in ('jldesmear', 'jldesmear/jl_api', 'jldesmear/jl_fileio',):
+for pkg in ('jldesmear', 'jldesmear/jl_api',):
     packages[pkg]       = os.path.join('src', pkg)
 
 setup(
@@ -38,7 +38,7 @@ setup(
         },
         entry_points     = {
           # create & install console_scripts in <python>/bin
-          'console_scripts': jldesmear.____console_scripts,
+          'console_scripts': jldesmear.__console_scripts__,
         },
         classifiers      = [
             'Development Status :: 4 - Beta',
