@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-'''support traditional command-line input format'''
+'''fileio support for .inp file: traditional command-line input format'''
 
 import os
 import sys
@@ -8,7 +8,6 @@ import extrapolation
 import fileio
 import info
 import toolbox
-
 
 
 class CommandInput(fileio.FileIO):

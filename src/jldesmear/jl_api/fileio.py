@@ -46,7 +46,8 @@ def discover_support():
     return a dictionary of the available file formats
     
     Support modules must be in a file in 
-    the ``jldesmear.jl_fileio`` package in the source tree.
+    the **jl_api** directory package in the source tree
+    and begin with the prefix ``fileio_``.
     '''
     global formats, ext_xref
     if formats is None:
@@ -54,8 +55,10 @@ def discover_support():
         path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(path)
         formats = {}
+        prefix = 'fileio_'
+        ext = '.py'
         for filename in os.listdir('.'):
-            if filename.endswith('.py'):
+            if filename.startswith(prefix) and filename.endswith(ext):
                 modulename = os.path.splitext(filename)[0]
                 if modulename in ('__init__', 'fileio', ):
                     continue
