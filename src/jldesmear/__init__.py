@@ -22,6 +22,10 @@ __install_requires__ = ['Sphinx>=0.6',
                         'scipy', 
                         'scipy.interpolate',
                         ]
+__console_scripts__ = [
+                       'jldsmear = jldesmear.jldesmear:desmear_cli', 
+                       'jldsmear_gui = jldsmear = jldsmear.jldesmear:desmear_gui', 
+                       ]
 
 
 def __about__():

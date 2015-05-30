@@ -19,9 +19,10 @@ matplotlib.rcParams['backend.qt4'] = pyqt_name
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
-# import jl_api
-import jl_api.desmear
+import desmear
+import extrapolation
 import fileio
+import toolbox
 
 
 class FileEntryBox(QGroupBox):
@@ -254,7 +255,7 @@ class JLdesmearGui(QMainWindow):
 
         row += 1
         tip = 'functional form of extrapolation for desmearing'
-        functions = jl_api.extrapolation.discover_extrapolations()
+        functions = extrapolation.discover_extrapolations()
         self.extrapolation = QComboBox()
         self.extrapolation.insertItems(999, sorted(functions.keys()))
         self.extrapolation.setToolTip(tip)
@@ -275,7 +276,7 @@ class JLdesmearGui(QMainWindow):
         row += 1
         tip = 'functional form of desmearing feedback, always use "fast"'
         self.feedback = QComboBox()
-        self.feedback.insertItems(999, sorted(jl_api.desmear.Weighting_Methods.keys()))
+        self.feedback.insertItems(999, sorted(desmear.Weighting_Methods.keys()))
         self.feedback.setCurrentIndex(2)
         self.feedback.setToolTip(tip)
         self.feedback.setStatusTip(tip)
@@ -518,8 +519,9 @@ class JLdesmearGui(QMainWindow):
         dlog = QFileDialog()
         dlog.setDirectory(path)
         filefilter = str(self.dsm.params.fileio_class)
-        outfile, filefilter = dlog.getSaveFileName(dir=self.dsm.params.filename, filter=filefilter)
+        outfile = dlog.getSaveFileName(directory=self.dsm.params.filename, filter=filefilter)
         if len(outfile) > 0:
+            outfile = str(outfile)
             info.fileio_class.save(outfile)
             self.dirty = False
             self.setStatus('saved file: ' + outfile)
@@ -533,8 +535,9 @@ class JLdesmearGui(QMainWindow):
         path = os.path.dirname(self.dsm.params.outfile)
         dlog = QFileDialog()
         dlog.setDirectory(path)
-        outfile = dlog.getSaveFileName(dir=self.dsm.params.outfile)[0]
+        outfile = dlog.getSaveFileName(directory=self.dsm.params.outfile)
         if len(outfile) > 0:
+            outfile = str(outfile)
             info.fileio_class.save_DSM(outfile, self.dsm)
             #self.dirty = False
             self.setStatus('saved data file: ' + outfile)
@@ -551,7 +554,8 @@ class JLdesmearGui(QMainWindow):
             self.setStatus(msg)
 
         if self.dsm is None or self.dsm.params is None:
-            params = Info()
+            import info
+            params = info.Info()
         else:
             params = self.dsm.params
 
@@ -571,7 +575,7 @@ class JLdesmearGui(QMainWindow):
         params.callback = session_callback
         
         self.appendConsole('reading SAS data from ' + params.infile)
-        q, E, dE = jl_api.toolbox.GetDat(params.infile)
+        q, E, dE = toolbox.GetDat(params.infile)
         self.appendConsole('number of points read: ' + str(len(q)))
         self.appendConsole('Qmin: ' + str(q.min()))
         self.appendConsole('Qmax: ' + str(q.max()))
@@ -808,7 +812,7 @@ class CustomSignalDef(QObject):
     updatePlot = pyqtSignal()
 
 
-class Desmearing(jl_api.desmear.Desmearing):
+class Desmearing(desmear.Desmearing):
     
     stop_iteration = False  # flag allowing UI to stop
 

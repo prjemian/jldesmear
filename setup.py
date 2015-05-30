@@ -18,13 +18,6 @@ packages = {}
 for pkg in ('jldesmear', 'jldesmear/jl_api', 'jldesmear/jl_fileio',):
     packages[pkg]       = os.path.join('src', pkg)
 
-console_scripts = []
-for launcher, method_path in {
-    'jldesmear'        : 'jldesmear.desmear:desmear_cli',
-    'jldesmear_qt'     : 'jldesmear.desmear:desmear_qt',
-                 }.items():
-    console_scripts.append(launcher + ' = ' + method_path)
-
 setup(
         name             = jldesmear.__project__,
         version          = jldesmear.__version__,
@@ -45,7 +38,7 @@ setup(
         },
         entry_points     = {
           # create & install console_scripts in <python>/bin
-          'console_scripts': console_scripts,
+          'console_scripts': jldesmear.____console_scripts,
         },
         classifiers      = [
             'Development Status :: 4 - Beta',
