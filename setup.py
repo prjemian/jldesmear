@@ -14,10 +14,6 @@ import os, sys
 sys.path.insert(0, os.path.join('src', ))
 import jldesmear
 
-requires = ['Sphinx>=0.6', 'numpy', 'scipy']
-
-#here = os.path.abspath(os.path.dirname(__file__))
-
 packages = {}
 for pkg in ('jldesmear', 'jldesmear/api', 'jldesmear/fileio', 'jldesmear/gui',):
     packages[pkg]       = os.path.join('src', pkg)
@@ -26,7 +22,6 @@ console_scripts = []
 for launcher, method_path in {
     'jldesmear'        : 'jldesmear.desmear:desmear_cli',
     'jldesmear_qt'     : 'jldesmear.desmear:desmear_qt',
-    'jldesmear_traits' : 'jldesmear.gui.traitsgui:main',
                  }.items():
     console_scripts.append(launcher + ' = ' + method_path)
 
@@ -40,7 +35,7 @@ setup(
         author_email     = jldesmear.__email__,
         url              = jldesmear.__url__,
         license          = jldesmear.__license__,
-        install_requires = requires,
+        install_requires = jldesmear.__install_requires__,
         platforms        = 'any',
         zip_safe         = False,
         packages         = packages.keys(),
