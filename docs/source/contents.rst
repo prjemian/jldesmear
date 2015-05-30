@@ -8,6 +8,7 @@ Contents
    overview
    api/traditional
    gui/*
+   fileio/*
    changes
    license
 

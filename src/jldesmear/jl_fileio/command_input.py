@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join('..',)))
 import fileio
 import jl_api
+import jl_api.extrapolation
 import jl_api.info
 import jl_api.toolbox
 
@@ -88,7 +89,7 @@ class CommandInput(fileio.FileIO):
             msg = "not enough information in command input file: " + filename
             raise RuntimeError, msg
         
-        functions = fileio.discover_extrapolations()
+        functions = jl_api.extrapolation.discover_extrapolations()
 
         self.info.fileio_class = self
         self.info.filename = filename
@@ -144,7 +145,7 @@ class CommandInput(fileio.FileIO):
         filename = filename or self.info.infile
         if not os.path.exists(filename): return
         #os.chdir(owd)
-        q, E, dE = api.toolbox.GetDat(filename)
+        q, E, dE = jl_api.toolbox.GetDat(filename)
         if (len(q) == 0):
             raise Exception, "no data points!"
         if (self.info.sFinal > q[-1]):
@@ -153,7 +154,7 @@ class CommandInput(fileio.FileIO):
     
     def save_DSM(self, filename, dsm):
         '''Save the desmeared data to a 3-column ASCII file'''
-        api.toolbox.SavDat(filename, dsm.q, dsm.C, dsm.dC)
+        jl_api.toolbox.SavDat(filename, dsm.q, dsm.C, dsm.dC)
 
 
 # class AnyFile(FileIO):

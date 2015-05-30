@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Lake desmearing GUI using PySide (or PyQt4) and Matplotlib
+Lake desmearing GUI using PyQt4 and Matplotlib
 '''
 
 
@@ -10,31 +10,20 @@ import threading
 import matplotlib
 matplotlib.use('Qt4Agg')
 
-try:
-    from PySide.QtCore import *  #@UnusedWildImport
-    from PySide.QtGui import *   #@UnusedWildImport
-    pyqtSignal = Signal
-    import PySide
-    pyqt_name = "PySide"
-    pyqt_version = PySide.__version__
-except:
-    from PyQt4.QtCore import *  #@UnusedWildImport
-    from PyQt4.QtGui import *   #@UnusedWildImport
-    pyqtSignal = pyqtSignal
-    pyqt_name = "PyQt4"
-    from PyQt4.pyqtconfig import Configuration
-    pyqt_version = Configuration().pyqt_version_str
+from PyQt4.QtCore import *  #@UnusedWildImport
+from PyQt4.QtGui import *   #@UnusedWildImport
+pyqtSignal = pyqtSignal
+pyqt_name = "PyQt4"
+pyqt_version = PYQT_VERSION_STR
 matplotlib.rcParams['backend.qt4'] = pyqt_name
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '..') ))
-from jldesmear.api import toolbox
-from jldesmear.api.desmear import Weighting_Methods
-from jldesmear.api.extrapolation import discover_extrapolations
-from jldesmear.api.info import Info
-import jldesmear.fileio.fileio #import makeFilters, ext_xref, formats
-import jldesmear.api.desmear
+import jl_api
+import jl_api.desmear
+import jl_fileio #import makeFilters, ext_xref, formats
+import jl_fileio.fileio
 
 
 class FileEntryBox(QGroupBox):
@@ -79,7 +68,8 @@ class FileEntryBox(QGroupBox):
 #                              'smeared SAS (*.smr)',
 #                              'any file (*.* *)',
 #                              ])
-        filters = jldesmear.fileio.fileio.makeFilters()
+        import jl_fileio.fileio
+        filters = jl_fileio.fileio.makeFilters()
         answers = QFileDialog().getOpenFileName(self, filter=filters)
         # getOpenFileName() returns different items in PySide and PyQt4
         if pyqt_name == 'PySide':
@@ -100,7 +90,8 @@ class JLdesmearGui(QMainWindow):
     def __init__(self, parent=None):
         super(JLdesmearGui, self).__init__(parent)
         self.parent = parent
-        self.setWindowTitle(jldesmear.__project__ + ' GUI')
+        import jldesmear
+        self.setWindowTitle('jldesmear GUI')
         
         self.dirty = False
         self.dsm = None
@@ -266,7 +257,7 @@ class JLdesmearGui(QMainWindow):
 
         row += 1
         tip = 'functional form of extrapolation for desmearing'
-        functions = discover_extrapolations()
+        functions = jl_api.extrapolation.discover_extrapolations()
         self.extrapolation = QComboBox()
         self.extrapolation.insertItems(999, sorted(functions.keys()))
         self.extrapolation.setToolTip(tip)
@@ -287,7 +278,7 @@ class JLdesmearGui(QMainWindow):
         row += 1
         tip = 'functional form of desmearing feedback, always use "fast"'
         self.feedback = QComboBox()
-        self.feedback.insertItems(999, sorted(Weighting_Methods.keys()))
+        self.feedback.insertItems(999, sorted(jl_api.desmear.Weighting_Methods.keys()))
         self.feedback.setCurrentIndex(2)
         self.feedback.setToolTip(tip)
         self.feedback.setStatusTip(tip)
@@ -474,14 +465,14 @@ class JLdesmearGui(QMainWindow):
     def onOpenCallback(self, filename, filefilter=''):
         '''open a Command Input file with SAS desmearing parameters'''
         ext = os.path.splitext(filename)[1]
-        xref = jldesmear.fileio.fileio.ext_xref
+        xref = jl_fileio.fileio.ext_xref
         # do not use the filefilter term
         if ext in xref and xref[ext] == 'CommandInput':
             self.setStatus('selected file: ' + filename)
             self.dsm = None
             
             # read a .inp file
-            cls = jldesmear.fileio.fileio.formats[xref[ext]]
+            cls = jl_fileio.fileio.formats[xref[ext]]
             cmd_inp = cls()
             cmd_inp.read(filename)
             
@@ -583,7 +574,7 @@ class JLdesmearGui(QMainWindow):
         params.callback = session_callback
         
         self.appendConsole('reading SAS data from ' + params.infile)
-        q, E, dE = toolbox.GetDat(params.infile)
+        q, E, dE = jl_api.toolbox.GetDat(params.infile)
         self.appendConsole('number of points read: ' + str(len(q)))
         self.appendConsole('Qmin: ' + str(q.min()))
         self.appendConsole('Qmax: ' + str(q.max()))
@@ -686,13 +677,41 @@ class JLdesmearGui(QMainWindow):
 
     def doAboutBox(self, *args, **kws):
         '''show the about box'''
+        def __about_message__():
+            '''concise description for an about box or other'''
+            # copied from jldsmear.__init__
+            __project__     = u'jldesmear'
+            __author__      = u'Pete R Jemian'
+            __email__       = u'prjemian@gmail.com'
+            __copyright__   = u'2013-2015, ' + __author__
+            __version__     = u'2015.0530.0'
+            __release__     = __version__
+            __url__         = u'http://prjemian.github.io/jldesmear'
+            __description__ = u'Desmear small-angle scattering data by Jemian and Lake'
+            __long_description__ = __description__ + u'''\n
+            Iterative desmearing of SAS data using the technique of JA Lake
+            as implemented by PR Jemian.
+            '''
+            __license__     = u' (see LICENSE file for details)'
+
+            m = [__project__ + ', release: ' + __release__, ]
+            m.append(' ')
+            m.append(__author__ + ' <' + __email__ + '>')
+            m.append('Copyright (c) ' + __copyright__)
+            m.append(' ')
+            m.append(__long_description__)
+            m.append('For more details, see: ' + __url__)
+            return '\n'.join(m)
+
         self.setStatus('describe this application')
-        title = u'about ' +  jldesmear.__project__
+        title = u'about jldesmear'
         support = [pyqt_name + ' version: ' + pyqt_version,]
         support.append('Matplotlib version: ' + matplotlib.__version__)
         support.append('Numpy version: ' + matplotlib.__version__numpy__)
-        text = jldesmear.__about__() + '\n'*2 + '\n'.join(support)
+        text = __about_message__() + '\n'*2 + '\n'.join(support)
         QMessageBox.about(self, title, text)
+    
+
 
     def doAboutQtBox(self, *args, **kws):
         '''show the about box'''
@@ -792,7 +811,7 @@ class CustomSignalDef(QObject):
     updatePlot = pyqtSignal()
 
 
-class Desmearing(jldesmear.api.desmear.Desmearing):
+class Desmearing(jl_api.desmear.Desmearing):
     
     stop_iteration = False  # flag allowing UI to stop
 

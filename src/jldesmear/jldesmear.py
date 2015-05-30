@@ -10,13 +10,13 @@ sys.path.insert(0, os.path.abspath(os.path.join('..')))
 
 
 def desmear_cli():
-    import jldesmear.api.traditional
-    jldesmear.api.traditional.command_line_interface()
+    import jldesmear.jl_api.traditional
+    jldesmear.jl_api.traditional.command_line_interface()
 
 
 def desmear_qt():
-    import jldesmear.gui.desmearinggui
-    jldesmear.gui.desmearinggui.main()
+    import jldesmear.jl_gui.desmearinggui
+    jldesmear.jl_gui.desmearinggui.main()
 
 
 if __name__ == '__main__':
