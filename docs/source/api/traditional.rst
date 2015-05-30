@@ -34,9 +34,9 @@ Any output from these modules, if at all, is directly to the console.
    toolbox
 
 
-:mod:`~jldesmear.api.traditional` documentation
-***********************************************
+:mod:`~jldesmear.jl_api.traditional` documentation
+**************************************************
 
-.. automodule:: jldesmear.api.traditional
+.. automodule:: jldesmear.jl_api.traditional
     :members: 
     :synopsis: command-line program to run desmearing

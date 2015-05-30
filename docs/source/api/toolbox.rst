@@ -1,6 +1,6 @@
 Utility Routines
 ################
 
-.. automodule:: jldesmear.api.toolbox
+.. automodule:: jldesmear.jl_api.toolbox
     :members: 
     :synopsis: suite of utility routines

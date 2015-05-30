@@ -7,6 +7,6 @@ Extrapolations at highest *q*
    
    extrapolations/*
 
-.. automodule:: jldesmear.api.extrapolation
+.. automodule:: jldesmear.jl_api.extrapolation
     :members: 
     :synopsis: superclass of functions for extrapolation of SAS data past available range

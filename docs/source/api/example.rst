@@ -5,10 +5,10 @@ Example using ``test1.smr`` data set
 Input Commands
 --------------
 
-.. see :func:`jldesmear.api.smear.Plengt` for an example of formatted math
+.. see :func:`jldesmear.jl_api.smear.Plengt` for an example of formatted math
 
 .. needs graphviz
-.. .. inheritance-diagram:: jldesmear.api.traditional jldesmear.api.smear jldesmear.api.StatsReg jldesmear.api.textplots
+.. .. inheritance-diagram:: jldesmear.jl_api.traditional jldesmear.jl_api.smear jldesmear.jl_api.StatsReg jldesmear.jl_api.textplots
 
 Start the program from the ``data`` directory in the source tree.
 We'll use UNIX shell redirection to get everything in a text file::

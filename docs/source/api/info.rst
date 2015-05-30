@@ -1,6 +1,6 @@
-Desmearing parameters, the :class:`~jldesmear.api.info.Info` object
-###################################################################
+Desmearing parameters, the :class:`~jldesmear.jl_api.info.Info` object
+######################################################################
 
-.. automodule:: jldesmear.api.info
+.. automodule:: jldesmear.jl_api.info
     :members: 
     :synopsis: parameters used by the desmearing methods
