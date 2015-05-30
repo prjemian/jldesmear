@@ -46,7 +46,7 @@ def discover_support():
     return a dictionary of the available file formats
     
     Support modules must be in a file in 
-    the ``jldesmear.fileio`` package in the source tree.
+    the ``jldesmear.jl_fileio`` package in the source tree.
     '''
     global formats, ext_xref
     if formats is None:

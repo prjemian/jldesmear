@@ -2,15 +2,17 @@
 
 '''support traditional command-line input format'''
 
-
 import os
-from fileio import FileIO
-import jldesmear.api.info
-from jldesmear.api.extrapolation import discover_extrapolations
-import jldesmear.api.toolbox
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join('..',)))
+import fileio
+import jl_api
+import jl_api.info
+import jl_api.toolbox
 
 
-class CommandInput(FileIO):
+
+class CommandInput(fileio.FileIO):
     '''
     command input file format
     
@@ -74,7 +76,7 @@ class CommandInput(FileIO):
         if not filename.endswith(ext): return None
         if not os.path.exists(filename): return None
 
-        self.info = jldesmear.api.info.Info()
+        self.info = jl_api.info.Info()
 
         # read a .inp file
         self.info.parameterfile = filename
@@ -86,7 +88,7 @@ class CommandInput(FileIO):
             msg = "not enough information in command input file: " + filename
             raise RuntimeError, msg
         
-        functions = discover_extrapolations()
+        functions = fileio.discover_extrapolations()
 
         self.info.fileio_class = self
         self.info.filename = filename
@@ -142,7 +144,7 @@ class CommandInput(FileIO):
         filename = filename or self.info.infile
         if not os.path.exists(filename): return
         #os.chdir(owd)
-        q, E, dE = jldesmear.api.toolbox.GetDat(filename)
+        q, E, dE = api.toolbox.GetDat(filename)
         if (len(q) == 0):
             raise Exception, "no data points!"
         if (self.info.sFinal > q[-1]):
@@ -151,7 +153,7 @@ class CommandInput(FileIO):
     
     def save_DSM(self, filename, dsm):
         '''Save the desmeared data to a 3-column ASCII file'''
-        jldesmear.api.toolbox.SavDat(filename, dsm.q, dsm.C, dsm.dC)
+        api.toolbox.SavDat(filename, dsm.q, dsm.C, dsm.dC)
 
 
 # class AnyFile(FileIO):
@@ -165,9 +167,9 @@ class CommandInput(FileIO):
 
 
 def main():
-    from jldesmear.api import toolbox
     ext = '.inp'
-    fn = toolbox.GetTest1DataFilename(ext)
+    import jl_api.toolbox
+    fn = jl_api.toolbox.GetTest1DataFilename(ext)
     cmdInp = CommandInput()
     parms = cmdInp.read(fn)
     print str(parms)
