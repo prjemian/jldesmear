@@ -5,8 +5,8 @@ JLdesmear: iterative desmearing of small-angle scattering data
 __project__     = u'jldesmear'
 __author__      = u'Pete R Jemian'
 __email__       = u'prjemian@gmail.com'
-__copyright__   = u'2013-2014, ' + __author__
-__version__     = u'2014.03.14'
+__copyright__   = u'2013-2015, ' + __author__
+__version__     = u'2015.0530.0'
 __release__     = __version__
 __url__         = u'http://prjemian.github.io/jldesmear'
 __description__ = u'Desmear small-angle scattering data by Jemian and Lake'
@@ -16,6 +16,12 @@ as implemented by PR Jemian.
 '''
 __license__     = u' (see LICENSE file for details)'
 __keywords__    = u'small-angle desmearing'
+__install_requires__ = ['Sphinx>=0.6', 
+                        'numpy', 
+                        'numpy.ma', 
+                        'scipy', 
+                        'scipy.interpolate',
+                        ]
 
 
 def __about__():
