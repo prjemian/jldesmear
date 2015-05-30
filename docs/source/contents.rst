@@ -6,9 +6,10 @@ Contents
    :glob:
    
    overview
-   api/traditional
-   gui/*
-   fileio/*
+   traditional
+   gui
+   example
+   api
    changes
    license
 

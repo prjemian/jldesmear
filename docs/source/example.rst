@@ -294,22 +294,22 @@ Data Files
 Command Input File (:file:`test1.inp`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../src/jldesmear/data/test1.inp
+.. literalinclude:: ../../src/jldesmear/data/test1.inp
 
 Input Data File (:file:`test1.smr`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../src/jldesmear/data/test1.smr
+Too big for the documentation.
+:download:`test1.smr <../../src/jldesmear/data/test1.smr>`
 
 Output Data File (:file:`test1.dsm`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../src/jldesmear/data/test1.dsm
+Too big for the documentation.
+:download:`test1.dsm <../../src/jldesmear/data/test1.dsm>`
 
 Complete Program Output (:file:`test1.out`)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Too big for the documentation.  See the source code distribution.
-
-.. .. literalinclude:: ../../data/test1.out
-
+Too big for the documentation.
+:download:`test1.out <../../src/jldesmear/data/test1.out>`
