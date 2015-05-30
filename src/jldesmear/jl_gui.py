@@ -21,8 +21,7 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
 # import jl_api
 import jl_api.desmear
-# import jl_fileio #import makeFilters, ext_xref, formats
-import jl_fileio.fileio
+import fileio
 
 
 class FileEntryBox(QGroupBox):
@@ -67,8 +66,7 @@ class FileEntryBox(QGroupBox):
 #                              'smeared SAS (*.smr)',
 #                              'any file (*.* *)',
 #                              ])
-        import jl_fileio.fileio
-        filters = jl_fileio.fileio.makeFilters()
+        filters = fileio.makeFilters()
         answers = QFileDialog().getOpenFileName(self, filter=filters)
         # getOpenFileName() returns different items in PySide and PyQt4
         if pyqt_name == 'PySide':
@@ -464,14 +462,14 @@ class JLdesmearGui(QMainWindow):
     def onOpenCallback(self, filename, filefilter=''):
         '''open a Command Input file with SAS desmearing parameters'''
         ext = os.path.splitext(filename)[1]
-        xref = jl_fileio.fileio.ext_xref
+        xref = fileio.ext_xref
         # do not use the filefilter term
         if ext in xref and xref[ext] == 'CommandInput':
             self.setStatus('selected file: ' + filename)
             self.dsm = None
             
             # read a .inp file
-            cls = jl_fileio.fileio.formats[xref[ext]]
+            cls = fileio.formats[xref[ext]]
             cmd_inp = cls()
             cmd_inp.read(filename)
             
