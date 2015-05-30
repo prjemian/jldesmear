@@ -34,3 +34,4 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+/src/jldesmear/jl_fileio/junk.inp
