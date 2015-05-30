@@ -16,10 +16,3 @@ The main GUI program is started with a Python command such as::
 .. automodule:: jldesmear.gui.desmearinggui
     :members: 
     :synopsis: Python Qt GUI for desmearing standalone code
-
-:mod:`~jldesmear.gui.traitsgui` documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: jldesmear.gui.traitsgui
-    :members: 
-    :synopsis: Traits GUI for desmearing standalone code
