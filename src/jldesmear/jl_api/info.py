@@ -34,6 +34,7 @@ class Info(object):
     quiet = True                    # suppress progress indicator (spinner) output during smearing
     callback = None                 # function object to call after each desmearing iteration
     
+    parameterfile = ''              # name of file with program parameters
     fileio_class = None             # file format support class
 
     def __str__(self):
