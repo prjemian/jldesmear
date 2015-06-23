@@ -6,7 +6,7 @@ __project__     = u'jldesmear'
 __author__      = u'Pete R Jemian'
 __email__       = u'prjemian@gmail.com'
 __copyright__   = u'2013-2015, ' + __author__
-__version__     = u'2015.0530.1'
+__version__     = u'2015.0623.0'
 __release__     = __version__
 __url__         = u'http://prjemian.github.io/jldesmear'
 __description__ = u'Desmear small-angle scattering data by Jemian and Lake'
@@ -20,8 +20,6 @@ __install_requires__ = ['Sphinx>=0.6',
                         'numpy>=1.9', 
                         'numpy.ma>=1.0', 
                         'scipy', 
-                        'scipy.interpolate',
-#                         'matplotlib',
                         ]
 __console_scripts__ = [
                        'jldsmear = jldesmear.ui:desmear_cli', 

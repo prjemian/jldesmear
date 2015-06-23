@@ -4,6 +4,7 @@
 Change History
 ##############
 
+:2015.0623.0: removed scipy.interpolate requirement, added desmear graphic to documentation
 :2015.0530.1: removed support for PySide and traits, refactored Python imports
 :2014.03.14: cleaned up extrapolation plugin recognition
 :2014.03.13: refactored extrapolations to be easier to recognize and improved import
