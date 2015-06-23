@@ -15,7 +15,7 @@ Iterative desmearing of SAS data using the technique of JA Lake
 as implemented by PR Jemian.
 '''
 __license__     = u' (see LICENSE file for details)'
-__keywords__    = u'small-angle desmearing'
+__keywords__    = [u'small-angle', 'desmearing', ]
 __install_requires__ = ['Sphinx>=0.6', 
                         'numpy>=1.9', 
                         'numpy.ma>=1.0', 
