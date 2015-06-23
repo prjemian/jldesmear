@@ -4,6 +4,9 @@ Program Documentation: jldesmear
 Desmear 1-D SAXS or SANS data according to the method 
 of JA Lake as implemented by Pete Jemian.
 
+:version:	|version|
+:date:		|today|
+
 .. rubric:: Reference Citation
 
 Use this reference to cite this code in a publication.

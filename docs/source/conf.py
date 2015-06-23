@@ -45,6 +45,7 @@ class Mock(object):
             return Mock()
 
 MOCK_MODULES = jldesmear.__install_requires__
+MOCK_MODULES.append('scipy.interpolate')
 
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
@@ -60,11 +61,9 @@ for mod_name in MOCK_MODULES:
 extensions = ['sphinx.ext.autodoc', 
               'sphinx.ext.autosummary', 
               'sphinx.ext.todo', 
-              'sphinx.ext.coverage', 
               'sphinx.ext.mathjax',
               'sphinx.ext.ifconfig', 
               'sphinx.ext.viewcode', 
-              'sphinx.ext.inheritance_diagram',
               #'matplotlib.sphinxext.mathmpl',
               ]
 

@@ -6,9 +6,9 @@ __project__     = u'jldesmear'
 __author__      = u'Pete R Jemian'
 __email__       = u'prjemian@gmail.com'
 __copyright__   = u'2013-2015, ' + __author__
-__version__     = u'2015.0623.0'
+__version__     = u'2015.0623.1'
 __release__     = __version__
-__url__         = u'http://prjemian.github.io/jldesmear'
+__url__         = u'http://jldesmear.readthedocs.org'
 __description__ = u'Desmear small-angle scattering data by Jemian and Lake'
 __long_description__ = __description__ + u'''\n
 Iterative desmearing of SAS data using the technique of JA Lake
@@ -19,7 +19,7 @@ __keywords__    = u'small-angle desmearing'
 __install_requires__ = ['Sphinx>=0.6', 
                         'numpy>=1.9', 
                         'numpy.ma>=1.0', 
-                        'scipy', 
+                        'scipy',        # ?>=0.15.1?
                         ]
 __console_scripts__ = [
                        'jldsmear = jldesmear.ui:desmear_cli', 
