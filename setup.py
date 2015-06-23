@@ -50,6 +50,6 @@ setup(
             'Programming Language :: Python',
             'Topic :: Scientific/Engineering',
             'Topic :: Software Development :: Libraries :: Python Modules',
-            'Topic :: Utilities',
+            'Topic :: Utilities'
         ],
      )
