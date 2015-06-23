@@ -26,6 +26,7 @@ import jldesmear
 class Mock(object):
 
     __all__ = []
+    rcParams = {}
 
     def __init__(self, *args, **kwargs):
         pass
@@ -45,9 +46,14 @@ class Mock(object):
             return Mock()
 
 MOCK_MODULES = jldesmear.__install_requires__
-MOCK_MODULES.append('scipy.interpolate')
+MOCK_MODULES.append('matplotlib')
+MOCK_MODULES.append('matplotlib.backends')
+MOCK_MODULES.append('matplotlib.backends.backend_qt4agg')
+MOCK_MODULES.append('numpy')
 MOCK_MODULES.append('numpy.distutils')
 MOCK_MODULES.append('numpy.distutils.core')
+MOCK_MODULES.append('numpy.ma')
+MOCK_MODULES.append('scipy.interpolate')
 
 
 
