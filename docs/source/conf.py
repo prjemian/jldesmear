@@ -46,6 +46,8 @@ class Mock(object):
 
 MOCK_MODULES = jldesmear.__install_requires__
 MOCK_MODULES.append('scipy.interpolate')
+MOCK_MODULES.append('numpy.distutils')
+MOCK_MODULES.append('numpy.distutils.core')
 
 
 
