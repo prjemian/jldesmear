@@ -47,8 +47,6 @@ class Mock(object):
 MOCK_MODULES = jldesmear.__install_requires__
 MOCK_MODULES.append('scipy.interpolate')
 
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
 
 
 # -- General configuration -----------------------------------------------------
@@ -259,3 +257,7 @@ man_pages = [
      jldesmear.__project__ + u' Documentation',
      [jldesmear.__author__], 1)
 ]
+
+
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
